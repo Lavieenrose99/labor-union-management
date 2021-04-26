@@ -6,13 +6,16 @@
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/README.md
 -->
-# 工会后台管理系统 
+
+# 工会后台管理系统
 
 ## 使用方法
 
 ```
 git clone git@github.com:Lavieenrose99/labor-union-management.git
 cd labor-union-management
-npm install 
+npm install
 npm run start
 ```
+
+> yjz
