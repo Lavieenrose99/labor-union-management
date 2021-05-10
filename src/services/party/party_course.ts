@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-10 00:02:50
+ * @LastEditTime: 2021-05-10 17:06:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts
  */
 
  import request from '@/utils/request'
+import { method } from 'lodash';
 
 
  export type PartyCoruseParamsType = {
@@ -46,4 +47,11 @@ export async function getPartyCourseEnity(params){
         method: 'POST',
         data: {'ids':params}
     })
+}
+
+export async function delPartyCourse(id: number){
+    return request(`/api.request/party_course/info/${id}`,{
+    method: 'DELETE',
+    }
+    )
 }

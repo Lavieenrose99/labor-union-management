@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-10 00:09:25
+ * @LastEditTime: 2021-05-10 17:12:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -10,7 +10,8 @@ import type { Effect, Reducer } from 'umi';
 import { message } from 'antd';
 import { createPartyCouse,
     fetchPartyCourse ,
-    getPartyCourseEnity} from '../../services/party/party_course'
+    getPartyCourseEnity,
+    delPartyCourse} from '../../services/party/party_course'
 import { get } from 'lodash'
 
 
@@ -23,6 +24,7 @@ export interface AccountModelType {
     effects: {
         addPartyCourse: Effect;
         fetchPartyList: Effect;
+        delPartyCourse: Effect;
 
     };
     reducers: {
@@ -56,6 +58,11 @@ const PartyCourseModal: AccountModelType = {
             })
 
       },
+      *delPartyCourse({ payload }, { call }){
+        const response =  yield call(delPartyCourse,payload)
+        if(response.id )
+        message.info('课程删除成功')
+      }
       },
      
     

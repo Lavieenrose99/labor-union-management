@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-05-09 00:45:57
+ * @LastEditTime: 2021-05-10 16:47:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
@@ -78,7 +78,7 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
           message.info(`只能上传${fileCount}份文件`)
            return false
         }
-        const suffix = file.name.substring(file.name.lastIndexOf('.')+1)
+        const suffix = file.name.substring(file.name.lastIndexOf('.')+1).toLowerCase()
         if(fileType[childFileType].indexOf(suffix) !== -1){
         setFileList([...fileList,file])
         }else{  
