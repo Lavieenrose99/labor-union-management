@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-04-22 16:02:24
- * @LastEditors: your name
+ * @LastEditTime: 2021-04-28 10:18:49
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/proxy.ts
  */
@@ -19,6 +19,13 @@ export default {
       target: 'https://preview.pro.ant.design',
       changeOrigin: true,
       pathRewrite: { '^': '' },
+    },
+    '/api.farm/': {
+      target: 'https://api.fmg.net.cn/',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api.farm': '',
+      },
     },
     '/api.request': {
       target: 'http://120.24.151.34:80',
@@ -38,6 +45,13 @@ export default {
       target: 'your pre url',
       changeOrigin: true,
       pathRewrite: { '^': '' },
+    },
+    '/api.farm/': {
+      target: 'https://api.fmg.net.cn/',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api.farm': '',
+      },
     },
     '/api.request': {
       target: 'http://120.24.151.34:80',
