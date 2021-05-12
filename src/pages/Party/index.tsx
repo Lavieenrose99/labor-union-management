@@ -1,15 +1,17 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-10 17:13:04
+ * @LastEditTime: 2021-05-12 14:19:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
  */
 import React,{ useState, useEffect} from 'react'
+import request from '@/utils/request'
 import { PageContainer } from '@ant-design/pro-layout'
-import { List, Avatar, Space, Modal, Button } from 'antd';
+import { List, Avatar, Space, Modal, Button} from 'antd';
 import {  FilePptTwoTone, DeleteTwoTone} from '@ant-design/icons';
+import CreatePartyCourse from './create'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
 import { get } from 'lodash';
@@ -31,7 +33,8 @@ interface PartyCourseProps {
 
 const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
 
-    const { dispatch, CoureseEnity } = props
+    const { dispatch, CoureseEnity} = props
+    const [ showCreate, setShowCreate ] = useState<boolean>(false)
     const listData = [];
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < CoureseEnity.length; i++) {
@@ -55,21 +58,33 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
                 page:1
             }
         })
+        request('/api.monitor/data/pv',{
+            method: 'GET'
+        }).then((data)=>{
+            console.log(data)
+        })
     },[])
 
     
     
     return (
         <PageContainer 
+        ghost={false}
+        onBack={() => window.history.back()}
+        title="党课列表"
+        extra={[
+          <Button key="3" onClick={()=>setShowCreate(true)}>创建课程</Button>,
+        ]}
         >
          <List
+         bordered
     itemLayout="vertical"
     size="large"
     pagination={{
       onChange: page => {
         console.log(page);
       },
-      pageSize: 3,
+      pageSize: 10,
     }}
     dataSource={listData}
     footer={
@@ -95,7 +110,9 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
                                 payload: item.id
                                 
                               })
-                          }
+                          },
+                          closable: true
+                          
                       })
                   }
               }>删除课程</span>
@@ -118,6 +135,10 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
       </List.Item>
     )}
   />,
+      <Modal visible={showCreate} onCancel={()=>setShowCreate(false)} width={1000}>
+          <CreatePartyCourse />
+
+      </Modal>
          </PageContainer>
     )
 }
@@ -126,4 +147,5 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
 
 export default connect(({ partycourse }: any) => ({
     CoureseEnity: get(partycourse, 'CoureseEnity', []),
+    UploadStatus: get(partycourse, 'status',false)
   }))(PartyCourseList);

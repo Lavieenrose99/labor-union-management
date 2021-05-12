@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-10 17:06:14
+ * @LastEditTime: 2021-05-11 13:59:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts
@@ -42,7 +42,7 @@ export async function fetchPartyCourse(params: PartyCourseLimitType){
 }
 
 
-export async function getPartyCourseEnity(params){
+export async function getPartyCourseEnity(params: number[]){
     return request('/api.request/party_course/info/_mget',{
         method: 'POST',
         data: {'ids':params}

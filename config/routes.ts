@@ -1,7 +1,7 @@
 ﻿/*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-05-10 18:32:55
+ * @LastEditTime: 2021-05-11 16:43:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/routes.ts
@@ -68,15 +68,16 @@ export default [
                     name: '创建课程',
                     icon: 'smile',
                     component: './Party/create.tsx'
-                  },
+                  }
                 ]
               },
               {
-                component: './404',
+                path: 'success',
+               component: '../utils/public/success',
               },
             ],
           },
-          {
+          { 
             component: './404',
           },
         ],

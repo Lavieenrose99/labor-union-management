@@ -1,25 +1,32 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-10 17:12:03
+ * @LastEditTime: 2021-05-12 14:44:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
  */
 import type { Effect, Reducer } from 'umi';
+import { history } from 'umi'
 import { message } from 'antd';
 import { createPartyCouse,
     fetchPartyCourse ,
     getPartyCourseEnity,
     delPartyCourse} from '../../services/party/party_course'
-import { get } from 'lodash'
 
+export interface AccountModalState {
+  pagination: {
+    limit: undefined;
+    total: undefined;
+    page: undefined;
+  };
+}
 
 export interface AccountModelType {
     namespace: 'partycourse';
     // state: AccountModelState;
     state: {
-        status: undefined
+        status: boolean
     }
     effects: {
         addPartyCourse: Effect;
@@ -28,21 +35,32 @@ export interface AccountModelType {
 
     };
     reducers: {
-      savePagesInfos: Reducer;
+      savePagesInfos: Reducer<AccountModalState>;
+      saveCoureseEnity: Reducer<AccountModalState>;
+      changeUploadStatus: Reducer
     };
   }
 
 const PartyCourseModal: AccountModelType = {
     namespace: 'partycourse',
     state: {
-        status: undefined,
+        status: false,
       },
     effects: {
        
         *addPartyCourse({ payload }, { call, put }) {
+          yield put({
+            type: 'changeUploadStatus',
+            payload: true
+          })
           const response = yield call(createPartyCouse, payload);
-          if (response.status === 'success') {
-            message.info('已成功发送');
+          if (response.id > 0) {
+            message.info('已成功添加');
+            yield put({
+              type: 'changeUploadStatus',
+              payload: false
+            })
+            yield history.push('/success')
           }
         }, 
         *fetchPartyList({ payload }, { call ,put}){
@@ -67,12 +85,24 @@ const PartyCourseModal: AccountModelType = {
      
     
       reducers: {
-        saveCoureseEnity(state: any, { payload }) {
+        saveCoureseEnity(state: any, { payload }: any) {
           return {
             ...state,
             CoureseEnity: payload,
           };
         },
+        changeUploadStatus(state: any, { payload }: any){
+          return {
+            ...state,
+            status: payload
+          }
+        },
+        savePagesInfos(state: any, { payload }: any){
+          return {
+            ...state,
+            pagination: payload
+          }
+        }
       },
 }
 
