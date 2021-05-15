@@ -1,15 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-10 14:47:25
+ * @LastEditTime: 2021-05-12 11:17:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
  */
-import React,{ useState, useEffect} from 'react'
+import React,{ useState, useEffect } from 'react'
 import { UploadAntd } from '@/utils/upload/qiniu'
 import { PageContainer } from '@ant-design/pro-layout'
-import { Input, Button, message } from 'antd'
+import { BookTwoTone, UserAddOutlined } from '@ant-design/icons'
+import { Input, Button, message, Spin } from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
 import { get } from 'lodash';
@@ -22,12 +23,13 @@ interface PartyCourseProps {
 
 const PartyShow: React.FC<PartyCourseProps> = (props)=>{
 
-    const { dispatch } = props
+    const { dispatch, UploadStatus } = props
     const [ couseName, setCourseName ] = useState('')
     const [ courePerson, setCoursePerson ] = useState('admin')
     const [ coursePPT, setcoursePPT ] = useState('')
     const [ conrsePicture,setCousePicture ] = useState('')
     const [ courseVideo, setCourseVideo ] = useState('') 
+
 
     const handleSubmit: any = ()=>{
         if(!courePerson &&!conrsePicture&&!coursePPT&&!couseName&&!courseVideo){
@@ -45,18 +47,33 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
                 
             }
         )
+        setCourseName('')
+        setCoursePerson('')
+        setCourseVideo('')
+        setCousePicture('')
+        setcoursePPT('')
         }
     }
-
+   
     return (
         <PageContainer 
         >
+            <Spin spinning={UploadStatus}>
         <section className="party_course_upload_containter">
-        <Input placeholder="请输入课程名" style={{ width: 300 , marginBottom: '20px' }} onChange={
+        <Input placeholder="请输入课程名" style={{ width: 400 , marginBottom: '20px'}} onChange={
             (e) =>{
                 setCourseName(e.target.value)
             }
-        } />
+        } 
+        prefix={<BookTwoTone />}
+        
+        />
+         <Input placeholder="课程教师" style={{ width: 400 , marginBottom: '20px'}} onChange={
+            (e) =>{
+                setCoursePerson(e.target.value)
+            }
+        } 
+         prefix={<UserAddOutlined />}/>
         <UploadAntd 
           childFileType="picture"
           dragSize="90%"
@@ -88,6 +105,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         
           </section>
         
+          </Spin>
          <Button 
          className="submit_party_btn"
          onClick={
@@ -101,4 +119,5 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
 
 export default connect(({ partycourse }: any) => ({
     CoureseEnity: get(partycourse, 'CoureseEnity', []),
+    UploadStatus: get(partycourse, 'status',false)
   }))(PartyShow);

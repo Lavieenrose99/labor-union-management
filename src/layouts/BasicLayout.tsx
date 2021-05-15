@@ -1,5 +1,5 @@
 /**
- * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
+ * 惠福 v4 use `@ant-design/pro-layout` to handle Layout.
  *
  * @see You can view component api by: https://github.com/ant-design/ant-design-pro-layout
  */
@@ -59,8 +59,8 @@ const defaultFooterDom = (
     copyright={`${new Date().getFullYear()} 蚂蚁集团体验技术部出品`}
     links={[
       {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
+        key: '惠福',
+        title: '惠福',
         href: 'https://pro.ant.design',
         blankTarget: true,
       },
@@ -166,7 +166,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         return menuData || [];
       }}
       waterMarkProps={{
-        content: 'Ant Design Pro',
+        content: '惠福',
         fontColor: 'rgba(24,144,255,0.15)',
       }}
     >
