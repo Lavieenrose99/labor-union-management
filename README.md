@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-04-19 18:47:18
+ * @LastEditTime: 2021-04-26 17:31:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/README.md
@@ -18,4 +18,10 @@ npm install
 npm run start
 ```
 
+<<<<<<< HEAD
 ### gww
+=======
+### name
+
+cjz
+>>>>>>> f_test

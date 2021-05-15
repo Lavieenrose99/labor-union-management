@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-04-19 16:46:29
+ * @LastEditTime: 2021-05-10 15:14:22
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /labor-union-management/config/config.ts
+ */
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
@@ -7,13 +15,13 @@ import routes from './routes';
 const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
-  hash: true,
+  hash: false, //?
   antd: {},
   dva: {
     hmr: true,
   },
   history: {
-    type: 'browser',
+    type: "hash",
   },
   locale: {
     // default zh-CN
@@ -22,9 +30,9 @@ export default defineConfig({
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
   },
-  dynamicImport: {
-    loading: '@/components/PageLoading/index',
-  },
+  // dynamicImport: {
+  //   loading: '@/components/PageLoading/index',
+  // },
   targets: {
     ie: 11,
   },
