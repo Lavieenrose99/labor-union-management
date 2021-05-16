@@ -1,4 +1,12 @@
-﻿export default [
+﻿/*
+ * @Author: your name
+ * @Date: 2021-04-19 16:46:29
+ * @LastEditTime: 2021-05-11 16:43:04
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /labor-union-management/config/routes.ts
+ */
+export default [
   {
     path: '/',
     component: '../layouts/BlankLayout',
@@ -16,51 +24,60 @@
       },
       {
         path: '/',
-        component: '../layouts/SecurityLayout',
+        // component: '../layouts/SecurityLayout',
         routes: [
           {
             path: '/',
             component: '../layouts/BasicLayout',
-            authority: ['admin', 'user'],
+            // authority: ['admin', 'user'],
             routes: [
               {
                 path: '/',
-                redirect: '/welcome',
-              },
-              {
-                path: '/welcome',
-                name: 'welcome',
-                icon: 'smile',
-                component: './Welcome',
+                redirect: '/admin',
               },
               {
                 path: '/admin',
-                name: 'admin',
+                name: '监控页面',
                 icon: 'crown',
                 component: './Admin',
-                authority: ['admin'],
+                // authority: ['admin'],
                 routes: [
                   {
                     path: '/admin/sub-page',
                     name: 'sub-page',
                     icon: 'smile',
                     component: './Welcome',
-                    authority: ['admin'],
+                    // authority: ['admin'],
                   },
                 ],
               },
               {
-                name: 'list.table-list',
+                name: '党建中心',
                 icon: 'table',
-                path: '/list',
-                component: './TableList',
+                path: '/party',
+                // component: './Party/index.tsx',
+                routes:[
+                  {
+                    path: '/party/index',
+                    name: '课程列表',
+                    component: './Party/index.tsx'
+                  }
+                  ,
+                  {
+                    path: '/party/create',
+                    name: '创建课程',
+                    icon: 'smile',
+                    component: './Party/create.tsx'
+                  }
+                ]
               },
               {
-                component: './404',
+                path: 'success',
+               component: '../utils/public/success',
               },
             ],
           },
-          {
+          { 
             component: './404',
           },
         ],
