@@ -21,3 +21,11 @@ export async function getInfosList(payload) {
       data: { ids: payload },
     });
   }
+
+  export async function addInfosEnity(payload) {
+    return request('/api.farm/news/info/create', {
+      method: 'POST',
+      data: payload,
+    });
+  }
+  
