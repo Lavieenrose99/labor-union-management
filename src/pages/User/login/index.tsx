@@ -65,7 +65,9 @@ const Login: React.FC<LoginProps> = (props) => {
         message.error("请检查账号密码是否有误")
       }
     })
-  };
+
+  
+};
   return (
     <div className={styles.main}>
       <ProForm

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-05-10 16:47:54
+ * @LastEditTime: 2021-05-24 15:45:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
@@ -14,7 +14,7 @@ import {
 import PreviewModal from './previewModal'
 import request from '@/utils/request'
 
-const QINIU_SERVER = 'http://upload-z2.qiniup.com';
+const QINIU_SERVER = 'https://upload-z2.qiniup.com';
 const BASE_QINIU_URL = 'http://qiniu.fmg.net.cn/';
 
 type large = '90%'
@@ -24,10 +24,10 @@ interface UploadAntdProps extends UploadTextProps{
     dragSize: large | middle
     childFileType: 'ppt' | 'picture' | 'video'
     fileCount: 1 | 2 | 3
-    setUrl: any
+    setUrl?: any
 }
 interface UploadTextProps{
-     IntroText: string
+     IntroText?: string
      IntroIcon?: string 
 }
 
@@ -186,6 +186,7 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
        </>
     )
 }
+
 
 export {
     QINIU_SERVER, BASE_QINIU_URL,UploadText,UploadAntd, fileType

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-12 14:19:10
+ * @LastEditTime: 2021-05-24 11:53:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -9,7 +9,7 @@
 import React,{ useState, useEffect} from 'react'
 import request from '@/utils/request'
 import { PageContainer } from '@ant-design/pro-layout'
-import { List, Avatar, Space, Modal, Button} from 'antd';
+import { List, Avatar, Space, Modal, Button, Image} from 'antd';
 import {  FilePptTwoTone, DeleteTwoTone} from '@ant-design/icons';
 import CreatePartyCourse from './create'
 import type { Dispatch } from 'umi';
@@ -25,7 +25,7 @@ const IconText = ({ icon, text }) => (
   </Space>
 );
 
-interface PartyCourseProps {
+export interface PartyCourseProps {
     dispatch: Dispatch
     CoureseEnity: any
 }
@@ -41,21 +41,21 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
       listData.push({
         id: CoureseEnity[i].id,
         href: 'https://ant.design',
-        video: CoureseEnity[i].course_video,
+        video: CoureseEnity[i].data.course_video,
         title: `党建系列课 ${CoureseEnity[i].name}`,
         avatar: 'https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg',
-        description: <div><strong>创建人: </strong><span>{CoureseEnity[i].person}</span></div>,
+        description: <div><strong>创建人: </strong><span>{CoureseEnity[i].data.person}</span></div>,
         ppt: CoureseEnity[i].course_ppt,
-        content:
-          '一心向党好好学习又红又专',
+        content: CoureseEnity[i].course_brief,
+        cover: CoureseEnity[i].course_cover
       });
     }
     useEffect(()=>{
         dispatch({
             type: 'partycourse/fetchPartyList',
             payload: {
-                limit: 20,
-                page:1
+                limit: 10,
+                page:2
             }
         })
         request('/api.monitor/data/pv',{
@@ -97,9 +97,11 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
         key={item.title}
         actions={[
           <IconText icon={FilePptTwoTone} text={<a  href={item.ppt} >点击下载课程ppt</a>} key="list-vertical-message" />,
+          <IconText icon={FilePptTwoTone} text={<a  href={item.ppt} >点击下载课程ppt</a>} key="list-vertical-message" />,
           <IconText icon={DeleteTwoTone} text={
               <span onClick={
                   ()=>{
+                    console.log(item)
                       Modal.info({
                           title: '惠福管理后台',
                           content: '确认要删除该课程吗',
@@ -118,11 +120,12 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
               }>删除课程</span>
           } key="list-vertical-like-o" />,
         ]}
-        extra={
-          <video
-            width={272}
-            src={item.video}
-            controls={true}
+        extra={         
+          <Image 
+          src={item.cover}
+          width={300}
+          height={180}
+          fallback="http://qiniu.fmg.net.cn/picture-1606378155000"
           />
         }
       >

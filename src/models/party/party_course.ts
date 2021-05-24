@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-12 14:44:39
+ * @LastEditTime: 2021-05-24 00:22:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -65,9 +65,13 @@ const PartyCourseModal: AccountModelType = {
         }, 
         *fetchPartyList({ payload }, { call ,put}){
             const list = yield call(fetchPartyCourse,payload)
-            const { party_course } = list
+            const { party_course, total } = list
             const ids = party_course.map((item: any)=>{
                 return item.id
+            })
+            yield put({
+              type: 'savePagesInfos',
+              payload: total
             })
             const enity = yield call(getPartyCourseEnity,ids)
             yield put({
@@ -75,12 +79,13 @@ const PartyCourseModal: AccountModelType = {
                 payload: enity
             })
 
+
       },
       *delPartyCourse({ payload }, { call }){
         const response =  yield call(delPartyCourse,payload)
         if(response.id )
         message.info('课程删除成功')
-      }
+      },
       },
      
     
