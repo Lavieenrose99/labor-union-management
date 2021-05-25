@@ -69,7 +69,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
       console.log(data);
     });
   }, []);
-
+console.log('party: ' + CoureseEnity)
   return (
     <PageContainer
       ghost={false}

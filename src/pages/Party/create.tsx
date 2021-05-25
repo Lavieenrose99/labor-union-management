@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-12 11:17:13
+ * @LastEditTime: 2021-05-24 11:58:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -9,11 +9,12 @@
 import React,{ useState, useEffect } from 'react'
 import { UploadAntd } from '@/utils/upload/qiniu'
 import { PageContainer } from '@ant-design/pro-layout'
-import { BookTwoTone, UserAddOutlined } from '@ant-design/icons'
+import { BookTwoTone } from '@ant-design/icons'
 import { Input, Button, message, Spin } from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
 import { get } from 'lodash';
+import CreatorPartyCourse from '@/utils/upload/richTextUpload'
 import './index.less'
 
 interface PartyCourseProps {
@@ -29,8 +30,10 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
     const [ coursePPT, setcoursePPT ] = useState('')
     const [ conrsePicture,setCousePicture ] = useState('')
     const [ courseVideo, setCourseVideo ] = useState('') 
-
-
+    const [ coursebrief, setCourseBrief ] = useState('测试简介')
+    const [ courseCover, setCourseCover ] = useState('')
+    const [ courseWork, setCourseWork ] = useState('xxxx')
+    const [fmginfos, setFmgInfos] = useState(localStorage.getItem('infos'));
     const handleSubmit: any = ()=>{
         if(!courePerson &&!conrsePicture&&!coursePPT&&!couseName&&!courseVideo){
             message.info('信息未填写完整请确认')
@@ -41,8 +44,11 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
                 payload: {
                     party_course_name: couseName,
                     party_course_person: courePerson,
-                    party_course_ppt: coursePPT,
-                    party_course_video: courseVideo
+                    party_course_ppt: [coursePPT],
+                    party_course_video: [courseVideo],
+                    party_course_brief: coursebrief,
+                    party_course_cover: courseCover,
+                    party_course_work: courseWork
                 }
                 
             }
@@ -54,7 +60,11 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         setcoursePPT('')
         }
     }
-   
+    const subscribeInfos = (text: any) => {
+        localStorage.setItem('infos', text);
+        setFmgInfos(text);
+      };
+   console.log(fmginfos)
     return (
         <PageContainer 
         >
@@ -68,12 +78,11 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         prefix={<BookTwoTone />}
         
         />
-         <Input placeholder="课程教师" style={{ width: 400 , marginBottom: '20px'}} onChange={
+         <Input.TextArea placeholder="请在此填写课程简介" style={{ width: 700 , marginBottom: '20px'}} onChange={
             (e) =>{
                 setCoursePerson(e.target.value)
             }
-        } 
-         prefix={<UserAddOutlined />}/>
+        } />
         <UploadAntd 
           childFileType="picture"
           dragSize="90%"
@@ -81,7 +90,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
           IntroText="上传课程封面"
           fileCount = {1}
           setUrl = {
-            setCousePicture
+            setCourseCover
           }
           />
            <UploadAntd 
@@ -102,7 +111,10 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
               setCourseVideo
           }
           />
-        
+          <CreatorPartyCourse 
+          subscribeRichText={subscribeInfos} 
+          defaultText={fmginfos}
+          />
           </section>
         
           </Spin>

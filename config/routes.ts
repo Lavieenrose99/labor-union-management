@@ -1,7 +1,11 @@
 ﻿/*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
+<<<<<<< HEAD
  * @LastEditTime: 2021-05-15 14:44:59
+=======
+ * @LastEditTime: 2021-05-24 15:31:11
+>>>>>>> 18ed83d7ab8d585c99ad31ad2c15d9d179265b02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/routes.ts
@@ -51,6 +55,30 @@ export default [
                   },
                 ],
               },
+              {
+                path: '/set',
+                name: '配置页面',
+                icon: 'crown',
+                // /component: './Admin',
+                // authority: ['admin'],
+                routes: [
+                  {
+                    path: '/set/rolling_picture',
+                    name: '轮播图设置',
+                    icon: 'smile',
+                    component: './SetCenter/rolling_picture',
+                    // authority: ['admin'],
+                  },
+                  {
+                    path: '/set/news',
+                    name: '资讯设置',
+                    icon: 'smile',
+                    component: './News/index',
+                    // authority: ['admin'],
+                  },
+                ],
+              },
+              
               {
                 name: '党建中心',
                 icon: 'table',
