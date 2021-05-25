@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:53:05
- * @LastEditTime: 2021-05-24 15:40:59
+ * @LastEditTime: 2021-05-25 09:21:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/set_center/setCenter.ts
@@ -65,6 +65,28 @@ export async function delRollingPicture(id: number){
    }
    )
 }
+export async function delInfosTags(id: number){
+   return request(`/api.request/v1/news_label/${id}`,{
+   method: 'DELETE',
+   }
+   )
+}
+
+
+export async function putInfosTags(payload: any){
+   return request(`/api.request/v1/news_label/${payload.id}`,{
+   method: 'PUT',
+   data: { name: payload.data }
+   }
+   )
+}
+export async function addInfosTags(payload: any){
+   return request(`/api.request/v1/news_label`,{
+   method: 'POST',
+   data: { name: payload }
+   }
+   )
+}
 
 export async function addNewsInfos(params: NewsInfosType){
    return request('api.request/v1/news',{
@@ -72,3 +94,11 @@ export async function addNewsInfos(params: NewsInfosType){
       data: params
    })
 }
+export async function fetTagList(params: RollingPictureLimitType){
+   return request('api.request/v1/news_label/list',{
+      method: "GET",
+      params
+   })
+}
+
+

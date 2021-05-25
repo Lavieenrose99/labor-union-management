@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:57:15
- * @LastEditTime: 2021-05-24 15:50:14
+ * @LastEditTime: 2021-05-25 09:27:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/set_center/setCenter.ts
@@ -16,7 +16,16 @@
  */
 import type { Effect, Reducer } from 'umi';
 import { message } from 'antd';
-import { fetchRollingPicture, addRollingsPic, addNewsInfos } from '@/services/set_center/setCenter'
+import { 
+  fetchRollingPicture, 
+  addRollingsPic, 
+  addNewsInfos,
+   fetTagList,
+   delInfosTags,
+   putInfosTags,
+   addInfosTags
+  } from '@/services/set_center/setCenter'
+import { PushpinTwoTone } from '@ant-design/icons';
 
 
 export interface AccountModalState {
@@ -37,9 +46,15 @@ export interface AccountModelType {
         addRollingPictures: Effect;
         fetchRollingsList: Effect;
         addInfosList: Effect;
+        fetchInfosTagsList: Effect;
+        delInfosTags: Effect;
+        putInfosTags: Effect;
+        addInfosTags: Effect
+
     };
     reducers: {
     saveRollingsPic: Reducer<AccountModalState>;
+    saveInfosTags: Reducer
 
     };
   }
@@ -52,12 +67,7 @@ const RollingPictureModal: AccountModelType = {
     effects: {
        
         *fetchRollingsList({ payload }, { call ,put}){
-            console.log(1112121)
             const list = yield call(fetchRollingPicture,payload)
-            // const ids = party_course.map((item: any)=>{
-            //     return item.id
-            // })
-            // const enity = yield call(getRollingPictureEnity,ids)
             yield put({
                 type: 'saveRollingsPic',
                 payload: list
@@ -65,17 +75,55 @@ const RollingPictureModal: AccountModelType = {
 
       },
       *addRollingPictures({ payload }, { call }){
-          console.log(1111)
         const response =  yield call(addRollingsPic,payload)
         if(response.id )
         message.info('添加轮播图成功')
       },
        *addInfosList({ payload }, { call }){
-          console.log(1111)
         const response =  yield call(addNewsInfos,payload)
         if(response.id )
         message.info('添加轮播图成功')
+      },
+       *fetchInfosTagsList({ payload }, { call, put }){
+        const response =  yield call(fetTagList,payload)
+        const { newsLabel } = response
+        yield put({
+            type: 'saveInfosTags',
+            payload: newsLabel
+        })
+      
+      },
+      *delInfosTags({ payload }, { call }){
+
+        const response  = yield call(delInfosTags,payload)
+        if(response.id > 0){
+          message.info('删除成功')
+        }
+        yield call(fetTagList,{
+          limit: 99,
+          page: 1
+        })
+      },
+      *addInfosTags({ payload }, { call }){
+
+        const response  = yield call(addInfosTags,payload)
+        yield call(fetTagList,{
+          limit: 99,
+          page: 1
+        })
+        if(response.id > 0){
+          message.info('添加成功')
+        }
+      },
+      *putInfosTags({ payload }, { call }){
+
+        const { response } = yield call(putInfosTags,payload)
+        if(response.id > 0){
+          message.info('修改成功')
+        }
+      
       }
+         
 
       },
      
@@ -85,6 +133,12 @@ const RollingPictureModal: AccountModelType = {
           return {
             ...state,
             RollingsEnity: payload,
+          };
+        },
+        saveInfosTags(state: any, { payload }: any) {
+          return {
+            ...state,
+            InfosTags: payload,
           };
         },
 

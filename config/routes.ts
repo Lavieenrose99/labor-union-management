@@ -1,7 +1,7 @@
 ﻿/*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-05-24 15:31:11
+ * @LastEditTime: 2021-05-25 12:32:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/routes.ts
@@ -82,6 +82,11 @@ export default [
                 // component: './Party/index.tsx',
                 routes:[
                   {
+                    path: '/party/course/index',
+                    name: '班级中心',
+                    component: './Class/index'
+                  },
+                  {
                     path: '/party/index',
                     name: '课程列表',
                     component: './Party/index.tsx'
@@ -93,6 +98,7 @@ export default [
                     icon: 'smile',
                     component: './Party/create.tsx'
                   }
+
                 ]
               },
               {

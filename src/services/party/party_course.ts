@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-19 10:53:20
+ * @LastEditTime: 2021-05-25 21:35:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts
@@ -26,16 +26,25 @@
 
 export async function createPartyCouse(params: PartyCoruseParamsType){
 
-    return request('/api.request/party_course/info',{
+    return request('/api.request/v1/party_course/info',{
       method: 'POST',
       data: params
     }
     )
 
 }
+export async function createPartyClass(payload: any){
+
+    return request(`/api.request/v1/party_course/${payload.id}/class`,{
+      method: 'POST',
+      data: payload.data
+    }
+    )
+
+}
 
 export async function fetchPartyCourse(params: PartyCourseLimitType){
-    return request('/api.request/party_course/info/list',{
+    return request('/api.request/v1/party_course/info/list',{
         method: 'GET',
         params
     })
@@ -43,14 +52,14 @@ export async function fetchPartyCourse(params: PartyCourseLimitType){
 
 
 export async function getPartyCourseEnity(params: number[]){
-    return request('/api.request/party_course/info/_mget',{
+    return request('/api.request/v1/party_course/info/_mget',{
         method: 'POST',
         data: {'ids':params}
     })
 }
 
 export async function delPartyCourse(id: number){
-    return request(`/api.request/party_course/info/${id}`,{
+    return request(`/api.request/v1/party_course/info/${id}`,{
     method: 'DELETE',
     }
     )

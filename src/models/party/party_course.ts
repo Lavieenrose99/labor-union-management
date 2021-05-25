@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-24 00:22:00
+ * @LastEditTime: 2021-05-25 21:49:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -12,7 +12,8 @@ import { message } from 'antd';
 import { createPartyCouse,
     fetchPartyCourse ,
     getPartyCourseEnity,
-    delPartyCourse} from '../../services/party/party_course'
+    delPartyCourse,
+    createPartyClass} from '../../services/party/party_course'
 
 export interface AccountModalState {
   pagination: {
@@ -32,6 +33,7 @@ export interface AccountModelType {
         addPartyCourse: Effect;
         fetchPartyList: Effect;
         delPartyCourse: Effect;
+        addPartyClass: Effect;
 
     };
     reducers: {
@@ -63,6 +65,13 @@ const PartyCourseModal: AccountModelType = {
             yield history.push('/success')
           }
         }, 
+        *addPartyClass({ payload }, { call, put }) {
+          console.log(payload)
+          const response = yield call(createPartyClass, payload);
+          if (response.id > 0) {
+            message.info('已成功添加');
+          }
+        }, 
         *fetchPartyList({ payload }, { call ,put}){
             const list = yield call(fetchPartyCourse,payload)
             const { party_course, total } = list
@@ -84,7 +93,13 @@ const PartyCourseModal: AccountModelType = {
       *delPartyCourse({ payload }, { call }){
         const response =  yield call(delPartyCourse,payload)
         if(response.id )
+        {
         message.info('课程删除成功')
+        }
+         yield call(fetchPartyCourse,{
+           page: 1,
+           limit: 10,
+         })
       },
       },
      

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-24 15:56:08
+ * @LastEditTime: 2021-05-24 17:21:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -12,6 +12,8 @@ import { PageContainer } from '@ant-design/pro-layout'
 import { List, Avatar, Space, Modal, Button, Image} from 'antd';
 import {  FilePptTwoTone, DeleteTwoTone} from '@ant-design/icons';
 import type { Dispatch } from 'umi';
+import InfosCreator from './create';
+import TagsCreator from './tags_create'
 import  { connect } from 'umi';
 import { get } from 'lodash';
 
@@ -20,22 +22,20 @@ interface INewsType {
 }
 
 const NewsList: React.FC<INewsType> = ()=>{
-    const [ showCreate, setShowCreate ] = useState<boolean>(false)
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showAddTagsModal, setShowTagsAddModal] = useState(false);
     return(
         <>
         <PageContainer 
         ghost={false}
         onBack={() => window.history.back()}
         extra={[
-          <Button key="3" onClick={()=>setShowCreate(true)}>创建资讯</Button>,
+          <Button key="3" onClick={()=>setShowAddModal(true)}>创建资讯</Button>,
+          <Button key="4" onClick={()=>{setShowTagsAddModal(true)}}>创建标签</Button>
         ]}
         ></PageContainer>
-        <Modal visible={showCreate} onCancel={()=>setShowCreate(false)} width={400}>
-        <div>
-            111
-        </div>
-       
-      </Modal>
+        <InfosCreator   show={showAddModal} closeInfosModel={setShowAddModal} />
+        <TagsCreator  show={showAddTagsModal} closeInfosModel={setShowTagsAddModal} />
         </>
     )
 }
