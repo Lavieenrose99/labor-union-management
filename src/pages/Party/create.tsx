@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-24 11:58:57
+ * @LastEditTime: 2021-05-25 14:47:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -62,7 +62,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
     }
     const subscribeInfos = (text: any) => {
         localStorage.setItem('infos', text);
-        setFmgInfos(text);
+        setCourseWork(text)
       };
    console.log(fmginfos)
     return (

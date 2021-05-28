@@ -43,7 +43,6 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
     </div>
   );
   const handlePictureChange = () => {};
-  console.log(info);
   const handleSubmit = () => {
     dispatch({
       type: 'setcentermodel/changeNewsEnity',
@@ -53,7 +52,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
           title: infoTitle,
           content: infoContent,
           is_publish: info.is_publish,
-          introduction: info.introduction,
+          introduction: infoIntroduction,
           picture: info.picture,
         },
         updateId: info.id,
@@ -110,7 +109,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
                 listType="picture-card"
                 showUploadList={false}
                 onChange={() => {
-                  handlePictureChange;
+                  handlePictureChange();
                 }}
               >
                 {infoPicture ? (

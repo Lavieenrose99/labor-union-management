@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-24 15:56:08
+ * @LastEditTime: 2021-05-24 17:21:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -12,6 +12,8 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { List, Avatar, Space, Modal, Button, Image, Tag } from 'antd';
 import { FilePptTwoTone, DeleteTwoTone, PlusCircleOutlined } from '@ant-design/icons';
 import type { Dispatch } from 'umi';
+import InfosCreator from './create';
+import TagsCreator from './tags_create';
 import { connect } from 'umi';
 import { get } from 'lodash';
 import { BASE_QINIU_URL } from '@/utils/upload/qiniu';
@@ -22,15 +24,17 @@ import NewsChange from './change';
 interface INewsType {
   dispatch: Dispatch;
   NewsEnity: any;
-  LabelList: any;
+  InfosTags: any;
 }
 
 const NewsList: React.FC<INewsType> = (props) => {
-  const { dispatch, NewsEnity, LabelList } = props;
-  const [showCreateTag, setShowCreateTag] = useState(false);
+  const { dispatch, NewsEnity, InfosTags } = props;
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [showChange, setShowChange] = useState(false);
   const [changeItem, setChangeItem] = useState({});
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddTagsModal, setShowTagsAddModal] = useState(false);
+  const [tagSelect, setTagSelect] = useState<number>(0)
   const { CheckableTag } = Tag;
   useEffect(() => {
     dispatch({
@@ -41,35 +45,46 @@ const NewsList: React.FC<INewsType> = (props) => {
       },
     });
     dispatch({
-      type: 'setcentermodel/getNewsLabelList',
+      type: 'setcentermodel/fetchInfosTagsList',
       payload: {
-        limit: 20,
+        limit: 99,
         page: 1,
       },
     });
   }, []);
-  console.log('index: NewsEnity: ' + NewsEnity);
-  console.log('index: LabelList: ' + LabelList);
   return (
     <>
       <PageContainer
         ghost={false}
         onBack={() => window.history.back()}
         extra={[
-          <Button key="3" onClick={() => setShowCreate(true)}>
+          <Button key="3" onClick={() => setShowAddModal(true)}>
             创建资讯
+          </Button>,
+          <Button
+            key="4"
+            onClick={() => {
+              setShowTagsAddModal(true);
+            }}
+          >
+            创建标签
           </Button>,
         ]}
       >
         <div className="news-tags">
-          <PlusCircleOutlined
-            style={{ marginRight: 20 }}
-            onClick={() => {
-              setShowCreateTag(true);
-            }}
-          />
-          <CheckableTag checked={true}>全部</CheckableTag>
-          <CheckableTag checked={false}></CheckableTag>
+          <CheckableTag checked={tagSelect === 0}
+            onClick={()=> setTagSelect(0)}
+          >全部</CheckableTag>
+          {
+            InfosTags.map((item) => {
+              return (
+                <CheckableTag checked={tagSelect === item.id} 
+                onClick={()=> setTagSelect(item.id)}>
+                  {item.name}
+                  </CheckableTag>
+              )
+            })
+          }
         </div>
         <div className="news-list">
           <List
@@ -97,11 +112,7 @@ const NewsList: React.FC<INewsType> = (props) => {
                     style={{ marginTop: 20 }}
                     width={160}
                     height={100}
-                    src={
-                      item.picture
-                        ? BASE_QINIU_URL + item.picture
-                        : 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
-                    }
+                    src={item.pictuer ? BASE_QINIU_URL + item.picture : 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'}
                   />
                 }
               >
@@ -123,15 +134,16 @@ const NewsList: React.FC<INewsType> = (props) => {
             )}
           />
         </div>
-        <Modal visible={showCreateTag} onCancel={() => setShowCreateTag(false)} width={400}></Modal>
         <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width={400}></Modal>
         <NewsChange showModal={showChange} closeChangeModal={setShowChange} info={changeItem} />
       </PageContainer>
+      <InfosCreator show={showAddModal} closeInfosModel={setShowAddModal} />
+      <TagsCreator show={showAddTagsModal} closeInfosModel={setShowTagsAddModal} />
     </>
   );
 };
 
 export default connect(({ setcentermodel }: any) => ({
   NewsEnity: get(setcentermodel, 'NewsEnity', []),
-  LabelList: get(setcentermodel, 'LabelList', []),
+  InfosTags: get(setcentermodel, 'InfosTags', []),
 }))(NewsList);

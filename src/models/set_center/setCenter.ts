@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:57:15
- * @LastEditTime: 2021-05-24 15:50:14
+ * @LastEditTime: 2021-05-25 09:27:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/set_center/setCenter.ts
@@ -16,13 +16,19 @@
  */
 import type { Effect, Reducer } from 'umi';
 import { message } from 'antd';
-import { fetchRollingPicture,
+import {
+  fetchRollingPicture,
   addRollingsPic,
   addNewsInfos,
-  fetchNews,
+  fetchNewsList,
   getNewsEnity,
   changeNews,
-  getNewsLabel } from '@/services/set_center/setCenter';
+  fetTagList,
+  delInfosTags,
+  putInfosTags,
+  addInfosTags,
+} from '@/services/set_center/setCenter';
+import { query } from 'express';
 
 export interface AccountModalState {
   pagination: {
@@ -42,15 +48,18 @@ export interface AccountModelType {
     addRollingPictures: Effect;
     fetchRollingsList: Effect;
     addInfosList: Effect;
+    fetchInfosTagsList: Effect;
+    delInfosTags: Effect;
+    putInfosTags: Effect;
+    addInfosTags: Effect;
     fetchNewsList: Effect;
     changeNewsEnity: Effect;
-    getNewsLabelList: Effect;
   };
   reducers: {
     saveRollingsPic: Reducer<AccountModalState>;
-    savePagesInfos: Reducer<AccountModalState>;
+    saveInfosTags: Reducer<AccountModalState>;
     saveNewsEnity: Reducer<AccountModalState>;
-    saveLabelList: Reducer<AccountModalState>;
+    savePagesInfos: Reducer<AccountModalState>;
   };
 }
 
@@ -61,69 +70,99 @@ const RollingPictureModal: AccountModelType = {
   },
   effects: {
     *fetchRollingsList({ payload }, { call, put }) {
-      console.log(1112121);
       const list = yield call(fetchRollingPicture, payload);
-      // const ids = party_course.map((item: any)=>{
-      //     return item.id
-      // })
-      // const enity = yield call(getRollingPictureEnity,ids)
       yield put({
         type: 'saveRollingsPic',
         payload: list,
       });
     },
     *addRollingPictures({ payload }, { call }) {
-      console.log(1111);
       const response = yield call(addRollingsPic, payload);
       if (response.id) message.info('添加轮播图成功');
     },
     *addInfosList({ payload }, { call }) {
-      console.log(1111);
       const response = yield call(addNewsInfos, payload);
       if (response.id) message.info('添加轮播图成功');
     },
-    *fetchNewsList({ payload }, { call ,put}){
-      const list = yield call(fetchNews, payload)
-      const { news, total } = list
-      const ids = news.map((item: any)=>{
-          return item.id
-      })
-      // console.log('资讯列表ids:' + ids)
+    *fetchInfosTagsList({ payload }, { call, put }) {
+      const response = yield call(fetTagList, payload);
+      const { newsLabel } = response;
+      yield put({
+        type: 'saveInfosTags',
+        payload: newsLabel,
+      });
+    },
+    *delInfosTags({ payload }, { call }) {
+      const response = yield call(delInfosTags, payload);
+      if (response.id > 0) {
+        message.info('删除成功');
+      }
+      yield call(fetTagList, {
+        limit: 99,
+        page: 1,
+      });
+    },
+    *addInfosTags({ payload }, { call }) {
+      const response = yield call(addInfosTags, payload);
+      yield call(fetTagList, {
+        limit: 99,
+        page: 1,
+      });
+      if (response.id > 0) {
+        message.info('添加成功');
+      }
+    },
+    *putInfosTags({ payload }, { call }) {
+      const { response } = yield call(putInfosTags, payload);
+      if (response.id > 0) {
+        message.info('修改成功');
+      }
+    },
+    *fetchNewsList({ payload }, { call, put }) {
+      const list = yield call(fetchNewsList, payload);
+      const { news, total } = list;
+      const ids = news.map((item: any) => {
+        return item.id;
+      });
       yield put({
         type: 'savePagesInfos',
-        payload: total
-      })
-      const enity = yield call(getNewsEnity, ids)
-      // console.log('资讯列表mget:' + enity)
+        payload: total,
+      });
+      const enity = yield call(getNewsEnity, ids);
       yield put({
-          type: 'saveNewsEnity',
-          payload: enity
-      })
+        type: 'saveNewsEnity',
+        payload: enity,
+      });
     },
-    *changeNewsEnity({payload}, {call}) {
+    *changeNewsEnity({ payload }, { call, put }) {
       const { updateData, updateId } = payload;
-      const reply = yield call(changeNews, updateData, updateId );
-      if(reply) {
+      const reply = yield call(changeNews, updateData, updateId);
+      yield put({
+        type: 'fetchNewsList',
+        payload: {
+          limit: 99,
+          page: 1,
+        },
+      });
+      if (reply) {
         yield message.success('修改成功');
       } else {
         yield message.error('修改失败');
       }
     },
-    *getNewsLabelList({payload}, {call, put}) {
-      const list = yield call(getNewsLabel, payload);
-      const { newsLabel } = list;
-      console.log('getNewsLabelList: ' + newsLabel);
-      yield put({
-        type: 'saveLabelList',
-        payload: newsLabel
-      })
-    }
   },
+
   reducers: {
     saveRollingsPic(state: any, { payload }: any) {
       return {
         ...state,
         RollingsEnity: payload,
+      };
+    },
+    saveInfosTags(state: any, { payload }: any) {
+      return {
+        ...state,
+        InfosTags: payload,
       };
     },
     saveNewsEnity(state: any, { payload }: any) {
@@ -132,18 +171,12 @@ const RollingPictureModal: AccountModelType = {
         NewsEnity: payload,
       };
     },
-    savePagesInfos(state: any, { payload }: any){
+    savePagesInfos(state: any, { payload }: any) {
       return {
         ...state,
-        pagination: payload
-      }
+        pagination: payload,
+      };
     },
-    saveLabelList(state: any, { payload }: any) {
-      return {
-        ...state,
-        LabelList: payload,
-      }
-    }
   },
 };
 

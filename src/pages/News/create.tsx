@@ -1,132 +1,176 @@
 /*
  * @Author: your name
- * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-24 15:56:08
+ * @Date: 2021-05-24 16:12:30
+ * @LastEditTime: 2021-05-24 17:10:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/pages/News/index.tsx
+ * @FilePath: /labor-union-management/src/pages/News/create.tsx
  */
 import React, { useState, useEffect } from 'react';
-import request from '@/utils/request';
-import { PageContainer } from '@ant-design/pro-layout';
-import { List, Avatar, Space, Modal, Button, Image, Input, Upload } from 'antd';
-import { FilePptTwoTone, DeleteTwoTone, PlusOutlined } from '@ant-design/icons';
-import type { Dispatch } from 'umi';
+import { Modal, Input, Upload } from 'antd';
 import { connect } from 'umi';
 import { get } from 'lodash';
-import { BASE_QINIU_URL } from '@/utils/upload/qiniu';
-import { filterHTMLStr } from '../../utils/adjust_picture';
-import { render } from 'react-dom';
-import RichTextEditor from '@/utils/upload/richTextUpload';
-import './change.less';
-import ImgCrop from 'antd-img-crop';
+import request from '@/utils/request';
+import { QINIU_SERVER, BASE_QINIU_URL, pictureSize } 
+  from '@/utils/upload/qiniu';
+import ImgCrop from 'antd-img-crop'; 
+import { uploadButton } from '@/utils/upload/uploadButton';
+import RichTextEditor from '../../utils/upload/richTextUpload';
+import { filterHTMLTag } from '../../utils/upload/filterHtml';
 
-interface INewsChangeType {
-  showModal: boolean;
-  closeChangeModal: Function;
-  info: any;
-  dispatch: Dispatch;
-}
-
-const NewsCreate: React.FC<INewsChangeType> = (props) => {
-  const { showModal, closeChangeModal, info, dispatch } = props;
+const  InfosCreate = (props) => {
   const { TextArea } = Input;
-  const [infoTitle, setInfoTitle] = useState('');
-  const [infoIntroduction, setInfoIntroduction] = useState('');
-  const [infoPicture, setInfoPicture] = useState('');
-  const [infoContent, setInfoContent] = useState('');
-  const uploadButton = (
-    <div>
-      {<PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-  const handlePictureChange = (val) => {};
-  console.log(info);
-  const handleSubmit = () => {
-    dispatch({
-      type: 'setcentermodel/changeNewsEnity',
-      payload: {
-        updateData: {
-          news_label: info.news_label,
-          title: infoTitle,
-          content: infoContent,
-          is_publish: info.is_publish,
-          introduction: infoIntroduction,
-          picture: info.picture,
-        },
-        updateId: info.id,
-      },
-    });
+  const { show, closeInfosModel } = props;
+  const [infosTitle, setInfosTitle] = useState('');
+  const [infosPreSeem, setInfosPreSeem] = useState('');
+  const [previewImage, setPreviewImage] = useState('');
+  const [qiniuToken, setQiniuToken] = useState('');
+  const [fileList, setFileList] = useState(([JSON.parse(localStorage.getItem('FileList'))] ?? []));
+  const [fmginfos, setFmgInfos] = useState(localStorage.getItem('infos'));
+  const subscribeInfos = (text) => {
+    localStorage.setItem('infos', text);
+    setFmgInfos(text);
   };
-  useEffect(() => {
-    setInfoTitle(info.title);
-    setInfoIntroduction(info.introduction);
-    setInfoPicture(info.picture);
-    setInfoContent(info.content);
-  }, [info]);
+  const getQiNiuToken = () => {
+    request('/api.farm/goods/resources/qiniu/upload_token', {
+      method: 'GET',
+    }).then(
+      (response) => {
+        setQiniuToken(response.token);
+      }
+    );
+  };
+  // 看到其他的都要加true啊要不gettoken没用
+  const getUploadToken = () => {
+    getQiNiuToken();
+    return true;
+  };
+  const handleChange = ({ file  }) => {
+    const {
+      uid, name, type, thumbUrl, status, response = {},
+    } = file;
+    const fileItem = {
+      uid,
+      name,
+      type,
+      thumbUrl,
+      status,
+      response,
+      url: BASE_QINIU_URL + (response.key || ''),
+    };
+    setPreviewImage(fileItem.url);
+    setFileList([fileItem]);
+    localStorage.setItem('FileList', JSON.stringify(fileItem));
+  };
+ 
   return (
     <>
       <Modal
-        title={'资讯详情'}
-        visible={showModal}
-        destroyOnClose
-        onCancel={() => {
-          closeChangeModal(false);
+        title="党建资讯"
+        width="80vw"
+        visible={show}
+        destroyOnClose 
+        onCancel={() => closeInfosModel(false)}
+        onOk={() => {
+          props.dispatch({
+            type: 'setcentermodel/addInfosList',
+            payload: {
+              title: infosTitle,
+              content: filterHTMLTag(fmginfos),
+              is_publish: true,
+              news_label: 5,
+              introduction: infosPreSeem
+            },
+          });
+          localStorage.removeItem('infos');
+          localStorage.removeItem('FileList');
+          setFmgInfos('')
+          closeInfosModel(false);
         }}
-        onOk={()=>{
-          handleSubmit();
-          closeChangeModal(false);
-        }}
-        width={1200}
       >
-        <div className="change-panel">
-          <div className="change-title">
-            <span>资讯标题：</span>
+        <div className="fmg-infos-creator-container">
+          <div className="fmg-infos-creator-title">
+            <span>资讯标题: </span>
             <Input
-              className="change-title-input"
-              value={infoTitle}
+              style={{
+                display: 'inline-flex',
+                width: '50vw',
+                marginLeft: 20,
+                marginBottom: 20, 
+              }}
               onChange={(e) => {
-                setInfoTitle(e.target.value);
-                console.log(infoTitle);
+                setInfosTitle(e.target.value);
               }}
             />
           </div>
-          <div className="change-introduction">
-            <span>资讯摘要：</span>
+          <div className="fmg-infos-creator-title">
+            <span style={{
+              position: 'fixed',
+            }}
+            >
+              资讯摘要:
+              {' '}
+            </span>
             <TextArea
-              className="change-introduction-input"
-              value={infoIntroduction}
+              style={{
+                width: '50vw',
+                marginLeft: 80,
+                marginBottom: 10, 
+              }}
               onChange={(e) => {
-                setInfoIntroduction(e.target.value);
+                setInfosPreSeem(e.target.value);
               }}
             />
           </div>
-          <div className="change-picture">
-            <span>资讯封面：</span>
-            <div className="change-picture-input">
-              <Upload
-                listType="picture-card"
-                showUploadList={false}
-                onChange={() => {
-                  handlePictureChange;
-                }}
-              >
-                {infoPicture ? (
-                  <img src={infoPicture} alt="picture" style={{ width: '100%' }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
+          <div className="fmg-infos-creator-title">
+            <span  style={{
+              display: 'inline-flex',
+            }}
+            >
+              资讯封面:
+              {' '}
+            </span>
+            <div
+              onClick={getUploadToken}
+              style={{
+                display: 'inline-flex',
+                width: '40vw',
+                marginLeft: 20,
+                marginBottom: 10,
+              }}
+            >
+              <ImgCrop aspect={pictureSize.rolling} grid>
+                <Upload
+                  action={QINIU_SERVER}
+                  data={{
+                    token: qiniuToken,
+                    key: `picture-${Date.parse(new Date())}`,
+                  }}
+                  showUploadList={false}
+                  listType="picture-card"
+                  beforeUpload={getUploadToken}
+                  onChange={handleChange}
+                >
+                  {fileList[0] ? <img
+                    src={fileList[0] 
+                      ? BASE_QINIU_URL + fileList[0].response.key : null}
+                    alt="avatar"
+                    style={{ width: '100%' }}
+                  /> :  uploadButton}
+                </Upload>
+              </ImgCrop>
             </div>
           </div>
-          <div className="change-content">
-            <RichTextEditor defaultText={infoContent} width={1080} />
-          </div>
+     
+          <RichTextEditor 
+            subscribeRichText={subscribeInfos} 
+            defaultText={fmginfos}
+          />
         </div>
       </Modal>
     </>
   );
 };
-
-export default connect(({ setcentermodel }: any) => ({}))(NewsCreate);
+export default connect(({  setcentermodel }) => ({
+//   InfosList: get(fmgInfos, 'InfosList', []),
+}))(InfosCreate);

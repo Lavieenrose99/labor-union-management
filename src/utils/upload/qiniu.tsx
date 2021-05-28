@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-05-24 15:45:28
+ * @LastEditTime: 2021-05-24 16:15:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
@@ -188,7 +188,13 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
 }
 
 
+ const pictureSize = {
+  rolling: 16 / 9,
+  cover: 37.5 / 22.5,
+  home_rolling: 37.5 / 22.5,
+};
+
 export {
-    QINIU_SERVER, BASE_QINIU_URL,UploadText,UploadAntd, fileType
+    QINIU_SERVER, BASE_QINIU_URL,UploadText,UploadAntd, fileType, pictureSize
 }
 
