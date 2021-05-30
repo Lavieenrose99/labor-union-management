@@ -20,7 +20,7 @@ import {
   fetchRollingPicture,
   addRollingsPic,
   addNewsInfos,
-  fetchNewsList,
+  fetchNews,
   getNewsEnity,
   changeNews,
   fetTagList,
@@ -119,7 +119,7 @@ const RollingPictureModal: AccountModelType = {
       }
     },
     *fetchNewsList({ payload }, { call, put }) {
-      const list = yield call(fetchNewsList, payload);
+      const list = yield call(fetchNews, payload);
       const { news, total } = list;
       const ids = news.map((item: any) => {
         return item.id;
