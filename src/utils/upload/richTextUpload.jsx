@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-17 17:05:48
- * @LastEditTime: 2021-05-26 14:00:44
+ * @LastEditTime: 2021-05-30 15:24:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/richTextUpload.tsx
@@ -36,7 +36,7 @@ Quill.register('modules/imageDrop', ImageDrop);
 class RichTextEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: this.props.defaultText, qiniutoken: '' }; // You can also pass a Quill Delta here
+    this.state = { text: this.props.defaultText, qiniutoken: '', propWidth: this.props.width }; // You can also pass a Quill Delta here
     this.handleChange = this.handleChange.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.changeImageBeforeUpload = this.changeImageBeforeUpload.bind(this);
@@ -172,7 +172,6 @@ class RichTextEditor extends Component {
         subscribeRichText(text);
       });
     }
-
     render() {
       const { uploadBoxVisible, src, text, size } = this.state;
       return (

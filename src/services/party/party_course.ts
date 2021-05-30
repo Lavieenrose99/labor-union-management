@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-29 20:27:01
+ * @LastEditTime: 2021-05-30 15:30:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts

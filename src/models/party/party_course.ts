@@ -1,13 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-29 17:05:26
+ * @LastEditTime: 2021-05-30 15:22:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
  */
 import type { Effect, Reducer } from 'umi';
-import { history } from 'umi'
+import { history } from 'umi';
 import { message } from 'antd';
 import { createPartyCouse,
     fetchPartyCourse ,
@@ -157,5 +157,5 @@ const PartyCourseModal: AccountModelType = {
       },
 }
 
-export default PartyCourseModal
 
+export default PartyCourseModal;

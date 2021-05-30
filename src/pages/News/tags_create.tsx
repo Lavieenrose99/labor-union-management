@@ -18,51 +18,42 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Input, Upload, Tag } from 'antd';
 import TagsGroups from '@/utils/public/tags_group';
 import { connect } from 'umi';
-import { get } from 'lodash'
+import { get } from 'lodash';
 
-const  TagsCreate = (props) => {
+const TagsCreate = (props) => {
   const { show, closeInfosModel, InfosTags, dispatch } = props;
-  console.log(InfosTags)
+  console.log(InfosTags);
 
-
-        useEffect(()=>{
-                dispatch({
-                    type: 'setcentermodel/fetchInfosTagsList',
-                    payload: {
-                        limit: 99,
-                        page:1
-                    }
-                })
-        },[])
+  useEffect(() => {
+    dispatch({
+      type: 'setcentermodel/fetchInfosTagsList',
+      payload: {
+        limit: 99,
+        page: 1,
+      },
+    });
+  }, []);
   return (
     <>
       <Modal
         title="党建资讯"
         width="80vw"
         visible={show}
-        destroyOnClose 
+        destroyOnClose
         onCancel={() => closeInfosModel(false)}
         onOk={() => {
           props.dispatch({
-            type: 'setcentermodel/addInfosList',
-            payload: {
-            },
+            type: 'setcentermodel/fetchInfosTagsList',
+            payload: {},
           });
           closeInfosModel(false);
         }}
       >
-   <section>
-       {
-          
-                    <TagsGroups tagsList={InfosTags} dispatch={dispatch}/>
-              
-             
-       }
-   </section>
+        <section>{<TagsGroups tagsList={InfosTags} dispatch={dispatch} />}</section>
       </Modal>
     </>
   );
 };
-export default connect(({  setcentermodel }) => ({
-    InfosTags: get(setcentermodel, 'InfosTags', []),
+export default connect(({ setcentermodel }: any) => ({
+  InfosTags: get(setcentermodel, 'InfosTags', []),
 }))(TagsCreate);

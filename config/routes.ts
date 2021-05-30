@@ -1,12 +1,4 @@
-﻿/*
- * @Author: your name
- * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-05-27 16:19:57
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/config/routes.ts
- */
-export default [
+﻿export default [
   {
     path: '/',
     component: '../layouts/BlankLayout',
@@ -112,7 +104,6 @@ export default [
                     name: '商品列表',
                     component: './Goods/index'
                   },
-
                 ]
               },
               {
