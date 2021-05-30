@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-17 17:05:48
- * @LastEditTime: 2021-05-17 17:28:14
+ * @LastEditTime: 2021-05-26 14:00:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/richTextUpload.tsx
@@ -24,10 +24,15 @@ import request from '@/utils/request';
 import { ImageDrop } from 'quill-image-drop-module';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-//import MYURL  from '../api/config';
+// import MYURL  from '../api/config';
 const MYURL = 'http://upload-z2.qiniup.com';
 const BASE_QINIU_URL = 'http://qiniu.fmg.net.cn/';
 Quill.register('modules/imageDrop', ImageDrop);
+
+
+
+
+
 class RichTextEditor extends Component {
   constructor(props) {
     super(props);
@@ -50,7 +55,7 @@ class RichTextEditor extends Component {
     }
   }
   
-    modules={ //富文本配置
+    modules={ // 富文本配置
       toolbar: {
         container: [
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -87,7 +92,7 @@ class RichTextEditor extends Component {
     }
     
     selectImage() {
-      this.refs.uploadInput.click();//点击modal的html结构中的input标签
+      this.refs.uploadInput.click();// 点击modal的html结构中的input标签
     }
 
     changeImageBeforeUpload(e) {
@@ -132,7 +137,7 @@ class RichTextEditor extends Component {
         credentials: 'omit',
         method: 'POST',
         data: uploadItem,
-        //requestType: 'form',
+        // requestType: 'form',
       }).then(
         (response) => {
           this.imageHandler(`${BASE_QINIU_URL}${response.key}`);
@@ -144,12 +149,12 @@ class RichTextEditor extends Component {
       const quill = this.reactQuillRef.getEditor();
       const range = quill.getSelection();
       const index = range ? range.index : 0;
-      quill.insertEmbed(index, 'image', url, Quill.sources.USER);//插入图片
-      quill.setSelection(index + 2);//光标位置加1 
+      quill.insertEmbed(index, 'image', url, Quill.sources.USER);// 插入图片
+      quill.setSelection(index + 2);// 光标位置加1 
     }
 
     handleUpload() {      
-      /*调用上传图片的封装方法*/
+      /* 调用上传图片的封装方法 */
       if (!this.state.file) {
         alert('请选择图片！！');
       } else {
@@ -169,7 +174,7 @@ class RichTextEditor extends Component {
     }
 
     render() {
-      const { uploadBoxVisible, src, text } = this.state;
+      const { uploadBoxVisible, src, text, size } = this.state;
       return (
         <div style={{ height: 400 }}> 
           <ReactQuill
@@ -179,7 +184,7 @@ class RichTextEditor extends Component {
             onChange={this.handleChange}
             theme="snow"
             modules={this.modules}
-            style={{ height: 300, width: '78vw' }}
+            style={{ height: 300, width: size }}
           />
           <Modal
             title="上传图片"
@@ -216,9 +221,11 @@ class RichTextEditor extends Component {
 RichTextEditor.propTypes = {
   subscribeRichText: PropTypes.func,
   defaultText: PropTypes.string,
+  size: PropTypes.string
 };
 RichTextEditor.defaultProps = {
   subscribeRichText: noop,
   defaultText: '',
+  size: '78vw'
 };
 export default RichTextEditor;

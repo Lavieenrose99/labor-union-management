@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:53:05
- * @LastEditTime: 2021-05-25 09:21:02
+ * @LastEditTime: 2021-05-27 15:44:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/set_center/setCenter.ts
@@ -32,7 +32,8 @@ export type NewsInfosType = {
    title: string,
    content: string,
    is_publish: boolean,
-   introduction: string
+   introduction: string,
+   picture: string
 
 } 
 

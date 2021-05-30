@@ -1,7 +1,7 @@
 ﻿/*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-05-25 12:32:12
+ * @LastEditTime: 2021-05-27 16:19:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/routes.ts
@@ -98,6 +98,20 @@ export default [
                     icon: 'smile',
                     component: './Party/create.tsx'
                   }
+
+                ]
+              },
+              {
+                name: '商品中心',
+                icon: 'table',
+                path: '/shop',
+                // component: './Party/index.tsx',
+                routes:[
+                  {
+                    path: '/shop/goods/index',
+                    name: '商品列表',
+                    component: './Goods/index'
+                  },
 
                 ]
               },

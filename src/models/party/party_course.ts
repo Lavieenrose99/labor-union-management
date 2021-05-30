@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-25 21:49:02
+ * @LastEditTime: 2021-05-29 17:05:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -13,7 +13,10 @@ import { createPartyCouse,
     fetchPartyCourse ,
     getPartyCourseEnity,
     delPartyCourse,
-    createPartyClass} from '../../services/party/party_course'
+    createPartyClass,
+  createPartyGoods,
+      fetchPartyGoods,
+      getPartyGoods} from '../../services/party/party_course'
 
 export interface AccountModalState {
   pagination: {
@@ -34,12 +37,15 @@ export interface AccountModelType {
         fetchPartyList: Effect;
         delPartyCourse: Effect;
         addPartyClass: Effect;
+        addPartyGoods: Effect;
+        fetchPartyGoodsList: Effect;
 
     };
     reducers: {
       savePagesInfos: Reducer<AccountModalState>;
       saveCoureseEnity: Reducer<AccountModalState>;
-      changeUploadStatus: Reducer
+      changeUploadStatus: Reducer;
+      saveCourseGoods: Reducer;
     };
   }
 
@@ -66,8 +72,13 @@ const PartyCourseModal: AccountModelType = {
           }
         }, 
         *addPartyClass({ payload }, { call, put }) {
-          console.log(payload)
           const response = yield call(createPartyClass, payload);
+          if (response.id > 0) {
+            message.info('已成功添加');
+          }
+        }, 
+        *addPartyGoods({ payload }, { call, put }) {
+          const response = yield call(createPartyGoods, payload);
           if (response.id > 0) {
             message.info('已成功添加');
           }
@@ -101,6 +112,20 @@ const PartyCourseModal: AccountModelType = {
            limit: 10,
          })
       },
+      *fetchPartyGoodsList({ payload }, { call ,put}){
+        const list = yield call(fetchPartyGoods,payload)
+        const { goods } = list
+        const ids = goods.map((item: any)=>{
+            return item.id
+        })
+        const enity = yield call(getPartyGoods,ids)
+        yield put({
+            type: 'saveCourseGoods',
+            payload: enity
+        })
+
+
+  },
       },
      
     
@@ -110,6 +135,12 @@ const PartyCourseModal: AccountModelType = {
             ...state,
             CoureseEnity: payload,
           };
+        },
+        saveCourseGoods(state: any, { payload }: any){
+          return {
+            ...state,
+            CourseGoods: payload
+          }
         },
         changeUploadStatus(state: any, { payload }: any){
           return {

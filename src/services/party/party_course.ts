@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-25 21:35:17
+ * @LastEditTime: 2021-05-29 20:27:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts
@@ -24,6 +24,16 @@
       page: number
   }
 
+  export type PartyCourseType = { 
+      name: string,
+      price: string,
+      cover: string,
+      picture: string[],
+      brief: string,
+      is_on: boolean,
+      inventory: number,
+  }
+
 export async function createPartyCouse(params: PartyCoruseParamsType){
 
     return request('/api.request/v1/party_course/info',{
@@ -42,6 +52,15 @@ export async function createPartyClass(payload: any){
     )
 
 }
+export async function createPartyGoods(payload: PartyCoruseParamsType){
+
+    return request(`/api.request/v1/goods`,{
+      method: 'POST',
+      data: payload
+    }
+    )
+
+}
 
 export async function fetchPartyCourse(params: PartyCourseLimitType){
     return request('/api.request/v1/party_course/info/list',{
@@ -53,6 +72,20 @@ export async function fetchPartyCourse(params: PartyCourseLimitType){
 
 export async function getPartyCourseEnity(params: number[]){
     return request('/api.request/v1/party_course/info/_mget',{
+        method: 'POST',
+        data: {'ids':params}
+    })
+}
+export async function fetchPartyGoods(params: PartyCourseLimitType){
+    return request('/api.request/v1/goods/list',{
+        method: 'GET',
+        params
+    })
+}
+
+
+export async function getPartyGoods(params: number[]){
+    return request('/api.request/v1/goods/_mget',{
         method: 'POST',
         data: {'ids':params}
     })

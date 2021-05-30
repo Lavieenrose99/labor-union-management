@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-24 17:21:15
+ * @LastEditTime: 2021-05-27 16:27:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -34,7 +34,7 @@ const NewsList: React.FC<INewsType> = ()=>{
           <Button key="4" onClick={()=>{setShowTagsAddModal(true)}}>创建标签</Button>
         ]}
         ></PageContainer>
-        <InfosCreator   show={showAddModal} closeInfosModel={setShowAddModal} />
+        <InfosCreator   show={showAddModal} closeInfosModel={setShowAddModal}  CoverStroage="infosCover"/>
         <TagsCreator  show={showAddTagsModal} closeInfosModel={setShowTagsAddModal} />
         </>
     )

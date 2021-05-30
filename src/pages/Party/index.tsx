@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-24 11:53:58
+ * @LastEditTime: 2021-05-28 22:39:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -54,12 +54,13 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
         dispatch({
             type: 'partycourse/fetchPartyList',
             payload: {
-                limit: 10,
-                page:2
+                limit: 15,
+                page:1
             }
         })
-        request('/api.monitor/data/pv',{
-            method: 'GET'
+        request('/api.monitor/data/pvuv',{
+            method: 'GET',
+            params: { date: '2021-5'}
         }).then((data)=>{
             console.log(data)
         })

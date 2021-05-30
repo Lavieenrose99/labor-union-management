@@ -1,67 +1,32 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 16:12:30
- * @LastEditTime: 2021-05-24 17:10:29
+ * @LastEditTime: 2021-05-29 19:22:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/create.tsx
  */
-import React, { useState, useEffect } from 'react';
-import { Modal, Input, Upload } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Input, Upload, Switch } from 'antd';
 import { connect } from 'umi';
-import { get } from 'lodash';
-import request from '@/utils/request';
-import { QINIU_SERVER, BASE_QINIU_URL, pictureSize } 
-  from '@/utils/upload/qiniu';
-import ImgCrop from 'antd-img-crop'; 
-import { uploadButton } from '@/utils/upload/uploadButton';
+import { UploadAntd }from '@/utils/upload/qiniu';
 import RichTextEditor from '../../utils/upload/richTextUpload';
 import { filterHTMLTag } from '../../utils/upload/filterHtml';
 
+
 const  InfosCreate = (props) => {
   const { TextArea } = Input;
-  const { show, closeInfosModel } = props;
+  const { show, closeInfosModel, CoverStroage } = props;
   const [infosTitle, setInfosTitle] = useState('');
   const [infosPreSeem, setInfosPreSeem] = useState('');
-  const [previewImage, setPreviewImage] = useState('');
-  const [qiniuToken, setQiniuToken] = useState('');
-  const [fileList, setFileList] = useState(([JSON.parse(localStorage.getItem('FileList'))] ?? []));
-  const [fmginfos, setFmgInfos] = useState(localStorage.getItem('infos'));
-  const subscribeInfos = (text) => {
-    localStorage.setItem('infos', text);
-    setFmgInfos(text);
+  const [ifPublish, setIfPublish ] = useState(false);
+  const [ cover, setcover ] =useState(([JSON.parse(String(localStorage.getItem(CoverStroage)))] ?? []));
+  const [ partyInfosContent, setPartyInfosContent ] = useState(localStorage.getItem('party_infos_content'));
+  const subscribeInfos = (text: string) => {
+    localStorage.setItem('party_infos_content', text);
+    setPartyInfosContent(text)
   };
-  const getQiNiuToken = () => {
-    request('/api.farm/goods/resources/qiniu/upload_token', {
-      method: 'GET',
-    }).then(
-      (response) => {
-        setQiniuToken(response.token);
-      }
-    );
-  };
-  // 看到其他的都要加true啊要不gettoken没用
-  const getUploadToken = () => {
-    getQiNiuToken();
-    return true;
-  };
-  const handleChange = ({ file  }) => {
-    const {
-      uid, name, type, thumbUrl, status, response = {},
-    } = file;
-    const fileItem = {
-      uid,
-      name,
-      type,
-      thumbUrl,
-      status,
-      response,
-      url: BASE_QINIU_URL + (response.key || ''),
-    };
-    setPreviewImage(fileItem.url);
-    setFileList([fileItem]);
-    localStorage.setItem('FileList', JSON.stringify(fileItem));
-  };
+
  
   return (
     <>
@@ -76,15 +41,17 @@ const  InfosCreate = (props) => {
             type: 'setcentermodel/addInfosList',
             payload: {
               title: infosTitle,
-              content: filterHTMLTag(fmginfos),
+              content: filterHTMLTag(partyInfosContent),
               is_publish: true,
               news_label: 5,
-              introduction: infosPreSeem
+              introduction: infosPreSeem,
+              picture: cover[0]
             },
           });
-          localStorage.removeItem('infos');
-          localStorage.removeItem('FileList');
-          setFmgInfos('')
+          localStorage.removeItem('party_infos_content');
+          localStorage.removeItem(CoverStroage);
+          setPartyInfosContent('')
+          setcover([])
           closeInfosModel(false);
         }}
       >
@@ -123,6 +90,16 @@ const  InfosCreate = (props) => {
             />
           </div>
           <div className="fmg-infos-creator-title">
+            <span style={{
+             marginRight: 15
+            }}
+            >
+              是否发布:
+              {' '}
+            </span>
+         <Switch onChange={(e)=>setIfPublish(e)} checked={ifPublish}  />
+          </div>
+          <div className="fmg-infos-creator-title">
             <span  style={{
               display: 'inline-flex',
             }}
@@ -130,41 +107,19 @@ const  InfosCreate = (props) => {
               资讯封面:
               {' '}
             </span>
-            <div
-              onClick={getUploadToken}
-              style={{
-                display: 'inline-flex',
-                width: '40vw',
-                marginLeft: 20,
-                marginBottom: 10,
-              }}
-            >
-              <ImgCrop aspect={pictureSize.rolling} grid>
-                <Upload
-                  action={QINIU_SERVER}
-                  data={{
-                    token: qiniuToken,
-                    key: `picture-${Date.parse(new Date())}`,
-                  }}
-                  showUploadList={false}
-                  listType="picture-card"
-                  beforeUpload={getUploadToken}
-                  onChange={handleChange}
-                >
-                  {fileList[0] ? <img
-                    src={fileList[0] 
-                      ? BASE_QINIU_URL + fileList[0].response.key : null}
-                    alt="avatar"
-                    style={{ width: '100%' }}
-                  /> :  uploadButton}
-                </Upload>
-              </ImgCrop>
-            </div>
+            <UploadAntd 
+            fileStorage={CoverStroage}
+             showType="normal"
+             setUrl={setcover}
+             childFileType='picture'
+             fileCount={1}
+             listshowType='picture-card'
+           />
           </div>
      
           <RichTextEditor 
             subscribeRichText={subscribeInfos} 
-            defaultText={fmginfos}
+            defaultText={partyInfosContent}
           />
         </div>
       </Modal>
