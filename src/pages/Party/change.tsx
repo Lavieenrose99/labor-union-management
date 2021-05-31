@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 17:23:24
- * @LastEditTime: 2021-05-30 17:36:16
+ * @LastEditTime: 2021-05-31 12:18:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/change.tsx
@@ -18,7 +18,7 @@ import React,{ useState, useEffect } from 'react'
 import { UploadAntd } from '@/utils/upload/qiniu'
 import { PageContainer } from '@ant-design/pro-layout'
 import { BookTwoTone } from '@ant-design/icons'
-import { Input, Button, message, Spin, Select, Drawer } from 'antd'
+import { Input, Button, message, Spin, Select, Drawer, Descriptions, Avatar, Space } from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
 import { get, map } from 'lodash';
@@ -30,13 +30,14 @@ interface PartyCourseProps {
     show: boolean
     UploadStatus: boolean
     GoodsList: [] 
+    showInfos: {}
     onCloseDrawer: any
 }
 
 
 const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
 
-  const { dispatch, UploadStatus, GoodsList, show, onCloseDrawer  } = props
+  const { dispatch, show, onCloseDrawer , showInfos } = props
     useEffect(()=>{
         dispatch({
             type: 'partycourse/fetchPartyGoodsList',
@@ -47,18 +48,26 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
         })
     },[])
 
-   
+   console.log(showInfos)
     return (
       <>
         <Drawer
-          title="Basic Drawer"
+          title="课程详情"
           placement="right"
           onClose={()=>onCloseDrawer(false)}
           visible={show}
+          width={500}
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+        <Descriptions column={1} bordered size="middle">
+          <Descriptions.Item label="创建人">
+            {
+              <Space>
+              <Avatar src={showInfos.avatar}/>
+              <span>{showInfos.id}</span>
+              </Space>
+            }
+            </Descriptions.Item>
+        </Descriptions>
         </Drawer>
       </>
     );

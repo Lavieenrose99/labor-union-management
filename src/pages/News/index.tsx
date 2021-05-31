@@ -1,16 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-30 15:16:32
+ * @LastEditTime: 2021-05-30 21:45:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
  */
 import React, { useState, useEffect } from 'react';
-import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Avatar, Space, Modal, Button, Image, Tag } from 'antd';
-import { FilePptTwoTone, DeleteTwoTone, PlusCircleOutlined } from '@ant-design/icons';
+import { List, Modal, Button, Tag} from 'antd';
 import type { Dispatch } from 'umi';
 import InfosCreator from './create';
 import TagsCreator from './tags_create';

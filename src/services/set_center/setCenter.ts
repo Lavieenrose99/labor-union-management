@@ -1,19 +1,4 @@
-/*
- * @Author: your name
- * @Date: 2021-05-19 10:53:05
- * @LastEditTime: 2021-05-30 15:25:41
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/services/set_center/setCenter.ts
- */
-/*
- * @Author: your name
- * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-19 10:53:08
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/services/party/party_course.ts
- */
+
 
 import request from '@/utils/request';
 

@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
 import { List, Avatar, Space, Modal, Button, Image } from 'antd';
 import { FilePptTwoTone, DeleteTwoTone, VideoCameraTwoTone } from '@ant-design/icons';
-import { getLength } from '@/utils/public/tools'
+import { getLength } from '@/utils/public/tools.tsx'
 import ShowPartyDetails from './change'
 import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
@@ -24,29 +23,10 @@ interface PartyCourseProps {
 }
 
 const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
-  const { dispatch, CoureseEnity } = props;
+  const { dispatch, CoureseEnity, CourseGoods } = props;
   const [ showCreate, setShowCreate] = useState<boolean>(false);
-  const [ showDetails, setShowDetails ] = useState<boolean>(false)
-  const listData = [];
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < CoureseEnity.length; i++) {
-    listData.push({
-      id: CoureseEnity[i].id,
-      href: 'https://ant.design',
-      video: CoureseEnity[i].data.video,
-      cover: CoureseEnity[i].course_cover,
-      title: `党建系列课 ${CoureseEnity[i].name}`,
-      avatar: 'https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg',
-      description: (
-        <div>
-          <strong>创建人: </strong>
-          <span>{CoureseEnity[i].person}</span>
-        </div>
-      ),
-      ppt: CoureseEnity[i].data.ppt ,
-      content: '一心向党好好学习又红又专',
-    });
-  }
+  const [ showDetails, setShowDetails ] = useState<boolean>(false);
+  const [ showDetailsInfos, setShowDetailsInfos ] = useState<any>({});
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchPartyList',
@@ -55,15 +35,22 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         page: 1,
       },
     });
+    dispatch({
+      type: 'partycourse/fetchPartyGoods',
+      payload: {
+        limit: 20,
+        page: 1
+      }
+    })
     request('/api.monitor/data/pvuv', {
       method: 'GET',
       params:  {'date': '2021-5'}
     }).then((data) => {
-      console.log(data);
+      // console.log(data);
     });
 
   }, []);
-  // console.log(CoureseEnity[0].course_ppt)
+  console.log(CourseGoods)
   return (
     <PageContainer
       ghost={false}
@@ -75,6 +62,8 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         </Button>,
       ]}
     >
+      <section className="party_course_container">
+        <div className="party_course_list">
       <List
         bordered
         itemLayout="vertical"
@@ -85,7 +74,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
           },
           pageSize: 10,
         }}
-        dataSource={listData}
+        dataSource={CoureseEnity}
         footer={
           <div>
             <b>全国总工会</b> 惠福党建中心
@@ -93,16 +82,16 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         }
         renderItem={(item) => (
           <List.Item
-            onClick={()=>setShowDetails(true)}
+          onClick={()=>{setShowDetails(true); setShowDetailsInfos(item)}}
             key={item.title}
             actions={[
               <IconText
                 icon={FilePptTwoTone}
-               text={<span>{`${getLength(item.ppt)} 份`}</span>}
+               text={<span>{`${getLength(item.data.ppt)} 份`}</span>}
                 key="list-vertical-message"
               />,
               <IconText icon =  {VideoCameraTwoTone} 
-              text={`${getLength(item.video)} 个`}
+              text={`${getLength(item.data.video)} 个`}
               />,
               <IconText
                 icon={DeleteTwoTone}
@@ -130,23 +119,28 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
               />,
            
             ]}
-            extra={<Image width={272} height={120} src={item.cover}
+            extra={<Image width={272} height={120} src={item.course_cover}
              fallback="https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.png" />}
           >
             <List.Item.Meta
-              avatar={<Avatar src={item.avatar} />}
-              title={<a href={item.href}>{item.title}</a>}
-              description={item.description}
+              avatar={<Avatar src='https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg' />}
+              title={<a >{ `党建系列课 ${item.name}`}</a>}
+              description={ <div>
+                <strong>创建人: </strong>
+                <span>{item.account_id}</span>
+              </div>}
             />
-            {item.content}
+            {<strong style={{marginLeft: 60}}>{item.course_brief}</strong>}
           </List.Item>
         )}
       />
+      </div>
+      </section>
       ,
-      <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width={1000}>
+      <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width='88vw' >
         <CreatePartyCourse />
       </Modal>
-      <ShowPartyDetails show={showDetails} onCloseDrawer={setShowDetails} />
+      <ShowPartyDetails show={showDetails} onCloseDrawer={setShowDetails} showInfos={showDetailsInfos} />
     </PageContainer>
   );
 };
@@ -154,4 +148,5 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
 export default connect(({ partycourse }: any) => ({
   CoureseEnity: get(partycourse, 'CoureseEnity', []),
   UploadStatus: get(partycourse, 'status', false),
+  CourseGoods: get(partycourse,'CourseGoods',[])
 }))(PartyCourseList);
