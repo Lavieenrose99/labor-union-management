@@ -27,6 +27,7 @@ import {
   delInfosTags,
   putInfosTags,
   addInfosTags,
+  deleteNews,
 } from '@/services/set_center/setCenter';
 import { query } from 'express';
 
@@ -54,6 +55,7 @@ export interface AccountModelType {
     addInfosTags: Effect;
     fetchNewsList: Effect;
     changeNewsEnity: Effect;
+    deleteNewsEnity: Effect;
   };
   reducers: {
     saveRollingsPic: Reducer<AccountModalState>;
@@ -80,9 +82,16 @@ const RollingPictureModal: AccountModelType = {
       const response = yield call(addRollingsPic, payload);
       if (response.id) message.info('添加轮播图成功');
     },
-    *addInfosList({ payload }, { call }) {
+    *addInfosList({ payload }, { call, put }) {
       const response = yield call(addNewsInfos, payload);
       if (response.id) message.info('添加资讯');
+      yield put({
+        type: 'fetchNewsList',
+        payload: {
+          page: 1,
+          limit: 20
+        }
+      })
     },
     *fetchInfosTagsList({ payload }, { call, put }) {
       const response = yield call(fetTagList, payload);
@@ -92,14 +101,17 @@ const RollingPictureModal: AccountModelType = {
         payload: newsLabel,
       });
     },
-    *delInfosTags({ payload }, { call }) {
+    *delInfosTags({ payload }, { call, put }) {
       const response = yield call(delInfosTags, payload);
       if (response.id > 0) {
         message.info('删除成功');
       }
-      yield call(fetTagList, {
-        limit: 99,
-        page: 1,
+      yield put({
+        type: 'fetchInfosTagsList',
+        payload: {
+          limit: 99,
+          page: 1,
+        }
       });
     },
     *addInfosTags({ payload }, { call }) {
@@ -149,6 +161,19 @@ const RollingPictureModal: AccountModelType = {
       } else {
         yield message.error('修改失败');
       }
+    },
+    *deleteNewsEnity({ payload }, { call, put }) {
+      const res = yield call(deleteNews, payload);
+      if (res.id > 0) {
+        message.info('删除成功');
+      }
+      yield put({
+        type: 'fetchNewsList',
+        payload: {  
+          limit: 99,
+          page: 1,
+        }
+      });
     },
   },
 

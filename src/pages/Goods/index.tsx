@@ -18,7 +18,7 @@
 import React, { useState, useEffect } from 'react';
 import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Table, Image } from 'antd';
+import { Button, Table } from 'antd';
 import type { Dispatch } from 'umi';
 import GoodsCreator from './create';
 import GoodsChanger from './change';
@@ -59,11 +59,7 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
       dataIndex: 'name',
       render: (itemName: string, item: any) => (
         <div>
-          <img
-            width={60}
-            height={30}
-            src={item.cover}
-            />
+          <img width={60} height={30} src={item.cover} />
           <span>{itemName}</span>
         </div>
       ),
@@ -83,7 +79,7 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
           value: 'true',
         },
       ],
-      // onFilter: (value: string, record: any) => (record.is_on.toString().indexOf(value) === 0),
+      onFilter: (value: string, record: any) => record.is_on.toString().indexOf(value) === 0,
     },
     {
       title: '单价',
@@ -128,10 +124,13 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
             type="primary"
             danger
             onClick={() => {
-              console.log('删除商品');
+              dispatch({
+                type: 'partycourse/deletePartyGoods',
+                payload: itemVal.id,
+              });
             }}
           >
-            删除商品
+            下架商品
           </Button>
         </div>
       ),

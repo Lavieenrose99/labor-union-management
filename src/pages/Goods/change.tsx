@@ -15,53 +15,54 @@ import { map } from 'lodash'
 
 const  GoodsChanger = (props) => {
   const { TextArea } = Input;
-  const { show, closeInfosModel , StroageCover, StroagePictures, info } = props;
+  const { dispatch, show, closeInfosModel , StroageCover, StroagePictures, info } = props;
   const StroageCoverS = localStorage.getItem(StroageCover) ? map([...JSON.parse(String(localStorage.getItem(StroageCover)))],'url') : []
   const StroagePictureS = localStorage.getItem(StroagePictures) ? map([...JSON.parse(String(localStorage.getItem(StroagePictures)))],'url') : []
-  const [infosTitle, setInfosTitle] = useState('');
-  const [ inventory, setInventory ] = useState(0);
-  const [ goodsPrice, setGoodsPrice ] = useState(0)
-  const [infosPreSeem, setInfosPreSeem] = useState('');
-  const [isPublish, setIsPublish ] = useState(false);
-  const [ cover, setCover ] = useState(StroageCoverS);
-  const [ pictures, setPictures ] = useState(StroagePictureS);
+  const [infoName, setInfoName] = useState('');
+  const [ infoInventory, setInfoInventory ] = useState(0);
+  const [ infoPrice, setInfoPrice ] = useState(0)
+  const [infoBrief, setInfoBrief] = useState('');
+  const [infoIsOn, setInfoIsOn ] = useState(false);
+  const [ infoCover, setInfoCover ] = useState(StroageCoverS);
+  const [ infoPictures, setInfoPictures ] = useState(StroagePictureS);
   console.log(info)
   useEffect(() => {
-    setInfosTitle(info.name)
-    setGoodsPrice(info.price)
-    setInventory(info.inventory)
-    setIsPublish(info.is_on)
-    setCover(info.cover)
-    setPictures(info.pictures)
-    setInfosPreSeem(info.brief)
+    setInfoName(info.name)
+    setInfoPrice(info.price)
+    setInfoInventory(info.inventory)
+    setInfoIsOn(info.is_on)
+    setInfoCover(info.cover)
+    setInfoPictures(info.pictures)
+    setInfoBrief(info.brief)
   }, [info])
- console.log(cover)
   return (
     <>
       <Modal
         title="修改商品信息"
         width="80vw"
         visible={show}
-        destroyOnClose 
+        destroyOnClose
         onCancel={() => closeInfosModel(false)}
-        onOk={async() => {
-          await props.dispatch({
-            type: 'partycourse/addPartyGoods',
+        onOk={()=>{
+          dispatch({
+            type:'partycourse/changePartyGoods',
             payload: {
-              name: infosTitle,
-              price: goodsPrice,
-              brief: infosPreSeem,
-              is_on: isPublish,
-              cover: cover[0],
-              pictures,
-              inventory
-            },
-          });
+              params: {
+                name: infoName,
+                brief: infoBrief,
+                price: infoPrice,
+                inventory: infoInventory,
+                is_on: infoIsOn,
+                cover: infoCover[0],
+                pictures: infoPictures,
+              },
+              updateId: info.id
+            }
+          })
           localStorage.removeItem(StroageCover)
           localStorage.removeItem(StroagePictures)
           closeInfosModel(false);
         }}
-        
       >
         <div className="fmg-infos-creator-container">
           <div className="fmg-infos-creator-title">
@@ -73,9 +74,9 @@ const  GoodsChanger = (props) => {
                 marginLeft: 20,
                 marginBottom: 20,
               }}
-              value={infosTitle}
+              value={infoName}
               onChange={(e) => {
-                setInfosTitle(e.target.value);
+                setInfoName(e.target.value);
               }}
             />
           </div>
@@ -91,9 +92,9 @@ const  GoodsChanger = (props) => {
                 marginLeft: 20,
                 marginBottom: 10, 
               }}
-              value={infosPreSeem}
+              value={infoBrief}
               onChange={(e) => {
-                setInfosPreSeem(e.target.value);
+                setInfoBrief(e.target.value);
               }}
             />
           </div>
@@ -106,9 +107,9 @@ const  GoodsChanger = (props) => {
               {' '}
             </span>
           <InputNumber
-              onChange={(e)=>setGoodsPrice(e)}
-              style={{ minWidth: '10vw', marginBottom: 10 }}
-              value={goodsPrice}
+              onChange={(e)=>setInfoPrice(e)}
+              style={{ minWidth: '10vw', marginLeft:10, marginBottom: 20 }}
+              value={infoPrice}
               formatter={(Goodvalues) => `¥ ${Goodvalues}`}
               parser={(Goodvalues) => Goodvalues.replace(/¥ \s?|(,*)/g, '')}
               min={0}
@@ -124,9 +125,9 @@ const  GoodsChanger = (props) => {
               {' '}
             </span>
           <InputNumber
-              onChange={(e)=>setInventory(e)}
-              style={{ minWidth: '10vw', marginBottom: 10 }}
-              value={inventory}
+              onChange={(e)=>setInfoInventory(e)}
+              style={{ minWidth: '10vw', marginLeft:10, marginBottom: 20 }}
+              value={infoInventory}
               min={0}
               step={0.01}
             />
@@ -139,7 +140,7 @@ const  GoodsChanger = (props) => {
               是否发布:
               {' '}
             </span>
-         <Switch onChange={(e)=>setIsPublish(e)} checked={isPublish}  />
+         <Switch onChange={(e)=>setInfoIsOn(e)} checked={infoIsOn}  />
           </div>
           <div className="fmg-infos-creator-title">
             <span  style={{
@@ -152,7 +153,7 @@ const  GoodsChanger = (props) => {
            <UploadAntd 
              fileStorage={StroageCover}
              showType="normal"
-             setUrl={setCover}
+             setUrl={setInfoCover}
              childFileType='picture'
              fileCount={1}
              listshowType='picture-card'
@@ -169,7 +170,7 @@ const  GoodsChanger = (props) => {
            <UploadAntd 
              fileStorage={StroagePictures}
              showType="normal"
-             setUrl={setPictures}
+             setUrl={setInfoPictures}
              childFileType='picture'
              fileCount={3}
              listshowType='picture-card'

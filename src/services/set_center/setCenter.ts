@@ -94,6 +94,12 @@ export async function changeNews(params: NewsInfosType, updateId: number) {
   });
 }
 
+export async function deleteNews(id: number) {
+  return request(`/api.request/v1/news/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function fetTagList(params: RollingPictureLimitType) {
   return request('api.request/v1/news_label/list', {
     method: 'GET',

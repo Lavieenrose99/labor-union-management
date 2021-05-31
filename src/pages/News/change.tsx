@@ -54,7 +54,7 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
           content: infoContent,
           is_publish: infoIsPublish,
           introduction: infoIntroduction,
-          picture: info.picture,
+          picture: infoPicture,
         },
         updateId: info.id,
       },
@@ -126,7 +126,7 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
                 }}
               >
                 {infoPicture ? (
-                  <img src={infoPicture} alt="picture" style={{ width: '100%' }} />
+                  <img src={ infoPicture } alt="picture" style={{ width: '100%' }} />
                 ) : (
                   uploadButton
                 )}
@@ -134,7 +134,8 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
             </div>
           </div>
           <div className="change-content">
-            <RichTextEditor defaultText={infoContent} width={1080} />
+            <RichTextEditor
+              defaultText={infoContent} width={1080} />
           </div>
         </div>
       </Modal>

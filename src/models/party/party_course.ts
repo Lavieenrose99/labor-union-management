@@ -20,9 +20,11 @@ import {
   delPartyClass,
   createPartyGoods,
   fetchPartyGoods,
-  getPartyGoods
-} from '../../services/party/party_course'
-import { map } from 'lodash'
+  getPartyGoods,
+  delPartyGoods,
+  changePartyGoods
+} from '../../services/party/party_course';
+import { map } from 'lodash';
 
 export interface AccountModalState {
   pagination: {
@@ -36,8 +38,8 @@ export interface AccountModelType {
   namespace: 'partycourse';
   // state: AccountModelState;
   state: {
-    status: boolean
-  }
+    status: boolean;
+  };
   effects: {
     addPartyCourse: Effect;
     fetchPartyList: Effect;
@@ -47,6 +49,8 @@ export interface AccountModelType {
     delPartyClass: Effect;
     addPartyGoods: Effect;
     fetchPartyGoods: Effect;
+    deletePartyGoods: Effect;
+    changePartyGoods: Effect;
   };
   reducers: {
     savePagesInfos: Reducer<AccountModalState>;
@@ -63,20 +67,19 @@ const PartyCourseModal: AccountModelType = {
     status: false,
   },
   effects: {
-
     *addPartyCourse({ payload }, { call, put }) {
       yield put({
         type: 'changeUploadStatus',
-        payload: true
-      })
+        payload: true,
+      });
       const response = yield call(createPartyCouse, payload);
       if (response.id > 0) {
         message.info('已成功添加');
         yield put({
           type: 'changeUploadStatus',
-          payload: false
-        })
-        yield history.push('/success')
+          payload: false,
+        });
+        yield history.push('/success');
       }
     },
     *addPartyGoods({ payload }, { call }) {
@@ -85,14 +88,42 @@ const PartyCourseModal: AccountModelType = {
         message.info('已成功添加');
       }
     },
-    *fetchPartyGoods({ payload }, { call, put}){
-      const response = yield call(fetchPartyGoods,payload)
-      const { goods } = response
-      const ids = map(goods,'id')
-      const enity  = yield call(getPartyGoods,ids)
+    *fetchPartyGoods({ payload }, { call, put }) {
+      const response = yield call(fetchPartyGoods, payload);
+      const { goods } = response;
+      const ids = map(goods, 'id');
+      const enity = yield call(getPartyGoods, ids);
       yield put({
         type: 'savePartyGoods',
-        payload: enity
+        payload: enity,
+      });
+    },
+    *deletePartyGoods({ payload }, { call, put }) {
+      console.log(payload)
+      const res = yield call(delPartyGoods, payload);
+      if (res.id) {
+        message.info('下架商品成功');
+      }
+      yield put({
+        type: 'fetchPartyGoods',
+        payload: {
+          page: 1,
+          limit: 20,
+        }
+      });
+    },
+    *changePartyGoods({payload}, {call, put}) {
+      const { params, updateId } = payload;
+      const res = yield call(changePartyGoods, params, updateId);
+      if(res.id) {
+        message.info('修改商品信息成功')
+      }
+      yield put({
+        type: 'fetchPartyGoods',
+        payload: {
+          page: 1,
+          limit: 20,
+        }
       })
     },
     *addPartyClass({ payload }, { call }) {
@@ -102,61 +133,63 @@ const PartyCourseModal: AccountModelType = {
       }
     },
     *fetchPartyList({ payload }, { call, put }) {
-      const list = yield call(fetchPartyCourse, payload)
-      const { party_course, total } = list
+      const list = yield call(fetchPartyCourse, payload);
+      const { party_course, total } = list;
       const ids = party_course.map((item: any) => {
-        return item.id
-      })
+        return item.id;
+      });
       yield put({
         type: 'savePagesInfos',
-        payload: total
-      })
-      const enity = yield call(getPartyCourseEnity, ids)
+        payload: total,
+      });
+      const enity = yield call(getPartyCourseEnity, ids);
       yield put({
         type: 'saveCoureseEnity',
-        payload: enity
-      })
+        payload: enity,
+      });
     },
     *delPartyCourse({ payload }, { call }) {
-      const response = yield call(delPartyCourse, payload)
+      const response = yield call(delPartyCourse, payload);
       if (response.id) {
-        message.info('课程删除成功')
+        message.info('课程删除成功');
       }
       yield call(fetchPartyCourse, {
         page: 1,
         limit: 10,
-      })
+      });
     },
     *fetchClassList({ payload }, { call, put }) {
-      const list = yield call(fetchPartyClass, payload)
-      const { classes, total } = list
+      const list = yield call(fetchPartyClass, payload);
+      const { classes, total } = list;
       const ids = classes.map((item: any) => {
-        return item.id
-      })
-      console.log(`ids${ids}`)
+        return item.id;
+      });
+      console.log(`ids${ids}`);
       // yield put({
       //   type: 'savePagesInfos',
       //   payload: total
       // })
-      const enity = yield call(getPartyClassEnity, ids)
+      const enity = yield call(getPartyClassEnity, ids);
       yield put({
         type: 'saveClassEnity',
-        payload: enity
-      })
+        payload: enity,
+      });
     },
-      *delPartyClass({ payload }, { call }) {
-        console.log(payload)
-        // const response = yield call(delPartyClass, payload)
-        // if (response.id) {
-        //   message.info('班级删除成功')
-        // }
-        yield call(fetchPartyClass, {
+    *delPartyClass({ payload }, { call, put }) {
+      console.log(payload);
+      const res = yield call(delPartyClass, payload);
+      if (res.id) {
+        message.info('班级删除成功');
+      }
+      yield put({
+        type: 'fetchPartyClass',
+        payload: {
           page: 1,
           limit: 10,
-        })
-      }
+        },
+      });
     },
-
+  },
 
   reducers: {
     saveCoureseEnity(state: any, { payload }: any) {
@@ -165,23 +198,23 @@ const PartyCourseModal: AccountModelType = {
         CoureseEnity: payload,
       };
     },
-    savePartyGoods(state: any, { payload }: any){
-      return{ 
+    savePartyGoods(state: any, { payload }: any) {
+      return {
         ...state,
-        CourseGoods: payload
-      }
+        CourseGoods: payload,
+      };
     },
     changeUploadStatus(state: any, { payload }: any) {
       return {
         ...state,
-        status: payload
-      }
+        status: payload,
+      };
     },
     savePagesInfos(state: any, { payload }: any) {
       return {
         ...state,
-        pagination: payload
-      }
+        pagination: payload,
+      };
     },
     saveClassEnity(state: any, { payload }: any) {
       return {
@@ -190,7 +223,6 @@ const PartyCourseModal: AccountModelType = {
       };
     },
   },
-}
-
+};
 
 export default PartyCourseModal;

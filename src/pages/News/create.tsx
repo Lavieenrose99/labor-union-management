@@ -104,12 +104,12 @@ const  InfosCreate = (props) => {
               {' '}
             </span>
             <UploadAntd 
-            fileStorage={CoverStroage}
-             showType="normal"
-             setUrl={setcover}
-             childFileType='picture'
-             fileCount={1}
-             listshowType='picture-card'
+              fileStorage={CoverStroage}
+              showType="normal"
+              setUrl={setcover}
+              childFileType='picture'
+              fileCount={1}
+              listshowType='picture-card'
            />
           </div>
      
