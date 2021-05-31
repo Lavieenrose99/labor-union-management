@@ -67,38 +67,37 @@
                 ],
               },
               
+
               {
                 name: '党建中心',
                 icon: 'table',
                 path: '/party',
                 // component: './Party/index.tsx',
-                routes:[
+                routes: [
                   {
                     path: '/party/course/index',
                     name: '班级中心',
-                    component: './Class/index'
+                    component: './Class/index',
                   },
                   {
                     path: '/party/index',
                     name: '课程列表',
-                    component: './Party/index.tsx'
-                  }
-                  ,
+                    component: './Party/index.tsx',
+                  },
                   {
                     path: '/party/create',
                     name: '创建课程',
                     icon: 'smile',
-                    component: './Party/create.tsx'
-                  }
-
-                ]
+                    component: './Party/create.tsx',
+                  },
+                ],
               },
               {
                 name: '商品中心',
                 icon: 'table',
                 path: '/shop',
                 // component: './Party/index.tsx',
-                routes:[
+                routes: [
                   {
                     path: '/shop/goods/index',
                     name: '商品列表',
@@ -120,11 +119,11 @@
               },
               {
                 path: 'success',
-               component: '../utils/public/success',
+                component: '../utils/public/success',
               },
             ],
           },
-          { 
+          {
             component: './404',
           },
         ],

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-30 15:30:01
+ * @LastEditTime: 2021-05-30 18:06:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts
@@ -97,3 +97,22 @@ export async function delPartyCourse(id: number){
     }
     )
 }
+
+export async function fetchPartyClass(params: PartyCourseLimitType) {
+    return request('/api.request/v1/party_course/class/list', {
+      method: 'GET',
+      params,
+    });
+  }
+  
+  export async function getPartyClassEnity(params: number[]) {
+    return request('/api.request/v1/party_course/class/_mget', {
+      method: 'POST',
+      data: { ids: params },
+    });
+  }
+  export async function delPartyClass(id: number) {
+    return request(`/api.request/v1/party_course/class/${id}`, {
+      method: 'DELETE',
+    });
+  }

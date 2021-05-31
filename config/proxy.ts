@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-05-19 10:51:04
+ * @LastEditTime: 2021-05-30 17:56:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/proxy.ts

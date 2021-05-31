@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-29 20:49:36
+ * @LastEditTime: 2021-05-30 18:13:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -13,7 +13,7 @@ import { BookTwoTone } from '@ant-design/icons'
 import { Input, Button, message, Spin, Select } from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import CreatorPartyCourse from '@/utils/upload/richTextUpload'
 import './index.less'
 
@@ -38,9 +38,9 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         })
     },[])
 
-    const courseCoverS = localStorage.getItem("courseCover") ? [...JSON.parse(String(localStorage.getItem("courseCover")))] : []
-    const pptStorage = localStorage.getItem("pptStorage") ? [...JSON.parse(String(localStorage.getItem("pptStorage")))] : []
-    const videoStorage = localStorage.getItem("videoStorage") ? [...JSON.parse(String(localStorage.getItem("videoStorage")))] : []
+    const courseCoverS = localStorage.getItem("courseCover") ? map([...JSON.parse(String(localStorage.getItem("courseCover")))],'url') : []
+    const pptStorage = localStorage.getItem("pptStorage") ? map([...JSON.parse(String(localStorage.getItem("pptStorage")))],'url') : []
+    const videoStorage = localStorage.getItem("videoStorage") ? map([...JSON.parse(String(localStorage.getItem("videoStorage")))],'url') : []
     const [ couseName, setCourseName ] = useState('')
     const [ courePerson, setCoursePerson ] = useState('admin')
     const [ coursePPT, setcoursePPT ] = useState(pptStorage)
@@ -80,6 +80,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         localStorage.setItem('partyCourseInfos', text);
         setCourseWork(text)
       };
+      console.log(linkGoods)
     return (
         <PageContainer 
         extra={[

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:57:15
- * @LastEditTime: 2021-05-25 09:27:19
+ * @LastEditTime: 2021-05-30 21:41:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/set_center/setCenter.ts
@@ -82,7 +82,7 @@ const RollingPictureModal: AccountModelType = {
     },
     *addInfosList({ payload }, { call }) {
       const response = yield call(addNewsInfos, payload);
-      if (response.id) message.info('添加轮播图成功');
+      if (response.id) message.info('添加资讯');
     },
     *fetchInfosTagsList({ payload }, { call, put }) {
       const response = yield call(fetTagList, payload);

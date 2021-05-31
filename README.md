@@ -18,4 +18,14 @@ npm install
 npm run start
 ```
 
+<<<<<<< HEAD
 > yjz
+=======
+<<<<<<< HEAD
+### gww
+=======
+### name
+
+cjz
+>>>>>>> f_test
+>>>>>>> origin/f_gww

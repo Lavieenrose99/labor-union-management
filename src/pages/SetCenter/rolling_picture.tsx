@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:22:53
- * @LastEditTime: 2021-05-24 00:49:31
+ * @LastEditTime: 2021-05-30 21:44:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/SetCenter/rolling_picture.tsx
@@ -53,7 +53,7 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
     const handleRollings: any = ()=>{
         props.dispatch({
             type: 'setcentermodel/addRollingPictures',
-            payload: [21,22,23]
+            payload: [39,41]
         })
     }
 
@@ -75,7 +75,7 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
    
     const ids = map(CoureseEnity,'name')
 
-    
+    console.log(RollingsEnity)
     return(
         <>
          <PageContainer 
@@ -136,7 +136,7 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
     </List.Item>
     )}
   />
-        {/* <Button onClick={handleRollings}>确定</Button> */}
+        <Button onClick={handleRollings}>确定</Button>
         <Modal visible={showCreate} onCancel={()=>setShowCreate(false)} width={400}>
         <Select
        mode="multiple"
