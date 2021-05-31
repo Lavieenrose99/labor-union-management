@@ -94,25 +94,24 @@ export async function getPartyGoods(params: number[]){
 export async function delPartyCourse(id: number){
     return request(`/api.request/v1/party_course/info/${id}`,{
     method: 'DELETE',
-    }
-    )
+  })
 }
 
 export async function fetchPartyClass(params: PartyCourseLimitType) {
-    return request('/api.request/v1/party_course/class/list', {
-      method: 'GET',
-      params,
-    });
-  }
+  return request('/api.request/v1/party_course/class/list', {
+    method: 'GET',
+    params,
+  });
+}
   
-  export async function getPartyClassEnity(params: number[]) {
-    return request('/api.request/v1/party_course/class/_mget', {
-      method: 'POST',
-      data: { ids: params },
-    });
-  }
-  export async function delPartyClass(id: number) {
-    return request(`/api.request/v1/party_course/class/${id}`, {
-      method: 'DELETE',
-    });
-  }
+export async function getPartyClassEnity(params: number[]) {
+  return request('/api.request/v1/party_course/class/_mget', {
+    method: 'POST',
+    data: { ids: params },
+  });
+}
+export async function delPartyClass(id: number) {
+  return request(`/api.request/v1/party_course/class/${id}`, {
+    method: 'DELETE',
+  });
+}

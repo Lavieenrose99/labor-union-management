@@ -29,7 +29,7 @@ interface INewsChangeType {
   dispatch: Dispatch;
 }
 
-const NewsChange: React.FC<INewsChangeType> = (props) => {
+const NewsChanger: React.FC<INewsChangeType> = (props) => {
   const { showModal, closeChangeModal, info, dispatch } = props;
   const { TextArea } = Input;
   const [infoTitle, setInfoTitle] = useState('');
@@ -111,7 +111,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
               defaultChecked={infoIsPublish}
               onChange={(val) => {
                 setInfoIsPublish(val);
-                console.log(val)
+                console.log(val);
               }}
             />
           </div>
@@ -142,4 +142,4 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
   );
 };
 
-export default connect(({ setcentermodel }: any) => ({}))(NewsChange);
+export default connect(({ setcentermodel }: any) => ({}))(NewsChanger);

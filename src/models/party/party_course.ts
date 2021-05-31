@@ -145,10 +145,11 @@ const PartyCourseModal: AccountModelType = {
       })
     },
       *delPartyClass({ payload }, { call }) {
-        const response = yield call(delPartyClass, payload)
-        if (response.id) {
-          message.info('班级删除成功')
-        }
+        console.log(payload)
+        // const response = yield call(delPartyClass, payload)
+        // if (response.id) {
+        //   message.info('班级删除成功')
+        // }
         yield call(fetchPartyClass, {
           page: 1,
           limit: 10,

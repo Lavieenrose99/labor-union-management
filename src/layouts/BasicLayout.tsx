@@ -118,12 +118,12 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     [location.pathname],
   );
 
-  const { formatMessage } = useIntl();
+  // const { formatMessage } = useIntl();
 
   return (
     <ProLayout
       logo={logo}
-      formatMessage={formatMessage}
+      // formatMessage={formatMessage}
       {...props}
       {...settings}
       onCollapse={handleMenuCollapse}
@@ -141,7 +141,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: formatMessage({ id: 'menu.home' }),
+          // breadcrumbName: formatMessage({ id: 'menu.home' }),
         },
         ...routers,
       ]}

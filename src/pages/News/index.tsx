@@ -8,7 +8,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Modal, Button, Tag} from 'antd';
+import { List, Modal, Button, Tag, Image} from 'antd';
 import type { Dispatch } from 'umi';
 import InfosCreator from './create';
 import TagsCreator from './tags_create';
@@ -17,7 +17,7 @@ import { get } from 'lodash';
 import { BASE_QINIU_URL } from '@/utils/upload/qiniu';
 import { filterHTMLStr } from '../../utils/adjust_picture';
 import './index.less';
-import NewsChange from './change';
+import NewsChanger from './change';
 
 interface INewsType {
   dispatch: Dispatch;
@@ -106,8 +106,7 @@ const NewsList: React.FC<INewsType> = (props) => {
               <List.Item
                 key={item.id}
                 extra={
-                  <img
-                    style={{ marginTop: 20 }}
+                  <Image
                     width={160}
                     height={100}
                     src={item.pictuer ? BASE_QINIU_URL + item.picture : 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'}
@@ -133,7 +132,7 @@ const NewsList: React.FC<INewsType> = (props) => {
           />
         </div>
         <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width={400}></Modal>
-        <NewsChange showModal={showChange} closeChangeModal={setShowChange} info={changeItem} />
+        <NewsChanger showModal={showChange} closeChangeModal={setShowChange} info={changeItem} />
       </PageContainer>
       <InfosCreator show={showAddModal} closeInfosModel={setShowAddModal} />
       <TagsCreator show={showAddTagsModal} closeInfosModel={setShowTagsAddModal} />
