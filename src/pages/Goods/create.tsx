@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-27 16:27:08
- * @LastEditTime: 2021-05-29 21:02:04
+ * @LastEditTime: 2021-05-31 15:41:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Goods/create.tsx
@@ -32,7 +32,7 @@ const  GoodsCreator = (props) => {
     <>
       <Modal
         title="商品创建"
-        width="80vw"
+        width="40vw"
         visible={show}
         destroyOnClose 
         onCancel={() => closeInfosModel(false)}
@@ -57,12 +57,10 @@ const  GoodsCreator = (props) => {
       >
         <div className="fmg-infos-creator-container">
           <div className="fmg-infos-creator-title">
-            <span>商品名称: </span>
+            <div>商品名称: </div>
             <Input
               style={{
-                display: 'inline-flex',
-                width: '50vw',
-                marginLeft: 20,
+                width: '30vw',
                 marginBottom: 20, 
               }}
               onChange={(e) => {
@@ -71,18 +69,14 @@ const  GoodsCreator = (props) => {
             />
           </div>
           <div className="fmg-infos-creator-title">
-            <span style={{
-              position: 'fixed',
-            }}
-            >
+            <div>
               商品简介:
               {' '}
-            </span>
+            </div>
             <TextArea
               style={{
-                width: '50vw',
-                marginLeft: 80,
-                marginBottom: 10, 
+                width: '30vw',
+                marginBottom: 20, 
               }}
               onChange={(e) => {
                 setInfosPreSeem(e.target.value);

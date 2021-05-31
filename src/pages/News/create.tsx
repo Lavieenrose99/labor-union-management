@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 16:12:30
- * @LastEditTime: 2021-05-30 17:47:10
+ * @LastEditTime: 2021-05-31 15:47:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/create.tsx
@@ -43,9 +43,9 @@ const  InfosCreate = (props) => {
               title: infosTitle,
               content: filterHTMLTag(partyInfosContent),
               is_publish: true,
-              news_label: 5,
+              news_label: 6,
               introduction: infosPreSeem,
-              picture: cover[0]
+              pictures: cover[0]
             },
           });
           localStorage.removeItem('party_infos_content');
@@ -57,12 +57,11 @@ const  InfosCreate = (props) => {
       >
         <div className="fmg-infos-creator-container">
           <div className="fmg-infos-creator-title">
-            <span>资讯标题: </span>
+            <div>资讯标题: </div>
             <Input
               style={{
                 display: 'inline-flex',
-                width: '50vw',
-                marginLeft: 20,
+                width: '30vw',
                 marginBottom: 20, 
               }}
               onChange={(e) => {
@@ -71,18 +70,15 @@ const  InfosCreate = (props) => {
             />
           </div>
           <div className="fmg-infos-creator-title">
-            <span style={{
-              position: 'fixed',
-            }}
-            >
+            <div >
               资讯摘要:
               {' '}
-            </span>
+            </div>
             <TextArea
               style={{
-                width: '50vw',
-                marginLeft: 80,
-                marginBottom: 10, 
+                display: 'inline-flex',
+                width: '30vw',
+                marginBottom: 20, 
               }}
               onChange={(e) => {
                 setInfosPreSeem(e.target.value);
