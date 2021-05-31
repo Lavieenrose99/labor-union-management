@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-30 21:45:22
+ * @LastEditTime: 2021-05-31 16:00:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -109,7 +109,7 @@ const NewsList: React.FC<INewsType> = (props) => {
                   <Image
                     width={160}
                     height={100}
-                    src={item.pictuer ? BASE_QINIU_URL + item.picture : 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'}
+                    src={item.picture? item.picture : 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'}
                   />
                 }
               >
@@ -126,7 +126,9 @@ const NewsList: React.FC<INewsType> = (props) => {
                     </span>
                   }
                 />
+                <article className="party_infos_content_preview">
                 {filterHTMLStr(item.content)}
+                </article>
               </List.Item>
             )}
           />

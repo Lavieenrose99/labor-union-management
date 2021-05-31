@@ -3,7 +3,7 @@ import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
 import { List, Avatar, Space, Modal, Button, Image } from 'antd';
 import { FilePptTwoTone, DeleteTwoTone, VideoCameraTwoTone } from '@ant-design/icons';
-import { getLength } from '@/utils/public/tools.tsx'
+import { getLength, ConBindObjArr } from '@/utils/public/tools.tsx'
 import ShowPartyDetails from './change'
 import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
@@ -27,6 +27,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   const [ showCreate, setShowCreate] = useState<boolean>(false);
   const [ showDetails, setShowDetails ] = useState<boolean>(false);
   const [ showDetailsInfos, setShowDetailsInfos ] = useState<any>({});
+  console.log(ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id'),23131)
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchPartyList',
