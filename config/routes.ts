@@ -106,6 +106,18 @@
                 ]
               },
               {
+                name: '订单中心',
+                icon: 'table',
+                path: '/payment',
+                routes: [
+                  {
+                    path: '/payment/order/index',
+                    name: '订单列表',
+                    component: './Order/index'
+                  }
+                ]
+              },
+              {
                 path: 'success',
                 component: '../utils/public/success',
               },

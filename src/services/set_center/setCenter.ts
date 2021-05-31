@@ -73,7 +73,7 @@ export async function addNewsInfos(params: NewsInfosType) {
   });
 }
 
-export async function fetchNewsList(params: NewsLimitType) {
+export async function fetchNews(params: NewsLimitType) {
   return request('/api.request/v1/news/list', {
     method: 'GET',
     params,

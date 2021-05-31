@@ -9,7 +9,7 @@
 import React, { useState, useEffect } from 'react';
 import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Avatar, Space, Modal, Button, Image, Input, Upload } from 'antd';
+import { List, Avatar, Space, Modal, Button, Image, Input, Upload, Switch } from 'antd';
 import { FilePptTwoTone, DeleteTwoTone, PlusOutlined } from '@ant-design/icons';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
@@ -36,6 +36,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
   const [infoIntroduction, setInfoIntroduction] = useState('');
   const [infoPicture, setInfoPicture] = useState('');
   const [infoContent, setInfoContent] = useState('');
+  const [infoIsPublish, setInfoIsPublish] = useState<boolean>(false);
   const uploadButton = (
     <div>
       {<PlusOutlined />}
@@ -51,7 +52,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
           news_label: info.news_label,
           title: infoTitle,
           content: infoContent,
-          is_publish: info.is_publish,
+          is_publish: infoIsPublish,
           introduction: infoIntroduction,
           picture: info.picture,
         },
@@ -64,6 +65,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
     setInfoIntroduction(info.introduction);
     setInfoPicture(info.picture);
     setInfoContent(info.content);
+    setInfoIsPublish(info.is_publish);
   }, [info]);
   return (
     <>
@@ -99,6 +101,17 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
               value={infoIntroduction}
               onChange={(e) => {
                 setInfoIntroduction(e.target.value);
+              }}
+            />
+          </div>
+          <div className="change-isPublish">
+            <span>是否发布：</span>
+            <Switch
+              className="change-isPublish-input"
+              defaultChecked={infoIsPublish}
+              onChange={(val) => {
+                setInfoIsPublish(val);
+                console.log(val)
               }}
             />
           </div>
