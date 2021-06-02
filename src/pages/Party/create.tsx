@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-30 18:13:34
+ * @LastEditTime: 2021-06-01 21:13:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -80,7 +80,6 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         localStorage.setItem('partyCourseInfos', text);
         setCourseWork(text)
       };
-      console.log(linkGoods)
     return (
         <PageContainer 
         extra={[
@@ -113,7 +112,10 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
                     })
                 }
         </Select>
-         <Input.TextArea placeholder="请在此填写课程简介" style={{ width: 700 , marginBottom: '20px'}} onChange={
+         <Input.TextArea 
+         maxLength={130}
+         placeholder="请在此填写课程简介130字以内" 
+         style={{ width: 700 , marginBottom: '20px'}} onChange={
             (e) =>{
                 setCourseBrief(e.target.value)
             }

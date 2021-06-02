@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Avatar, Space, Modal, Button, Image } from 'antd';
+import { List, Avatar, Modal, Button, Image } from 'antd';
 import { FilePptTwoTone, DeleteTwoTone, VideoCameraTwoTone } from '@ant-design/icons';
-import { getLength, ConBindObjArr } from '@/utils/public/tools.tsx'
+import { getLength, ConBindObjArr, ifAccountExist, IconText} from '@/utils/public/tools.tsx'
 import ShowPartyDetails from './change'
 import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
 
-const IconText = ({ icon, text }) => (
-  <Space>
-    {React.createElement(icon)}
-    {text}
-  </Space>
-);
-
 interface PartyCourseProps {
   dispatch: Dispatch;
   CoureseEnity: any;
+  CourseGoods: any;
+  UserInfos: any;
+  AccountList: any;
 }
 
 const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
@@ -27,7 +23,12 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   const [ showCreate, setShowCreate] = useState<boolean>(false);
   const [ showDetails, setShowDetails ] = useState<boolean>(false);
   const [ showDetailsInfos, setShowDetailsInfos ] = useState<any>({});
-  console.log(ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id'),23131)
+  const partyCourseList = ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id','goods_infos')
+  const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
+  const UserInfos = JSON.parse(sessionStorage.getItem('useInfos')??'{}')
+  const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
+  console.log(partyCourseListWAcc)
+  
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchPartyList',
@@ -43,6 +44,9 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         page: 1
       }
     })
+    dispatch({
+      type: 'partyaccount/getLoginUserInfos'
+    })
     request('/api.monitor/data/pvuv', {
       method: 'GET',
       params:  {'date': '2021-5'}
@@ -50,8 +54,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
       // console.log(data);
     });
 
-  }, []);
-  console.log(CourseGoods)
+ }, []);
   return (
     <PageContainer
       ghost={false}
@@ -75,7 +78,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
           },
           pageSize: 10,
         }}
-        dataSource={CoureseEnity}
+        dataSource={partyCourseListWAcc}
         footer={
           <div>
             <b>全国总工会</b> 惠福党建中心
@@ -87,15 +90,16 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
             key={item.title}
             actions={[
               <IconText
-                icon={FilePptTwoTone}
-               text={<span>{`${getLength(item.data.ppt)} 份`}</span>}
+                icon={<FilePptTwoTone twoToneColor="red" />}
+                text={<span>{`${getLength(item.data.ppt)} 份`}</span>}
                 key="list-vertical-message"
               />,
-              <IconText icon =  {VideoCameraTwoTone} 
+              <IconText 
+              icon =  {<VideoCameraTwoTone twoToneColor="red"  />} 
               text={`${getLength(item.data.video)} 个`}
               />,
               <IconText
-                icon={DeleteTwoTone}
+              icon={<DeleteTwoTone twoToneColor="red"/>}
                 text={
                   <span
                     onClick={() => {
@@ -128,26 +132,34 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
               title={<a >{ `党建系列课 ${item.name}`}</a>}
               description={ <div>
                 <strong>创建人: </strong>
-                <span>{item.account_id}</span>
+                <span>{ifAccountExist(item.account_infos.nickname)}</span>
               </div>}
             />
-            {<strong style={{marginLeft: 60}}>{item.course_brief}</strong>}
+            {<section style={{marginLeft: 60, maxHeight: '2.5vw', overflow: 'hidden'}}>
+              <strong >{item.course_brief}</strong></section>}
           </List.Item>
         )}
       />
       </div>
-      </section>
-      ,
+      </section> 
+
       <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width='88vw' >
         <CreatePartyCourse />
       </Modal>
-      <ShowPartyDetails show={showDetails} onCloseDrawer={setShowDetails} showInfos={showDetailsInfos} />
+      <section>{
+        showDetails ? 
+      <ShowPartyDetails show={showDetails} onCloseDrawer={setShowDetails} showInfos={showDetailsInfos} /> :null
+        }
+      </section>
+
     </PageContainer>
   );
 };
 
-export default connect(({ partycourse }: any) => ({
+export default connect(({ partycourse, partyaccount }: any) => ({
   CoureseEnity: get(partycourse, 'CoureseEnity', []),
   UploadStatus: get(partycourse, 'status', false),
-  CourseGoods: get(partycourse,'CourseGoods',[])
+  CourseGoods: get(partycourse,'CourseGoods',[]),
+  // AccountList: get(partyaccount,'AccountInfos',[]),
+  // UserInfos: get(partyaccount,'UserInfos',{})
 }))(PartyCourseList);

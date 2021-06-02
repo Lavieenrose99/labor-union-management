@@ -9,6 +9,7 @@ import type { StateType } from '@/models/login';
 import type { LoginParamsType } from '@/services/login';
 import type { ConnectState } from '@/models/connect';
 import SignUpPages from './createLoginUser';
+import { get } from 'lodash'
 
 import styles from './index.less';
 
@@ -40,14 +41,13 @@ const Login: React.FC<LoginProps> = (props) => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const handleSubmit = (values: LoginParamsType) => {
+  const handleSubmit = async(values: LoginParamsType) => {
     const { dispatch } = props;
-    dispatch({
+    await dispatch({
       type: 'login/login',
       payload: { ...values },
     });
-
-    request('/api.request/account/login/login_by_email', {
+    await request('/api.request/v1/account/login/login_by_email', {
       method: 'POST',
       data: {
         email: values.email,
@@ -60,6 +60,20 @@ const Login: React.FC<LoginProps> = (props) => {
         message.error('请检查账号密码是否有误');
       }
     })
+
+    await dispatch({
+      type: 'partyaccount/getAccountList',
+      payload: {
+        page: 1,
+        limit: 99
+      }
+    })
+
+    await dispatch({
+      type: 'partyaccount/getLoginUserInfos'
+    })
+
+ 
 
   
 };
@@ -154,7 +168,9 @@ const Login: React.FC<LoginProps> = (props) => {
   );
 };
 
-export default connect(({ login, loading }: ConnectState) => ({
+export default connect(({ login, loading, partyaccount}: ConnectState) => ({
   userLogin: login,
   submitting: loading.effects['login/login'],
+  AccountList: get(partyaccount,'AccountInfos',[]),
+  UserInfos: get(partyaccount,'UserInfos',{})
 }))(Login);
