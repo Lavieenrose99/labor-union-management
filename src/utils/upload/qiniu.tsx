@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-05-30 18:09:43
+ * @LastEditTime: 2021-06-02 11:01:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
@@ -20,7 +20,7 @@ import { map } from 'lodash'
 const QINIU_SERVER = 'https://upload-z2.qiniup.com';
 const BASE_QINIU_URL = 'http://qiniu.fmg.net.cn/';
 
-type large = '70vw'
+type large = '60vw'
 type middle = '50vw'
 interface UploadAntdProps extends UploadTextProps{
     listshowType: "picture" | "text" | "picture-card" 

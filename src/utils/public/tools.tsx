@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-01 17:23:25
+ * @LastEditTime: 2021-06-02 15:10:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -9,9 +9,10 @@
 import React from 'react'
 import { createFromIconfontCN } from '@ant-design/icons';
 import { Space, Tag } from 'antd'
+import { sum, map } from 'lodash'
 
 export const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2580517_aygv90p5lh.js',
+  scriptUrl: '//at.alicdn.com/t/font_2580518_szvm4a1dx2.js',
 });
 
 export const getLength = (arr:any) => {
@@ -25,6 +26,15 @@ export const IconText = ({ icon, text }) => (
     {text}
   </Space>
 );
+
+export const FinalPvUvAmount = (arr:[]) =>{
+  // const UvSum = sum(map(arr,'uv'))
+  const PvSum  =sum(map(arr,'pv'))
+  return{
+    // 'uvSum': UvSum,
+    'pvSum': PvSum
+  }
+}
 
 /*
 集合对象 传入两个对象数组以及两个数组中各个对象需要匹配的字段,最后一个参数是新的集合属性名

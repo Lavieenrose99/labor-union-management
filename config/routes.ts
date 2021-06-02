@@ -28,17 +28,17 @@
                 redirect: '/admin',
               },
               {
-                path: '/admin',
+                path: '/monitor',
                 name: '监控页面',
                 icon: 'crown',
-                component: './Admin',
+                component: './Monitor',
                 // authority: ['admin'],
                 routes: [
                   {
-                    path: '/admin/sub-page',
-                    name: 'sub-page',
+                    path: '/monitor/index',
+                    name: '监控页面',
                     icon: 'smile',
-                    component: './Welcome',
+                    component: './Monitor/index.tsx',
                     // authority: ['admin'],
                   },
                 ],

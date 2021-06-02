@@ -8,7 +8,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Modal, Button, Tag} from 'antd';
+import { List, Modal, Button, Tag, Image} from 'antd';
 import type { Dispatch } from 'umi';
 import InfosCreator from './create';
 import TagsCreator from './tags_create';
@@ -17,7 +17,9 @@ import { get } from 'lodash';
 import { BASE_QINIU_URL } from '@/utils/upload/qiniu';
 import { filterHTMLStr } from '../../utils/adjust_picture';
 import './index.less';
-import NewsChange from './change';
+import NewsChanger from './change';
+import { DeleteTwoTone } from '@ant-design/icons';
+import { IconFont } from '@/utils/public/tools';
 
 interface INewsType {
   dispatch: Dispatch;
@@ -50,6 +52,7 @@ const NewsList: React.FC<INewsType> = (props) => {
       },
     });
   }, []);
+  console.log(NewsEnity)
   return (
     <>
       <PageContainer
@@ -74,7 +77,7 @@ const NewsList: React.FC<INewsType> = (props) => {
             onClick={()=> setTagSelect(0)}
           >全部</CheckableTag>
           {
-            InfosTags.map((item) => {
+            InfosTags.map((item: any) => {
               return (
                 <CheckableTag checked={tagSelect === item.id} 
                 onClick={()=> setTagSelect(item.id)}>
@@ -102,22 +105,43 @@ const NewsList: React.FC<INewsType> = (props) => {
                 <b>全国总工会</b> 惠福党建中心
               </div>
             }
-            renderItem={(item) => (
+            renderItem={(item: any) => (
               <List.Item
                 key={item.id}
                 extra={
-                  <img
-                    style={{ marginTop: 20 }}
+                  <Image
                     width={160}
                     height={100}
                     src={item.picture? item.picture : 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'}
                   />
                 }
+                actions={[
+                  <span
+                    className="action"
+                    onClick={() => {
+                      Modal.info({
+                        title: '惠福管理后台',
+                        content: '确认要删除该资讯吗',
+                        okText: '确认',
+                        onOk: () => {
+                          dispatch({
+                            type: 'setcentermodel/deleteNewsEnity',
+                            payload: item.id
+                          })
+                        },
+                        closable: true,
+                      });
+                    }}
+                    >
+                    <DeleteTwoTone twoToneColor="#ff0000" /> 删除资讯
+                  </span>
+                ]}
               >
                 <List.Item.Meta
                   title={<a href={item.href}>{item.title}</a>}
                   description={
                     <span
+                      className="action"
                       onClick={() => {
                         setShowChange(true);
                         setChangeItem(item);
@@ -135,7 +159,7 @@ const NewsList: React.FC<INewsType> = (props) => {
           />
         </div>
         <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width={400}></Modal>
-        <NewsChange showModal={showChange} closeChangeModal={setShowChange} info={changeItem} />
+        <NewsChanger showModal={showChange} closeChangeModal={setShowChange} info={changeItem} />
       </PageContainer>
       <InfosCreator show={showAddModal} closeInfosModel={setShowAddModal} />
       <TagsCreator show={showAddTagsModal} closeInfosModel={setShowTagsAddModal} />

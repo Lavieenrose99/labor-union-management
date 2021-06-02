@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-17 17:05:48
- * @LastEditTime: 2021-05-30 18:10:11
+ * @LastEditTime: 2021-06-02 11:11:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/richTextUpload.tsx
@@ -36,7 +36,7 @@ Quill.register('modules/imageDrop', ImageDrop);
 class RichTextEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: this.props.defaultText, qiniutoken: '', propWidth: this.props.width }; // You can also pass a Quill Delta here
+    this.state = { text: this.props.defaultText, qiniutoken: '', propWidth: this.props.width, propHeight: this.props.height }; // You can also pass a Quill Delta here
     this.handleChange = this.handleChange.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.changeImageBeforeUpload = this.changeImageBeforeUpload.bind(this);
@@ -173,9 +173,9 @@ class RichTextEditor extends Component {
       });
     }
     render() {
-      const { uploadBoxVisible, src, text, size } = this.state;
+      const { uploadBoxVisible, src, text, size, propWidth, propHeight } = this.state;
       return (
-        <div style={{ height: 400 }}> 
+        <div style={{ minHeight: propHeight , backgroundColor: 'white', maxWidth: propWidth }}> 
           <ReactQuill
             id="ddd"
             ref={(el) => { this.reactQuillRef = el; }}
@@ -183,7 +183,7 @@ class RichTextEditor extends Component {
             onChange={this.handleChange}
             theme="snow"
             modules={this.modules}
-            style={{ height: 300, width: size }}
+            style={{ height: propHeight, width: size }}
           />
           <Modal
             title="上传图片"

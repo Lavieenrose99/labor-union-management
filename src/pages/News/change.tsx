@@ -29,7 +29,7 @@ interface INewsChangeType {
   dispatch: Dispatch;
 }
 
-const NewsChange: React.FC<INewsChangeType> = (props) => {
+const NewsChanger: React.FC<INewsChangeType> = (props) => {
   const { showModal, closeChangeModal, info, dispatch } = props;
   const { TextArea } = Input;
   const [infoTitle, setInfoTitle] = useState('');
@@ -54,7 +54,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
           content: infoContent,
           is_publish: infoIsPublish,
           introduction: infoIntroduction,
-          picture: info.picture,
+          picture: infoPicture,
         },
         updateId: info.id,
       },
@@ -111,7 +111,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
               defaultChecked={infoIsPublish}
               onChange={(val) => {
                 setInfoIsPublish(val);
-                console.log(val)
+                console.log(val);
               }}
             />
           </div>
@@ -126,7 +126,7 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
                 }}
               >
                 {infoPicture ? (
-                  <img src={infoPicture} alt="picture" style={{ width: '100%' }} />
+                  <img src={ infoPicture } alt="picture" style={{ width: '100%' }} />
                 ) : (
                   uploadButton
                 )}
@@ -134,7 +134,8 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
             </div>
           </div>
           <div className="change-content">
-            <RichTextEditor defaultText={infoContent} width={1080} />
+            <RichTextEditor
+              defaultText={infoContent} width={1080} />
           </div>
         </div>
       </Modal>
@@ -142,4 +143,4 @@ const NewsChange: React.FC<INewsChangeType> = (props) => {
   );
 };
 
-export default connect(({ setcentermodel }: any) => ({}))(NewsChange);
+export default connect(({ setcentermodel }: any) => ({}))(NewsChanger);

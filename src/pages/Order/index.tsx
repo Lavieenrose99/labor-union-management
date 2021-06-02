@@ -2,7 +2,7 @@
  * @Author: SolitaryOrz
  * @Date: 2021-05-30 17:09:02
  * @Last Modified by: SolitaryOrz
- * @Last Modified time: 2021-05-30 22:42:17
+ * @Last Modified time: 2021-05-31 15:18:19
  */
 
 import React, { useState, useEffect } from 'react';
@@ -50,20 +50,23 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
     {
       title: '订单编号',
       dataIndex: 'number',
+      key: 'number',
       className: 'order-list-number',
-      align: 'center',
+      align: 'center' as 'center',
       width: 260,
     },
     {
       title: '用户id',
       dataIndex: 'account_id',
-      align: 'center',
+      key: 'account_id',
+      align: 'center' as 'center',
       width: 140,
     },
     {
       title: '订单状态',
       dataIndex: 'status',
-      align: 'center',
+      key: 'status',
+      align: 'center' as 'center',
       width: 110,
       render: (statusNum: number) => (
         <span>{statusStr.find((item) => statusNum === item.num)?.str}</span>
@@ -72,19 +75,22 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
     {
       title: '购买数量',
       dataIndex: 'total',
-      align: 'center',
+      key: 'total',
+      align: 'center' as 'center',
       width: 100,
     },
     {
       title: '总价',
       dataIndex: 'total_price',
-      align: 'center',
+      key: 'total_price',
+      align: 'center' as 'center',
       width: 140,
     },
     {
       title: '创建时间',
       dataIndex: 'create_time',
-      align: 'center',
+      key: 'create_time',
+      align: 'center' as 'center',
       width: 240,
       render: (createTime: number) => (
         <span>{moment(createTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
@@ -93,7 +99,8 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
     {
       title: '更新时间',
       dataIndex: 'update_time',
-      align: 'center',
+      key: 'update_time',
+      align: 'center' as 'center',
       width: 240,
       render: (updateTime: number) => (
         <span>{moment(updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
@@ -102,8 +109,9 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
     {
       title: '操作',
       dataIndex: 'status',
-      align: 'center',
-      render: (itemStatus, item) => (
+      key: 'action',
+      align: 'center' as 'center',
+      render: (itemStatus: string, item: any) => (
         <Button
           onClick={() => {
             dispatch({
@@ -152,7 +160,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             }}
           >
             {listSelect.map((item) => (
-              <Option value={item}>{item}</Option>
+              <Option value={item} key={item}>{item}</Option>
             ))}
           </Select>
           <Search
