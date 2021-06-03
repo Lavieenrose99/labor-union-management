@@ -25,7 +25,7 @@
             routes: [
               {
                 path: '/',
-                redirect: '/admin',
+                redirect: '/monitor',
               },
               {
                 path: '/monitor',
