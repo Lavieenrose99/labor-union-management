@@ -23,8 +23,8 @@ const  GoodsChanger = (props) => {
   const [ infoPrice, setInfoPrice ] = useState(0)
   const [infoBrief, setInfoBrief] = useState('');
   const [infoIsOn, setInfoIsOn ] = useState(false);
-  const [ infoCover, setInfoCover ] = useState(StroageCoverS);
-  const [ infoPictures, setInfoPictures ] = useState(StroagePictureS);
+  const [ infoCover, setInfoCover ] = useState('');
+  const [ infoPictures, setInfoPictures ] = useState();
   console.log(info)
   useEffect(() => {
     setInfoName(info.name)
@@ -35,6 +35,8 @@ const  GoodsChanger = (props) => {
     setInfoPictures(info.pictures)
     setInfoBrief(info.brief)
   }, [info])
+  console.log(infoCover)
+  console.log(infoPictures)
   return (
     <>
       <Modal
@@ -151,7 +153,7 @@ const  GoodsChanger = (props) => {
               {' '}
             </span>
            <UploadAntd 
-             fileStorage={StroageCover}
+             propsFileItem={infoCover}
              showType="normal"
              setUrl={setInfoCover}
              childFileType='picture'
@@ -168,7 +170,7 @@ const  GoodsChanger = (props) => {
               {' '}
             </span>
            <UploadAntd 
-             fileStorage={StroagePictures}
+             propsFileArr={infoPictures}
              showType="normal"
              setUrl={setInfoPictures}
              childFileType='picture'

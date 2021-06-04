@@ -105,12 +105,26 @@ const RollingPictureModal: AccountModelType = {
         limit: 99,
         page: 1,
       });
+      yield put({
+        type: 'fetchInfosTagsList',
+         payload: {
+           limit: 99,
+            page: 1
+         }
+      })
       if (response.id > 0) {
         message.info('添加成功');
       }
     },
     *putInfosTags({ payload }, { call }) {
       const { response } = yield call(putInfosTags, payload);
+      yield put({
+        type: 'fetchInfosTagsList',
+         payload: {
+           limit: 99,
+            page: 1
+         }
+      })
       if (response.id > 0) {
         message.info('修改成功');
       }

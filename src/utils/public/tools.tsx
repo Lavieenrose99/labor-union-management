@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-04 17:14:35
+ * @LastEditTime: 2021-06-04 20:16:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -82,7 +82,6 @@ export const PvUvCompareByUrls = (arr: [])=>{
       }
       data.push(dataItem)
   })
-  console.log(flatten(data))
   return flatten(data)
   
 }
@@ -124,12 +123,13 @@ export const ifAccountExist = (value: string)=>{
 
 //为七牛上传判断类型的函数（待优化）
 export const judgeNullForUpload = (item1: any, item2: any, item3: any)=>{
-  console.log(item1,item2,item3)
       if(item1.length){
         return item1
       }else if(item2.length){
         return item2
-      }else{
+      }else if(item3){
         return [{'url': item3}]
+      }else{
+        return []
       }
 }

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-06-04 16:01:30
+ * @LastEditTime: 2021-06-04 20:51:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -19,23 +19,30 @@ import { filterHTMLStr } from '../../utils/adjust_picture';
 import './index.less';
 import NewsChanger from './change';
 import { DeleteTwoTone } from '@ant-design/icons';
-import { IconFont } from '@/utils/public/tools';
+
 
 interface INewsType {
   dispatch: Dispatch;
   NewsEnity: any;
   InfosTags: any;
+  pageNum: any;
 }
 
 const NewsList: React.FC<INewsType> = (props) => {
-  const { dispatch, NewsEnity, InfosTags } = props;
+  const { dispatch, NewsEnity, InfosTags,  pageNum } = props;
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [showChange, setShowChange] = useState(false);
   const [changeItem, setChangeItem] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAddTagsModal, setShowTagsAddModal] = useState(false);
   const [tagSelect, setTagSelect] = useState<number>(0)
+
+  const  [pageSize, setPageSize] = useState(5);
+  const  [pageCurrent, setpageCurrent] = useState(1);
   const { CheckableTag } = Tag;
+
+
+
   useEffect(() => {
     dispatch({
       type: 'setcentermodel/fetchNewsList',
@@ -73,13 +80,29 @@ const NewsList: React.FC<INewsType> = (props) => {
       >
         <div className="news-tags">
           <CheckableTag checked={tagSelect === 0}
-            onClick={()=> setTagSelect(0)}
+            onClick={()=> { setTagSelect(0);
+              dispatch({
+                type: 'setcentermodel/fetchNewsList',
+                payload: {
+                  page: pageCurrent,
+                  limit: pageSize, 
+                  news_label_id: 0
+                },
+              })}}
           >全部</CheckableTag>
           {
             InfosTags.map((item: any) => {
               return (
                 <CheckableTag checked={tagSelect === item.id} 
-                onClick={()=> setTagSelect(item.id)}>
+                onClick={()=> { setTagSelect(item.id);
+                  dispatch({
+                    type: 'setcentermodel/fetchNewsList',
+                    payload: {
+                      page: pageCurrent,
+                      limit: pageSize, 
+                      news_label_id: item.id
+                    },
+                  })}}>
                   {item.name}
                   </CheckableTag>
               )
@@ -93,11 +116,24 @@ const NewsList: React.FC<INewsType> = (props) => {
             itemLayout="vertical"
             size="large"
             pagination={{
-              onChange: (page) => {
-                console.log(page);
-              },
-              pageSize: 10,
-            }}
+               total: pageNum,
+               pageSize,
+               onShowSizeChange: (current, size) => {
+                  setPageSize(size);
+                 },
+                onChange: (page, size) => {
+               setpageCurrent(page);
+               dispatch({
+                type: 'setcentermodel/fetchNewsList',
+                payload: {
+                  page,
+                  limit: size, 
+                  news_label_id: tagSelect
+                },
+              });
+            },
+            showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
+          }}
             dataSource={NewsEnity}
             footer={
               <div>
@@ -164,7 +200,7 @@ const NewsList: React.FC<INewsType> = (props) => {
         <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width={400}></Modal>
         <NewsChanger showModal={showChange} closeChangeModal={setShowChange} info={changeItem} />
       </PageContainer>
-      <InfosCreator show={showAddModal} closeInfosModel={setShowAddModal} />
+      <InfosCreator show={showAddModal} closeInfosModel={setShowAddModal} CoverStroage="newsCover" />
       <TagsCreator show={showAddTagsModal} closeInfosModel={setShowTagsAddModal} />
     </>
   );
@@ -173,4 +209,5 @@ const NewsList: React.FC<INewsType> = (props) => {
 export default connect(({ setcentermodel }: any) => ({
   NewsEnity: get(setcentermodel, 'NewsEnity', []),
   InfosTags: get(setcentermodel, 'InfosTags', []),
+  pageNum: get(setcentermodel,'pagination',0)
 }))(NewsList);

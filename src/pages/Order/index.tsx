@@ -42,7 +42,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
     { num: 0, str: '全部' },
     { num: 1, str: '待支付' },
     { num: 2, str: '已支付' },
-    { num: 3, str: '已取消' },
+    { num: 4, str: '已取消' },
     { num: undefined, str: '未知' },
   ];
   const columns = [];
