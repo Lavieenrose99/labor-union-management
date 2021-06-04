@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-04-23 09:35:25
+ * @LastEditTime: 2021-06-01 16:39:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/login.ts
@@ -21,7 +21,7 @@ export async function fakeAccountLogin(params: LoginParamsType) {
 }
 
 export async function AccountLogin(params: LoginParamsType) {
-  return request('/api.request/account/login/login_by_email', {
+  return request('/api.request/v1/account/login/login_by_email', {
     method: 'POST',
     data: params,
   });

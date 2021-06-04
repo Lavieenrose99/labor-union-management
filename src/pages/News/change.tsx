@@ -43,7 +43,9 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
-  const handlePictureChange = () => {};
+  const handlePictureChange = () => {
+    
+  };
   const handleSubmit = () => {
     dispatch({
       type: 'setcentermodel/changeNewsEnity',

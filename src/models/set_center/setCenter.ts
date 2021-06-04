@@ -1,19 +1,4 @@
-/*
- * @Author: your name
- * @Date: 2021-05-19 10:57:15
- * @LastEditTime: 2021-05-30 21:41:24
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/models/set_center/setCenter.ts
- */
-/*
- * @Author: your name
- * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-12 14:44:39
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/models/party/party_course.ts
- */
+
 import type { Effect, Reducer } from 'umi';
 import { message } from 'antd';
 import {
@@ -108,11 +93,11 @@ const RollingPictureModal: AccountModelType = {
       }
       yield put({
         type: 'fetchInfosTagsList',
-        payload: {
-          limit: 99,
-          page: 1,
-        }
-      });
+         payload: {
+           limit: 99,
+            page: 1
+         }
+      })
     },
     *addInfosTags({ payload }, { call }) {
       const response = yield call(addInfosTags, payload);
