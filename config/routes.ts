@@ -75,21 +75,21 @@
                 // component: './Party/index.tsx',
                 routes: [
                   {
-                    path: '/party/course/index',
-                    name: '班级中心',
-                    component: './Class/index',
-                  },
-                  {
                     path: '/party/index',
                     name: '课程列表',
                     component: './Party/index.tsx',
                   },
                   {
-                    path: '/party/create',
-                    name: '创建课程',
-                    icon: 'smile',
-                    component: './Party/create.tsx',
+                    path: '/party/course/index',
+                    name: '班级中心',
+                    component: './Class/index',
                   },
+                  // {
+                  //   path: '/party/create',
+                  //   name: '创建课程',
+                  //   icon: 'smile',
+                  //   component: './Party/create.tsx',
+                  // },
                 ],
               },
               {

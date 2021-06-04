@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-03 16:48:38
+ * @LastEditTime: 2021-06-04 09:03:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -9,7 +9,7 @@
 import React from 'react'
 import { createFromIconfontCN } from '@ant-design/icons';
 import { Space, Tag } from 'antd'
-import { sum, map, groupBy } from 'lodash'
+import { sum, map, groupBy, flatten } from 'lodash'
 
 export const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_2580518_szvm4a1dx2.js',
@@ -58,10 +58,47 @@ export const PvUvGroupByUrls = (arr: [])=>{
         DateGroupByUrls.push({
           name: DataGroupByUrlsName[index],
           value: sum(map(item,'pv')),
-          uv: 1,
+          uv: 2,
         })
   })
   return DateGroupByUrls
+  
+}
+//时段urls对比
+export const PvUvCompareByUrls = (arr: [])=>{
+  const DateGroupByUrlsRaw = groupBy(arr,'name')
+  const DateGroupByUrlsData = Object.values(DateGroupByUrlsRaw)
+  const DataGroupByUrlsName = Object.keys(DateGroupByUrlsRaw)
+  const data: any = []
+  DateGroupByUrlsData .forEach((item:any,index:number)=>{
+      const dataItem = []
+      const groupByHour = groupBy(item,'hour')
+      for(let i = 0; i < 24; i++){
+        dataItem.push({
+          url: DataGroupByUrlsName[index],
+          '访问量':sum(map(groupByHour[i],'pv')),
+          '时段': `${i} 点`,
+        })
+      }
+      data.push(dataItem)
+  })
+  console.log(flatten(data))
+  return flatten(data)
+  
+}
+
+//时段排序
+export const PvUvGroupBytime = (arr: [])=>{
+
+  const dataGroupTime = groupBy(arr,'hour')
+  const data = []
+  for(let i = 0; i < 24; i++){
+        data.push({
+          hour: `${i} 点`,
+          '访问量': sum(map(dataGroupTime[i],'pv'))
+        })
+  }
+  return data
   
 }
 

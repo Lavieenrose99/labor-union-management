@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-13 16:49:13
- * @LastEditTime: 2021-06-03 16:57:12
+ * @LastEditTime: 2021-06-04 09:27:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Monitor/index.tsx
@@ -10,12 +10,15 @@
 import React, { useState, useEffect } from 'react';
 import {
     Table,
-    Select
+    Select,
+    Statistic
 } from 'antd'
 import {
     FinalPvUvAmount,
     PvUvGroupByDate,
-    PvUvGroupByUrls
+    PvUvGroupByUrls,
+    PvUvGroupBytime,
+    PvUvCompareByUrls
 } from '@/utils/public/tools.tsx'
 import {
     DateSelector,
@@ -24,7 +27,7 @@ import {
 }from '@/utils/public/date'
 import request from '@/utils/request';
 import { UrlsRank } from '@/utils/Table/monitor'
-import { Chart, LineAdvance} from 'bizcharts';
+import { Chart, LineAdvance,  Legend, Area } from 'bizcharts';
 import './index.less'
 
 const { Option } = Select
@@ -37,11 +40,9 @@ const MonitorIndex: React.FC = ()=>{
     const [ periodDataByDateRaw, setPeriodDataByDateRaw ] = useState([])
     const [ periodDataByDateSum, setPeriodDateByDateSum ] = useState([])
     const [ periodDataByUrls, setPeriodDateByUrls ] = useState([])
+    const [ periodDataByTime, setPeriodDateByTime ] = useState([])
+    const [ dataUrlCompare, setDataUrlCompare ] = useState([])
 
-    const handleTimeRegion: any = (value)=>{
-            // console.log(value)
-            // console.log(moment(value[0]).format('YYYY-MM-DD-HH-mm'))
-    }
     const GetDateByDate: any =  async(arr: [], CopyData: [], CopyDataByDate: [])=>{
         await request('/api.monitor/data/pvuv', {
             method: 'GET',
@@ -64,21 +65,21 @@ const MonitorIndex: React.FC = ()=>{
     }
    
     useEffect(() => {
-        TimeInterval(7)
+        TimeInterval(3)
      }, []);
 
     useEffect(()=>{
+        setDataUrlCompare(PvUvCompareByUrls(periodDataRaw))
+        setPeriodDateByTime(PvUvGroupBytime(periodDataRaw))
         setPvUvSum(FinalPvUvAmount(periodDataRaw))
         setPeriodDateByUrls(PvUvGroupByUrls(periodDataRaw))
-    },[periodDataRaw])
-    useEffect(()=>{
         setPeriodDateByDateSum(PvUvGroupByDate(periodDataByDateRaw))
-    },[periodDataByDateRaw])
+    },[periodDataRaw,periodDataByDateRaw])
     return (
         <>
         <section  className="monitor_index_header_container">
           <Select style={{ width: 200, display: 'block'}} 
-            defaultValue={DateSelector[1].value} 
+            defaultValue={DateSelector[0].value} 
             onChange={TimeInterval}>
                 {
                     DateSelector.map(item=>{
@@ -92,11 +93,27 @@ const MonitorIndex: React.FC = ()=>{
                     })
                 }
             </Select>
-            <div style={{ margin: 20}}>总访问量:{PvUvSum.pvSum}</div>
+            <section className="monitor_index_header_sum">
+            <Statistic title="访问量(pv)" value={PvUvSum.pvSum} style={{ margin: 20 }} />
+            <Statistic title="用户量(uv)" value={2} style={{ margin: 20 }}  />
+            </section>
         <section className="monitor_index_header">
             <section className="long_period_line_chart_coantianer">
-            <Chart padding={[10, 20, 50, 40]} autoFit height={300} data={periodDataByDateSum} >
+    <Chart padding={[70, 70, 70, 70]} autoFit height={400} data={dataUrlCompare} >
+            <Legend />
 		<LineAdvance
+            label="访问量"
+			shape="smooth"
+			point
+			area
+			position="时段*访问量"
+			color="url"
+		/>
+	</Chart>
+            <Chart padding={[70, 70, 70, 70]} autoFit height={400} data={periodDataByDateSum} >
+            <Legend />
+		<LineAdvance
+            label={["value", { style: { fill: 'blue' } }]}
 			shape="smooth"
 			point
 			area
@@ -104,13 +121,13 @@ const MonitorIndex: React.FC = ()=>{
 			color="name"
 		/>
 	</Chart>
+    <Chart padding={[70, 70, 70, 70]} autoFit height={400} data={periodDataByTime} >
+
+        <Area position="hour*访问量" shape='smooth' color="#fc0040" />
+	</Chart>
         </section>
         </section>
         </section>
-        {/* <DatePicker.RangePicker onChange={handleTimeRegion}
-        format="YYYY-MM-DD HH:mm"
-        showTime 
-        /> */}
         <section className="url_anslysis">
             <Table 
               dataSource={periodDataByUrls}
@@ -118,7 +135,6 @@ const MonitorIndex: React.FC = ()=>{
             
             />
         </section>
-      
         </>
     )
 }
