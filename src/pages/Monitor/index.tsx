@@ -1,13 +1,15 @@
 /*
  * @Author: your name
  * @Date: 2021-05-13 16:49:13
- * @LastEditTime: 2021-06-04 09:27:17
+ * @LastEditTime: 2021-06-04 13:32:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Monitor/index.tsx
  * 
  */
 import React, { useState, useEffect } from 'react';
+import { history } from 'umi'
+import { stringify } from 'querystring';
 import {
     Table,
     Select,
@@ -65,6 +67,17 @@ const MonitorIndex: React.FC = ()=>{
     }
    
     useEffect(() => {
+        console.log((JSON.parse(sessionStorage.getItem('useInfos')??'{}')),'user')
+         if(!(sessionStorage.getItem('useInfos'))){
+             console.log('false')
+            history.replace({
+                pathname: '/user/login',
+                search: stringify({
+                  redirect: window.location.href,
+                }),
+              });
+         }
+        
         TimeInterval(3)
      }, []);
 

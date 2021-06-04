@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-04-23 09:36:22
+ * @LastEditTime: 2021-06-04 10:53:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/login.ts
@@ -63,17 +63,18 @@ const Model: LoginModelType = {
           if (redirectUrlParams.origin === urlParams.origin) {
             redirect = redirect.substr(urlParams.origin.length);
             if (window.routerBase !== '/') {
-              redirect = redirect.replace(window.routerBase, '/');
+              redirect = redirect.replace(window.routerBase, '/content');
             }
             if (redirect.match(/^\/.*#/)) {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
+              console.log(redirect)
             }
           } else {
-            window.location.href = '/';
+            window.location.href = '/content';
             return;
           }
         }
-        history.replace(redirect || '/');
+        history.replace(redirect || '/content/monitor');
       }
     },
 

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-31 17:36:08
- * @LastEditTime: 2021-05-31 22:47:17
+ * @LastEditTime: 2021-06-04 13:22:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/set_center/account.ts
