@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:22:53
- * @LastEditTime: 2021-05-30 21:44:19
+ * @LastEditTime: 2021-06-04 10:20:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/SetCenter/rolling_picture.tsx
@@ -33,9 +33,8 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
       const  [pageSize, setPageSize] = useState(12);
       const  [pageCurrent, setpageCurrent] = useState(1);
       const [ showCreate, setShowCreate ] = useState<boolean>(false)
-      console.log(RollingsEnity,CoureseEnity)
+      const [changeRollings, setChangeRollings ] = useState([])
        
-
     useEffect(()=>{
         dispatch({
             type: 'setcentermodel/fetchRollingsList'
@@ -53,29 +52,12 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
     const handleRollings: any = ()=>{
         props.dispatch({
             type: 'setcentermodel/addRollingPictures',
-            payload: [39,41]
+            payload: changeRollings
         })
     }
-
-    const listData = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < CoureseEnity.length; i++) {
-      listData.push({
-        id: CoureseEnity[i].id,
-        href: 'https://ant.design',
-        video: CoureseEnity[i].data.course_video,
-        title: `党建系列课 ${CoureseEnity[i].name}`,
-        avatar: 'https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg',
-        description: <div><strong>创建人: </strong><span>{CoureseEnity[i].data.person}</span></div>,
-        ppt: CoureseEnity[i].course_ppt,
-        content: CoureseEnity[i].course_brief,
-        cover: CoureseEnity[i].course_cover
-      });
+    const handleChange: any = (e)=>{
+      setChangeRollings(e)
     }
-   
-    const ids = map(CoureseEnity,'name')
-
-    console.log(RollingsEnity)
     return(
         <>
          <PageContainer 
@@ -90,27 +72,28 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
             RollingsEnity.map((item: any)=>{
                 return(
                     <div>
-                    <img src={item.course_cover} width={400}/>
+                    <Image src={item.course_cover} width={400} height={200}/>
                     </div>
                 )
             })
         }
          </Carousel>
         </section>
+        <section className="carousel_list_container">
         <List
          grid={{ gutter: 16, column: 4 }}
          bordered
-    itemLayout="vertical"
-    size="large"
-    pagination={{
-      total: pageTotal,
-      pageSize,
-      onShowSizeChange: (current, size) => {
-        setPageSize(size);
-      },
-      onChange: (page, size) => {
-        setpageCurrent(page);
-        dispatch({
+         itemLayout="vertical"
+         size="large"
+         pagination={{
+        total: pageTotal,
+         pageSize,
+         onShowSizeChange: (current, size) => {
+            setPageSize(size);
+           },
+          onChange: (page, size) => {
+         setpageCurrent(page);
+         dispatch({
           type: 'partycourse/fetchPartyList',
           payload: {
             page,
@@ -120,7 +103,7 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
       },
       showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
     }}
-    dataSource={listData}
+    dataSource={CoureseEnity}
     footer={
       <div>
         <b>全国总工会</b> 惠福党建中心
@@ -128,27 +111,32 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
     }
     renderItem={item => (
       <List.Item>
-      <Card title={item.title}><Image 
-          src={item.cover}
+      <Card title={`党建系列课 ${item.name}`}><Image 
+          src={item.course_cover}
           height={180}
           fallback="http://qiniu.fmg.net.cn/picture-1606378155000"
           /></Card>
     </List.Item>
     )}
   />
-        <Button onClick={handleRollings}>确定</Button>
-        <Modal visible={showCreate} onCancel={()=>setShowCreate(false)} width={400}>
+  </section>
+        <Modal visible={showCreate} 
+        onCancel={()=>setShowCreate(false)} 
+        width={400} 
+        onOk={handleRollings}>
         <Select
+      defaultValue={map(RollingsEnity,'id')}
        mode="multiple"
        showArrow
        style={{ width: '80%', margin: 20}}
+       onChange={handleChange}
   >
-    {
-      ids.map(item => {
+    { 
+      CoureseEnity.map((item: any) => {
         return(
-        <Option value={item}>
+        <Option value={item.id}>
           {
-            item
+            item.name
           }
         </Option>
         )

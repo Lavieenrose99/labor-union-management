@@ -43,6 +43,11 @@ const Login: React.FC<LoginProps> = (props) => {
 
   const handleSubmit = async(values: LoginParamsType) => {
     const { dispatch } = props;
+
+    await dispatch({
+      type: 'partyaccount/getLoginUserInfos'
+    })
+    
     await dispatch({
       type: 'login/login',
       payload: { ...values },
@@ -60,7 +65,6 @@ const Login: React.FC<LoginProps> = (props) => {
         message.error('请检查账号密码是否有误');
       }
     })
-
     await dispatch({
       type: 'partyaccount/getAccountList',
       payload: {
@@ -69,9 +73,6 @@ const Login: React.FC<LoginProps> = (props) => {
       }
     })
 
-    await dispatch({
-      type: 'partyaccount/getLoginUserInfos'
-    })
 
  
 

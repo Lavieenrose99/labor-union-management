@@ -25,7 +25,6 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   const [ showDetailsInfos, setShowDetailsInfos ] = useState<any>({});
   const partyCourseList = ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id','goods_infos')
   const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
-  const UserInfos = JSON.parse(sessionStorage.getItem('useInfos')??'{}')
   const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
   console.log(partyCourseListWAcc)
   
@@ -44,15 +43,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         page: 1
       }
     })
-    dispatch({
-      type: 'partyaccount/getLoginUserInfos'
-    })
-    request('/api.monitor/data/pvuv', {
-      method: 'GET',
-      params:  {'date': '2021-5'}
-    }).then((data) => {
-      // console.log(data);
-    });
+
 
  }, []);
   return (

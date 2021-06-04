@@ -25,20 +25,20 @@
             routes: [
               {
                 path: '/',
-                redirect: '/admin',
+                redirect: '/monitor',
               },
               {
-                path: '/admin',
+                path: '/monitor',
                 name: '监控页面',
                 icon: 'crown',
-                component: './Admin',
+                component: './Monitor',
                 // authority: ['admin'],
                 routes: [
                   {
-                    path: '/admin/sub-page',
-                    name: 'sub-page',
+                    path: '/monitor/index',
+                    name: '监控页面',
                     icon: 'smile',
-                    component: './Welcome',
+                    component: './Monitor/index.tsx',
                     // authority: ['admin'],
                   },
                 ],
@@ -75,21 +75,21 @@
                 // component: './Party/index.tsx',
                 routes: [
                   {
-                    path: '/party/course/index',
-                    name: '班级中心',
-                    component: './Class/index',
-                  },
-                  {
                     path: '/party/index',
                     name: '课程列表',
                     component: './Party/index.tsx',
                   },
                   {
-                    path: '/party/create',
-                    name: '创建课程',
-                    icon: 'smile',
-                    component: './Party/create.tsx',
+                    path: '/party/course/index',
+                    name: '班级中心',
+                    component: './Class/index',
                   },
+                  // {
+                  //   path: '/party/create',
+                  //   name: '创建课程',
+                  //   icon: 'smile',
+                  //   component: './Party/create.tsx',
+                  // },
                 ],
               },
               {

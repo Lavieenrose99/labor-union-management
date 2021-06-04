@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-06-01 21:13:50
+ * @LastEditTime: 2021-06-02 11:29:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -14,6 +14,7 @@ import { Input, Button, message, Spin, Select } from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
 import { get, map } from 'lodash';
+import { IconFont } from '@/utils/public/tools'
 import CreatorPartyCourse from '@/utils/upload/richTextUpload'
 import './index.less'
 
@@ -81,6 +82,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         setCourseWork(text)
       };
     return (
+        <>
         <PageContainer 
         extra={[
             <Button key="3" onClick={()=>localStorage.clear()}>清除缓存</Button>
@@ -88,7 +90,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         >
             <Spin spinning={UploadStatus}>
         <section className="party_course_upload_containter">
-        <Input placeholder="请输入课程名" style={{ width: '20vw' , marginBottom: '20px'}} onChange={
+        <Input placeholder="请输入课程名" style={{ width: '60vw' , marginBottom: '20px'}} onChange={
             (e) =>{
                 setCourseName(e.target.value)
             }
@@ -97,6 +99,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         
         />
             <Select 
+            suffixIcon={ <IconFont type="icon-shangpin" />}
             className="party_goods_select"
             onChange={(e: number)=>setLinkGoods(e)} 
             placeholder="课程关联产品"  >
@@ -115,7 +118,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
          <Input.TextArea 
          maxLength={130}
          placeholder="请在此填写课程简介130字以内" 
-         style={{ width: 700 , marginBottom: '20px'}} onChange={
+         style={{ width: '60vw' , marginBottom: '20px'}} onChange={
             (e) =>{
                 setCourseBrief(e.target.value)
             }
@@ -125,7 +128,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
           fileStorage="courseCover"
           showType="drag"
           childFileType="picture"
-          dragSize="70vw"
+          dragSize="60vw"
           listshowType="picture"
           IntroText="上传课程封面"
           fileCount = {3}
@@ -137,7 +140,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
            fileStorage="pptStorage" 
            showType="drag"
            childFileType="ppt"
-          dragSize="70vw"
+          dragSize="60vw"
           listshowType="text"
           IntroText="上传课程ppt文件"
           fileCount={1}
@@ -147,7 +150,7 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
            fileStorage="videoStorage"
            showType="drag"
            childFileType="video"
-          dragSize="70vw"
+          dragSize="60vw"
           listshowType="picture"
           IntroText="上传课程视频文件"
           fileCount={3}
@@ -157,18 +160,22 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
           />
 
           <CreatorPartyCourse 
+          height="40vh"
+          width ="60vw"
           subscribeRichText={subscribeInfos} 
           defaultText={courseWork}
           />
           </section>
         
           </Spin>
-         <Button 
-         className="submit_party_btn"
-         onClick={
-              handleSubmit
-          }>确认</Button>
+        
          </PageContainer>
+          <Button 
+          className="submit_party_btn"
+          onClick={
+               handleSubmit
+           }>确认</Button>
+           </>
     )
 }
 
