@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-04 09:03:34
+ * @LastEditTime: 2021-06-04 17:14:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -120,4 +120,16 @@ return ifValue ? <Tag color="green">已上架</Tag>:<Tag color="red">未上架</
 
 export const ifAccountExist = (value: string)=>{
   return value ? value : '用户已注销'
+}
+
+//为七牛上传判断类型的函数（待优化）
+export const judgeNullForUpload = (item1: any, item2: any, item3: any)=>{
+  console.log(item1,item2,item3)
+      if(item1.length){
+        return item1
+      }else if(item2.length){
+        return item2
+      }else{
+        return [{'url': item3}]
+      }
 }

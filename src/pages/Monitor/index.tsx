@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-13 16:49:13
- * @LastEditTime: 2021-06-04 13:32:11
+ * @LastEditTime: 2021-06-04 15:08:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Monitor/index.tsx
@@ -69,7 +69,6 @@ const MonitorIndex: React.FC = ()=>{
     useEffect(() => {
         console.log((JSON.parse(sessionStorage.getItem('useInfos')??'{}')),'user')
          if(!(sessionStorage.getItem('useInfos'))){
-             console.log('false')
             history.replace({
                 pathname: '/user/login',
                 search: stringify({

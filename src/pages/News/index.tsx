@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-31 16:00:32
+ * @LastEditTime: 2021-06-04 16:01:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -52,7 +52,6 @@ const NewsList: React.FC<INewsType> = (props) => {
       },
     });
   }, []);
-  console.log(NewsEnity)
   return (
     <>
       <PageContainer
@@ -151,7 +150,11 @@ const NewsList: React.FC<INewsType> = (props) => {
                     </span>
                   }
                 />
-                <article className="party_infos_content_preview">
+                <article    
+                onClick={() => {
+                        setShowChange(true);
+                        setChangeItem(item);
+                      }} className="party_infos_content_preview">
                 {filterHTMLStr(item.content)}
                 </article>
               </List.Item>

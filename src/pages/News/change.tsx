@@ -1,25 +1,20 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-05-24 15:56:08
+ * @LastEditTime: 2021-06-04 17:13:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
  */
 import React, { useState, useEffect } from 'react';
-import request from '@/utils/request';
-import { PageContainer } from '@ant-design/pro-layout';
 import { List, Avatar, Space, Modal, Button, Image, Input, Upload, Switch } from 'antd';
-import { FilePptTwoTone, DeleteTwoTone, PlusOutlined } from '@ant-design/icons';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
-import { BASE_QINIU_URL } from '@/utils/upload/qiniu';
-import { filterHTMLStr } from '../../utils/adjust_picture';
-import { render } from 'react-dom';
 import RichTextEditor from '@/utils/upload/richTextUpload';
 import './change.less';
 import ImgCrop from 'antd-img-crop';
+import { UploadAntd }from '@/utils/upload/qiniu';
 
 // 需要登录才能修改
 interface INewsChangeType {
@@ -39,7 +34,7 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
   const [infoIsPublish, setInfoIsPublish] = useState<boolean>(false);
   const uploadButton = (
     <div>
-      {<PlusOutlined />}
+      {/* {<PlusOutlined />} */}
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
@@ -119,7 +114,7 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
           </div>
           <div className="change-picture">
             <span>资讯封面：</span>
-            <div className="change-picture-input">
+            {/* <div className="change-picture-input">
               <Upload
                 listType="picture-card"
                 showUploadList={false}
@@ -133,7 +128,16 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
                   uploadButton
                 )}
               </Upload>
-            </div>
+           
+            </div> */}
+            <UploadAntd 
+              propsFileItem={infoPicture}
+              showType="normal"
+              setUrl={setInfoPicture}
+              childFileType='picture'
+              fileCount={1}
+              listshowType='picture-card'
+              />
           </div>
           <div className="change-content">
             <RichTextEditor

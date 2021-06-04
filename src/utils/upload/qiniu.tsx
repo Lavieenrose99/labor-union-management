@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-06-02 11:01:57
+ * @LastEditTime: 2021-06-04 17:15:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
@@ -15,6 +15,7 @@ import PreviewModal from './previewModal'
 import request from '@/utils/request'
 import ImgCrop from 'antd-img-crop'; 
 import { uploadButton } from './uploadButton'
+import { judgeNullForUpload } from '@/utils/public/tools.tsx'
 import { map } from 'lodash'
 
 const QINIU_SERVER = 'https://upload-z2.qiniup.com';
@@ -29,7 +30,9 @@ interface UploadAntdProps extends UploadTextProps{
     fileCount: 1 | 2 | 3
     setUrl?: any
     showType?: 'drag' | 'normal'
-    fileStorage: string
+    fileStorage?: string
+    propsFileArr?: []
+    propsFileItem?: string
 }
 interface UploadTextProps{
      IntroText?: string
@@ -65,14 +68,29 @@ const pictureSize = {
   home_rolling: 37.5 / 22.5,
 };
 
-
+// 该函数对于使用场景必须指定
 const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
-    const { listshowType, dragSize, IntroText, childFileType, fileCount, setUrl, showType, fileStorage } = props
-    const storageType = localStorage.getItem(fileStorage) ? [...JSON.parse(String(localStorage.getItem(fileStorage)))] : []
-    // setUrl(storageType)
-    // localStorage.clear()
+    const { 
+      listshowType, 
+      dragSize, 
+      IntroText, 
+      childFileType, 
+      fileCount, 
+      setUrl, 
+      showType, 
+      fileStorage, // 缓存文件
+      propsFileItem, // 单个url的文件
+      propsFileArr // 文件数组 
+    } = props
+    const storageType = localStorage.getItem(fileStorage||'') ? [...JSON.parse(String(localStorage.getItem(fileStorage||'')))] : [] // 走缓存用这里
+    const propsType = (propsFileArr ??[]).map((item: any)=>{
+      const url = item
+      return(
+        { url }
+      )
+    })
     const [qiniuToken, setQiniuToken] = useState<string>("");
-    const [fileList, setFileList] = useState<any>(storageType);
+    const [fileList, setFileList] = useState<any>(judgeNullForUpload(storageType,propsType,propsFileItem));
     const [uploading, setUploading] = useState<boolean>(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [preViewShow, setPreViewShow] = useState<boolean>(false);
