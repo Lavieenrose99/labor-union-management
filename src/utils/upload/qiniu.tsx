@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-06-04 17:15:13
+ * @LastEditTime: 2021-06-04 20:15:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
@@ -68,10 +69,14 @@ const pictureSize = {
   home_rolling: 37.5 / 22.5,
 };
 
-// 该函数对于使用场景必须指定
+/* 该函数对于使用场景必须指定，对于这三个参数只能使用其中一个
+    fileStorage
+    propsFileArr
+    propsFileItem
+*/
 const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
     const { 
-      listshowType, 
+      listshowType,
       dragSize, 
       IntroText, 
       childFileType, 
@@ -82,13 +87,15 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
       propsFileItem, // 单个url的文件
       propsFileArr // 文件数组 
     } = props
-    const storageType = localStorage.getItem(fileStorage||'') ? [...JSON.parse(String(localStorage.getItem(fileStorage||'')))] : [] // 走缓存用这里
+    const storageType = localStorage.getItem(fileStorage||'') ? 
+    [...JSON.parse(String(localStorage.getItem(fileStorage||'')))] : '' // 走缓存用这里
     const propsType = (propsFileArr ??[]).map((item: any)=>{
       const url = item
       return(
         { url }
       )
     })
+    console.log(storageType)
     const [qiniuToken, setQiniuToken] = useState<string>("");
     const [fileList, setFileList] = useState<any>(judgeNullForUpload(storageType,propsType,propsFileItem));
     const [uploading, setUploading] = useState<boolean>(false);
@@ -155,7 +162,7 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
          const urls = map(fileCopy,'url')
          setUrl(urls)
          setFileList(fileCopy)
-         localStorage.setItem(fileStorage, JSON.stringify(fileList));
+         fileStorage ? localStorage.setItem(fileStorage, JSON.stringify(fileList)): null
          setUploading(false)
         }
       );
@@ -186,7 +193,7 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
         fileList.push(fileItem);
       }
       setFileList([...fileList]);
-      localStorage.setItem(fileStorage, JSON.stringify(fileList));
+      fileStorage ? localStorage.setItem(fileStorage, JSON.stringify(fileList)): null
       const urls = map(fileList,'url')
       setUrl(urls)
       
@@ -206,9 +213,8 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
       const newFileList = fileList
       const filteredFile = newFileList.splice(pos,1)
       message.info(`${filteredFile[0].name}已移除`)
-      setFileList(newFileList)
+      setFileList([...newFileList]) // 改动对象的时候需要用到展开符改变对象地址
     }
-
     const JudgeUploadType: any = (type: string)=>{
         if(type === 'drag'){
           return(
@@ -277,6 +283,7 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
                   beforeUpload={getQiNiuTokenDirect}
                   fileList={fileList}
                   onChange={handleChange}
+                  onRemove={onRemoveItem}
                 >
                   {
                     fileList.length === fileCount ? null : uploadButton

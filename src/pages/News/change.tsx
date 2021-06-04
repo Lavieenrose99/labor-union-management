@@ -1,20 +1,19 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-06-04 17:13:55
+ * @LastEditTime: 2021-06-04 20:40:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
  */
 import React, { useState, useEffect } from 'react';
-import { List, Avatar, Space, Modal, Button, Image, Input, Upload, Switch } from 'antd';
+import { Modal,Input,  Switch } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
-import { get } from 'lodash';
 import RichTextEditor from '@/utils/upload/richTextUpload';
 import './change.less';
-import ImgCrop from 'antd-img-crop';
 import { UploadAntd }from '@/utils/upload/qiniu';
+import { filterHTMLTag } from '../../utils/upload/filterHtml';
 
 // 需要登录才能修改
 interface INewsChangeType {
@@ -32,13 +31,11 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
   const [infoPicture, setInfoPicture] = useState('');
   const [infoContent, setInfoContent] = useState('');
   const [infoIsPublish, setInfoIsPublish] = useState<boolean>(false);
-  const uploadButton = (
-    <div>
-      {/* {<PlusOutlined />} */}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-  const handlePictureChange = () => {};
+
+
+  const subscribeInfos = (text: string) => {
+    setInfoContent(text)
+  };
   const handleSubmit = () => {
     dispatch({
       type: 'setcentermodel/changeNewsEnity',
@@ -46,10 +43,10 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
         updateData: {
           news_label: info.news_label,
           title: infoTitle,
-          content: infoContent,
+          content: filterHTMLTag(infoContent),
           is_publish: infoIsPublish,
           introduction: infoIntroduction,
-          picture: infoPicture,
+          pictures: infoPicture[0],
         },
         updateId: info.id,
       },
@@ -112,22 +109,6 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
           </div>
           <div className="change-picture">
             <span>资讯封面：</span>
-            {/* <div className="change-picture-input">
-              <Upload
-                listType="picture-card"
-                showUploadList={false}
-                onChange={() => {
-                  handlePictureChange();
-                }}
-              >
-                {infoPicture ? (
-                  <img src={ infoPicture } alt="picture" style={{ width: '100%' }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-           
-            </div> */}
             <UploadAntd 
               propsFileItem={infoPicture}
               showType="normal"
@@ -139,6 +120,7 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
           </div>
           <div className="change-content">
             <RichTextEditor
+              subscribeRichText={subscribeInfos} 
               defaultText={infoContent} width={1080} />
           </div>
         </div>

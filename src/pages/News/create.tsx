@@ -1,25 +1,28 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 16:12:30
- * @LastEditTime: 2021-05-31 15:47:04
+ * @LastEditTime: 2021-06-04 20:11:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/create.tsx
  */
 import React, { useState } from 'react';
-import { Modal, Input, Upload, Switch } from 'antd';
+import { Modal, Input, Switch, Select } from 'antd';
 import { connect } from 'umi';
 import { UploadAntd }from '@/utils/upload/qiniu';
 import RichTextEditor from '../../utils/upload/richTextUpload';
 import { filterHTMLTag } from '../../utils/upload/filterHtml';
+import { get } from 'lodash'
 
+const { Option } = Select 
 
 const  InfosCreate = (props) => {
   const { TextArea } = Input;
-  const { show, closeInfosModel, CoverStroage } = props;
-  const [infosTitle, setInfosTitle] = useState('');
-  const [infosPreSeem, setInfosPreSeem] = useState('');
-  const [ifPublish, setIfPublish ] = useState(false);
+  const { show, closeInfosModel, CoverStroage, InfosTags } = props;
+  const [ infosTitle, setInfosTitle] = useState('');
+  const [ infosPreSeem, setInfosPreSeem] = useState('');
+  const [ ifPublish, setIfPublish ] = useState(false);
+  const [ infosTags, setInfosTags] = useState(0);
   const [ cover, setcover ] =useState(([JSON.parse(String(localStorage.getItem(CoverStroage)))] ?? []));
   const [ partyInfosContent, setPartyInfosContent ] = useState(localStorage.getItem('party_infos_content'));
   const subscribeInfos = (text: string) => {
@@ -27,6 +30,8 @@ const  InfosCreate = (props) => {
     setPartyInfosContent(text)
   };
 
+    
+  console.log(CoverStroage)
  
   return (
     <>
@@ -43,7 +48,7 @@ const  InfosCreate = (props) => {
               title: infosTitle,
               content: filterHTMLTag(partyInfosContent),
               is_publish: true,
-              news_label: 6,
+              news_label: infosTags,
               introduction: infosPreSeem,
               pictures: cover[0]
             },
@@ -86,14 +91,35 @@ const  InfosCreate = (props) => {
             />
           </div>
           <div className="fmg-infos-creator-title">
-            <span style={{
-             marginRight: 15
+          <span style={{
+             marginRight: 4
+            }}
+            >
+              关联标签:
+              {' '}
+            </span>
+           <Select onChange={(e)=>setInfosTags(e)} style={{ width: 100, marginRight: 20}} size="small" >
+                {
+                  InfosTags.map(item=>{
+                    return(
+                      <Option value={item.id}>{
+                        item.name
+                      }</Option>
+                    )
+                  })
+                }
+           </Select>
+           <span style={{
+             marginRight: 10
             }}
             >
               是否发布:
               {' '}
             </span>
          <Switch onChange={(e)=>setIfPublish(e)} checked={ifPublish}  />
+          </div>
+          <div className="fmg-infos-creator-title">
+            
           </div>
           <div className="fmg-infos-creator-title">
             <span  style={{
@@ -122,6 +148,6 @@ const  InfosCreate = (props) => {
     </>
   );
 };
-export default connect(({  setcentermodel }) => ({
-//   InfosList: get(fmgInfos, 'InfosList', []),
+export default connect(({  setcentermodel }: any) => ({
+  InfosTags: get(setcentermodel, 'InfosTags', []),
 }))(InfosCreate);
