@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:22:53
- * @LastEditTime: 2021-06-04 10:20:23
+ * @LastEditTime: 2021-06-04 16:01:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/SetCenter/rolling_picture.tsx
@@ -69,7 +69,7 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
         ></PageContainer>
         <section className="carousel_picture_container">
         <Carousel autoplay  className="carousel_picture" dotPosition="left">{
-            RollingsEnity.map((item: any)=>{
+            (RollingsEnity||[]).map((item: any)=>{
                 return(
                     <div>
                     <Image src={item.course_cover} width={400} height={200}/>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 17:12:09
- * @LastEditTime: 2021-05-30 17:53:59
+ * @LastEditTime: 2021-06-04 17:15:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/tags_create.tsx
@@ -22,7 +22,6 @@ import { get } from 'lodash';
 
 const TagsCreate = (props) => {
   const { show, closeInfosModel, InfosTags, dispatch } = props;
-  console.log(InfosTags);
 
   useEffect(() => {
     dispatch({
