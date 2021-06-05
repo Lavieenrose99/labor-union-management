@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
 import { List, Avatar, Modal, Button, Image } from 'antd';
 import { FilePptTwoTone, DeleteTwoTone, VideoCameraTwoTone } from '@ant-design/icons';
-import { getLength, ConBindObjArr, ifAccountExist, IconText} from '@/utils/public/tools.tsx'
+import { getLength, ConBindObjArr, ifAccountExist, IconText, IconFont} from '@/utils/public/tools.tsx'
 import ShowPartyDetails from './change'
 import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
@@ -26,7 +25,6 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   const partyCourseList = ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id','goods_infos')
   const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
   const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
-  console.log(partyCourseListWAcc)
   
   useEffect(() => {
     dispatch({
@@ -77,9 +75,13 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         }
         renderItem={(item) => (
           <List.Item
-          onClick={()=>{setShowDetails(true); setShowDetailsInfos(item)}}
             key={item.title}
             actions={[
+              <section onClick={()=>{setShowDetails(true); setShowDetailsInfos(item)}}>
+              <IconText
+              icon={<IconFont type="icon-chakan" />}
+               text={<span>查看详情</span>}
+            /></section>,
               <IconText
                 icon={<FilePptTwoTone twoToneColor="red" />}
                 text={<span>{`${getLength(item.data.ppt)} 份`}</span>}

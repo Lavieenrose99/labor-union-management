@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-06-04 20:40:01
+ * @LastEditTime: 2021-06-05 16:44:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -46,7 +46,7 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
           content: filterHTMLTag(infoContent),
           is_publish: infoIsPublish,
           introduction: infoIntroduction,
-          pictures: infoPicture[0],
+          picture: infoPicture[0],
         },
         updateId: info.id,
       },

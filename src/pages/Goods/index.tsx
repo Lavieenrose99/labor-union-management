@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-27 16:16:09
- * @LastEditTime: 2021-05-29 17:35:48
+ * @LastEditTime: 2021-06-05 16:55:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Goods/index.tsx
@@ -46,7 +46,6 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
       },
     });
   }, []);
-  console.log(CourseGoods);
   const columns = [
     {
       title: '商品编号',

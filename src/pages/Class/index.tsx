@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-05-30 22:34:14
+ * @LastEditTime: 2021-06-05 14:17:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -17,29 +17,20 @@ import { get } from 'lodash';
 import { IconText, IconFont } from '@/utils/public/tools';
 import './index.less';
 import { DeleteTwoTone } from '@ant-design/icons';
+import { ConBindObjArr, JumpToOtherRouteById } from '@/utils/public/tools'
 
 interface IClassType {
   dispatch: Dispatch;
   ClassEnity: any;
+  CourseEnity: any;
 }
 
 const ClassList: React.FC<IClassType> = (props) => {
-  const { ClassEnity, dispatch } = props;
+  const { ClassEnity, dispatch, CourseEnity, pageTotal } = props;
   const [showAddModal, setShowAddModal] = useState(false);
-  const listData = [];
-  console.log(ClassEnity);
-  // const listData = [];
-  for (let i = 0; i < ClassEnity.length; i++) {
-    listData.push({
-      href: 'https://ant.design',
-      name: `${ClassEnity[i].name} 班`,
-      avatar: 'https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg',
-      introduce: ClassEnity[i].introduce,
-      teacher: ClassEnity[i].teacher_name,
-      code: ClassEnity[i].code,
-      id: ClassEnity[i].id
-    });
-  }
+  const dataSet = ConBindObjArr(ClassEnity,CourseEnity,'party_course_id','id','class_course')
+  console.log(dataSet)
+
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchClassList',
@@ -71,8 +62,9 @@ const ClassList: React.FC<IClassType> = (props) => {
                   console.log(page);
                 },
                 pageSize: 10,
+                total: pageTotal
               }}
-              dataSource={listData}
+              dataSource={dataSet}
               footer={
                 <div>
                   <b>欢迎来到班级列表</b>
@@ -83,15 +75,19 @@ const ClassList: React.FC<IClassType> = (props) => {
                   key={item.code}
                   actions={[
                     <IconText
-                      icon={<IconFont type="icon-laoshi" />}
-                      text={<span>{`课程教师 ${item.teacher}`}</span>}
+                      icon={<IconFont type="icon-mima" />}
+                       text={<span>课程码: <strong>{item.code}</strong></span>}
+                    />,
+                    <IconText
+                      icon={<IconFont type="icon-chakan" />}
+                       text={<span onClick={()=>{JumpToOtherRouteById('/party/index',dispatch,item.class_course.id )}} >
+                         查看课程信息: <strong>{item.class_course.name || <em>课程删除</em>}</strong></span>}
                     />,
                     <IconText
                       icon={<DeleteTwoTone twoToneColor="red" />}
                       text={
                         <span
                           onClick={() => {
-                            console.log(item);
                             Modal.info({
                               title: '惠福管理后台',
                               content: '确认要删除该班级吗',
@@ -106,7 +102,7 @@ const ClassList: React.FC<IClassType> = (props) => {
                             });
                           }}
                         >
-                          删除课程
+                          删除班级
                         </span>
                       }
                       key="list-vertical-like-o"
@@ -115,7 +111,7 @@ const ClassList: React.FC<IClassType> = (props) => {
                   extra={
                     <Image
                       src={
-                        'https://gss0.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=6b0285c1a0345982c5dfed943cc41d95/8b13632762d0f7036d50846905fa513d2797c5a1.jpg'
+                        item.class_course.course_cover || 'https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.png'
                       }
                       width={200}
                       height={100}
@@ -123,10 +119,12 @@ const ClassList: React.FC<IClassType> = (props) => {
                   }
                 >
                   <List.Item.Meta
-                    avatar={<Avatar src={item.avatar} />}
+                    avatar={<Avatar src="https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg" />}
                     title={<a href={item.href}>{item.name}</a>}
-                    description={item.introduce}
+                    description={`教师名称: ${item.teacher_name}`}
                   />
+                   {<section style={{marginLeft: 60, maxHeight: '2.5vw', overflow: 'hidden'}}>
+                    <strong >{item.introduce}</strong></section>}
                 </List.Item>
               )}
             />
@@ -140,4 +138,6 @@ const ClassList: React.FC<IClassType> = (props) => {
 
 export default connect(({ partycourse }: any) => ({
   ClassEnity: get(partycourse, 'ClassEnity', []),
+  CourseEnity: get(partycourse,'CoureseEnity',[]),
+  pageTotal: get(partycourse,'pageTotal',0)
 }))(ClassList);

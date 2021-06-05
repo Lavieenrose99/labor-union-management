@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-04 20:16:39
+ * @LastEditTime: 2021-06-05 16:39:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -10,9 +10,12 @@ import React from 'react'
 import { createFromIconfontCN } from '@ant-design/icons';
 import { Space, Tag } from 'antd'
 import { sum, map, groupBy, flatten } from 'lodash'
+import { history } from 'umi'
+import { stringify } from 'querystring';
+import type { Dispatch } from 'umi';
 
 export const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2580518_szvm4a1dx2.js',
+  scriptUrl: '//at.alicdn.com/t/font_2580518_r8qaxgb48sn.js',
 });
 
 export const getLength = (arr:any) => {
@@ -132,4 +135,22 @@ export const judgeNullForUpload = (item1: any, item2: any, item3: any)=>{
       }else{
         return []
       }
+}
+
+// 跳转到其他路由
+
+export const JumpToOtherRouteById = async(route: string, dispatch: Dispatch, id: number) =>
+{
+
+  await history.replace({
+    pathname: route,
+    search: stringify({
+      redirect: window.location.href,
+    }),
+  })
+  await dispatch({
+    type: 'partycourse/getPartyListById',
+    payload: [id]
+  })
+
 }

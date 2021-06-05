@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 17:23:24
- * @LastEditTime: 2021-06-01 23:06:07
+ * @LastEditTime: 2021-06-05 17:29:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/change.tsx
@@ -16,8 +16,12 @@
  */
 import React,{ useState, useEffect } from 'react'
 import { UploadAntd } from '@/utils/upload/qiniu'
-import { FilePptTwoTone, VideoCameraTwoTone } from '@ant-design/icons'
+import { FilePptTwoTone, 
+  VideoCameraTwoTone,
+  ExclamationCircleOutlined,
+  SettingFilled } from '@ant-design/icons'
 import { Input, 
+  Modal,
   Button, 
   message, 
   Spin, 
@@ -59,8 +63,6 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
             }
         })
     },[])
-
-   console.log(showInfos)
     return (
       <>
         <Drawer
@@ -69,6 +71,62 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
           onClose={()=>onCloseDrawer(false)}
           visible={show}
           width="60vw"
+          footer={
+            <>
+              <Button
+                // disabled={changeContent.role === 0 || changeInfos}
+                type="primary"
+                onClick={() => {
+                  Modal.confirm({
+                    title: 'wzlz',
+                    icon: <ExclamationCircleOutlined />,
+                    content: '确认保存吗',
+                    okText: '确认',
+                    onOk: () => {
+                      dispatch({
+                        type: 'account/adjustAccountInfos',
+                        payload: {
+                          // aid: content.id,
+                          // content: changeContent,
+                        },
+                      });
+                    },
+                    cancelText: '取消',
+                  });
+                }}
+              >
+                提交
+              </Button>
+              {true? (
+                <Button
+                  icon={<SettingFilled />}
+                  style={{ float: 'right' }}
+                  // onClick={() => {
+                  //   setChangeInfos(!changeInfos);
+                  //   setChangeContent({
+                  //     motto: changeContent?.motto || (content?.motto ?? ''),
+                  //     nickname: changeContent?.nickname || (content?.nickname ?? ''),
+                  //     role: changeContent?.role || (content?.role ?? 0),
+                  //   } as ChangeInfosType);
+                  // }}
+                >
+                  设置
+                </Button>
+              ) : (
+                <Button
+                  icon={<SettingFilled />}
+                  style={{ float: 'right' }}
+                  // onClick={() => {
+                  //   setChangeInfos(!changeInfos);
+                  // }}
+                >
+                  保存
+                </Button>
+              )}
+            </>
+          }
+          footerStyle={{ backgroundColor: '#f0f2f5' }}
+          headerStyle={{ backgroundColor: '#f0f2f5' }}
         >
         <Descriptions column={2} bordered size="middle">
             <Descriptions.Item label="课程名称">

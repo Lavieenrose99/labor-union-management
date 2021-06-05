@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-06-04 20:15:05
+ * @LastEditTime: 2021-06-05 02:14:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
@@ -95,7 +95,6 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
         { url }
       )
     })
-    console.log(storageType)
     const [qiniuToken, setQiniuToken] = useState<string>("");
     const [fileList, setFileList] = useState<any>(judgeNullForUpload(storageType,propsType,propsFileItem));
     const [uploading, setUploading] = useState<boolean>(false);

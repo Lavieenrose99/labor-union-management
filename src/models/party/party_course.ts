@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-05-31 12:39:30
+ * @LastEditTime: 2021-06-05 14:14:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -51,6 +51,7 @@ export interface AccountModelType {
     fetchPartyGoods: Effect;
     deletePartyGoods: Effect;
     changePartyGoods: Effect;
+    getPartyListById: Effect;
   };
   reducers: {
     savePagesInfos: Reducer<AccountModalState>;
@@ -58,6 +59,7 @@ export interface AccountModelType {
     changeUploadStatus: Reducer;
     saveClassEnity: Reducer<AccountModalState>;
     savePartyGoods: Reducer;
+    savePageTotal: Reducer;
   };
 }
 
@@ -99,7 +101,6 @@ const PartyCourseModal: AccountModelType = {
       });
     },
     *deletePartyGoods({ payload }, { call, put }) {
-      console.log(payload)
       const res = yield call(delPartyGoods, payload);
       if (res.id) {
         message.info('下架商品成功');
@@ -148,6 +149,13 @@ const PartyCourseModal: AccountModelType = {
         payload: enity,
       });
     },
+    *getPartyListById({ payload }, { call, put }) {
+      const enity = yield call(getPartyCourseEnity, payload);
+      yield put({
+        type: 'saveCoureseEnity',
+        payload: enity,
+      });
+    },
     *delPartyCourse({ payload }, { call }) {
       const response = yield call(delPartyCourse, payload);
       if (response.id) {
@@ -161,22 +169,24 @@ const PartyCourseModal: AccountModelType = {
     *fetchClassList({ payload }, { call, put }) {
       const list = yield call(fetchPartyClass, payload);
       const { classes, total } = list;
-      const ids = classes.map((item: any) => {
-        return item.id;
-      });
-      console.log(`ids${ids}`);
-      // yield put({
-      //   type: 'savePagesInfos',
-      //   payload: total
-      // })
+      const ids = map(classes,'id')
       const enity = yield call(getPartyClassEnity, ids);
+      const partyIds = map(enity,'party_course_id')
+      const enityCourse = yield call(getPartyCourseEnity, partyIds);
       yield put({
         type: 'saveClassEnity',
         payload: enity,
       });
+      yield put({
+        type: 'savePageTotal',
+        payload: total
+      })
+      yield put({
+        type: 'saveCoureseEnity',
+        payload: enityCourse ,
+      });
     },
     *delPartyClass({ payload }, { call, put }) {
-      console.log(payload);
       const res = yield call(delPartyClass, payload);
       if (res.id) {
         message.info('班级删除成功');
@@ -220,6 +230,12 @@ const PartyCourseModal: AccountModelType = {
       return {
         ...state,
         ClassEnity: payload,
+      };
+    },
+    savePageTotal(state: any, { payload }: any) {
+      return {
+        ...state,
+        PageTotal: payload,
       };
     },
   },

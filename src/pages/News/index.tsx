@@ -14,7 +14,6 @@ import InfosCreator from './create';
 import TagsCreator from './tags_create';
 import { connect } from 'umi';
 import { get } from 'lodash';
-import { BASE_QINIU_URL } from '@/utils/upload/qiniu';
 import { filterHTMLStr } from '../../utils/adjust_picture';
 import './index.less';
 import NewsChanger from './change';
