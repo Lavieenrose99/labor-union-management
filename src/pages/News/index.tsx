@@ -80,11 +80,13 @@ const NewsList: React.FC<INewsType> = (props) => {
       >
         <div className="news-tags">
           <CheckableTag checked={tagSelect === 0}
-            onClick={()=> { setTagSelect(0);
+            onClick={()=> {
+              setTagSelect(0);
+              setpageCurrent(1);
               dispatch({
                 type: 'setcentermodel/fetchNewsList',
                 payload: {
-                  page: pageCurrent,
+                  page: 1,
                   limit: pageSize, 
                   news_label_id: 0
                 },
@@ -94,12 +96,14 @@ const NewsList: React.FC<INewsType> = (props) => {
             InfosTags.map((item: any) => {
               return (
                 <CheckableTag checked={tagSelect === item.id} 
-                onClick={()=> { setTagSelect(item.id);
+                onClick={()=> {
+                  setTagSelect(item.id);
+                  setpageCurrent(1);
                   dispatch({
                     type: 'setcentermodel/fetchNewsList',
                     payload: {
-                      page: pageCurrent,
-                      limit: pageSize, 
+                      page: 1,
+                      limit: pageSize,
                       news_label_id: item.id
                     },
                   })}}>
@@ -117,6 +121,7 @@ const NewsList: React.FC<INewsType> = (props) => {
             size="large"
             pagination={{
                total: pageNum,
+               current: pageCurrent,
                pageSize,
                onShowSizeChange: (current, size) => {
                   setPageSize(size);
@@ -127,7 +132,7 @@ const NewsList: React.FC<INewsType> = (props) => {
                 type: 'setcentermodel/fetchNewsList',
                 payload: {
                   page,
-                  limit: size, 
+                  limit: size,
                   news_label_id: tagSelect
                 },
               });
@@ -152,7 +157,7 @@ const NewsList: React.FC<INewsType> = (props) => {
                 }
                 actions={[
                   <span
-                    className="action"
+                    className="action-click"
                     onClick={() => {
                       Modal.info({
                         title: '惠福管理后台',
@@ -176,7 +181,7 @@ const NewsList: React.FC<INewsType> = (props) => {
                   title={<a href={item.href}>{item.title}</a>}
                   description={
                     <span
-                      className="action"
+                      className="action-click"
                       onClick={() => {
                         setShowChange(true);
                         setChangeItem(item);
@@ -187,10 +192,11 @@ const NewsList: React.FC<INewsType> = (props) => {
                   }
                 />
                 <article    
-                onClick={() => {
-                        setShowChange(true);
-                        setChangeItem(item);
-                      }} className="party_infos_content_preview">
+                  onClick={() => {
+                    setShowChange(true);
+                    setChangeItem(item);
+                  }}
+                  className="news-content action-click">
                 {filterHTMLStr(item.content)}
                 </article>
               </List.Item>

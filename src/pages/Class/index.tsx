@@ -90,6 +90,7 @@ const ClassList: React.FC<IClassType> = (props) => {
                       icon={<DeleteTwoTone twoToneColor="red" />}
                       text={
                         <span
+                          className="action-click"
                           onClick={() => {
                             console.log(item);
                             Modal.info({
@@ -106,7 +107,7 @@ const ClassList: React.FC<IClassType> = (props) => {
                             });
                           }}
                         >
-                          删除课程
+                          删除班级
                         </span>
                       }
                       key="list-vertical-like-o"

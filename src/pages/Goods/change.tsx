@@ -11,6 +11,7 @@ import { Modal, Input, Switch, InputNumber } from 'antd';
 import { connect } from 'umi';
 import { UploadAntd } from '@/utils/upload/qiniu'
 import { map } from 'lodash'
+import './change.less'
 
 
 const  GoodsChanger = (props) => {
@@ -41,7 +42,7 @@ const  GoodsChanger = (props) => {
     <>
       <Modal
         title="修改商品信息"
-        width="80vw"
+        width={1000}
         visible={show}
         destroyOnClose
         onCancel={() => closeInfosModel(false)}
@@ -55,7 +56,7 @@ const  GoodsChanger = (props) => {
                 price: infoPrice,
                 inventory: infoInventory,
                 is_on: infoIsOn,
-                cover: infoCover[0],
+                cover: infoCover,
                 pictures: infoPictures,
               },
               updateId: info.id
@@ -66,117 +67,81 @@ const  GoodsChanger = (props) => {
           closeInfosModel(false);
         }}
       >
-        <div className="fmg-infos-creator-container">
-          <div className="fmg-infos-creator-title">
-            <span>商品名称: </span>
+        <div className="goods-changer-container">
+          <div className="goods-changer-title">
+            <span>商品名称：</span>
             <Input
-              style={{
-                display: 'inline-flex',
-                width: '50vw',
-                marginLeft: 20,
-                marginBottom: 20,
-              }}
+              className="goods-changer-input goods-changer-name-input"
               value={infoName}
               onChange={(e) => {
                 setInfoName(e.target.value);
               }}
             />
           </div>
-          <div className="fmg-infos-creator-title">
-            <span>
-              商品简介:
-              {' '}
-            </span>
+          <div className="goods-changer-title">
+            <span>商品简介：</span>
             <TextArea
-              style={{
-                verticalAlign: 'top',
-                width: '50vw',
-                marginLeft: 20,
-                marginBottom: 10, 
-              }}
+              className="goods-changer-input goods-changer-brief-input"
               value={infoBrief}
               onChange={(e) => {
                 setInfoBrief(e.target.value);
               }}
             />
           </div>
-          <div className="fmg-infos-creator-title">
-            <span style={{
-             marginRight: 15
-            }}
-            >
-              商品价格:
-              {' '}
-            </span>
-          <InputNumber
+          <div className="goods-changer-title">
+            <span>商品价格：</span>
+            <InputNumber
+              className="goods-changer-input goods-changer-price-input"
               onChange={(e)=>setInfoPrice(e)}
-              style={{ minWidth: '10vw', marginLeft:10, marginBottom: 20 }}
               value={infoPrice}
               formatter={(Goodvalues) => `¥ ${Goodvalues}`}
               parser={(Goodvalues) => Goodvalues.replace(/¥ \s?|(,*)/g, '')}
               min={0}
               step={0.01}
-            />
+              />
             </div>
-            <div className="fmg-infos-creator-title">
-            <span style={{
-             marginRight: 15
-            }}
-            >
-              商品库存:
-              {' '}
-            </span>
-          <InputNumber
+            <div className="goods-changer-title">
+            <span>商品库存：</span>
+            <InputNumber
+              className="goods-changer-input goods-changer-inventory-input"
               onChange={(e)=>setInfoInventory(e)}
-              style={{ minWidth: '10vw', marginLeft:10, marginBottom: 20 }}
               value={infoInventory}
               min={0}
               step={0.01}
+              />
+            </div>
+          <div className="goods-changer-title">
+            <span>是否发布：</span>
+            <Switch
+              className="goods-changer-input"
+              onChange={(e)=>setInfoIsOn(e)}
+              checked={infoIsOn} />
+          </div>
+          <div className="goods-changer-title">
+            <span>商品封面：</span>
+            <div className="goods-changer-input goods-changer-cover-input">
+              <UploadAntd 
+              propsFileItem={infoCover}
+              showType="normal"
+              setUrl={setInfoCover}
+              childFileType='picture'
+              fileCount={1}
+              listshowType='picture-card'
             />
             </div>
-          <div className="fmg-infos-creator-title">
-            <span style={{
-             marginRight: 15
-            }}
-            >
-              是否发布:
-              {' '}
-            </span>
-         <Switch onChange={(e)=>setInfoIsOn(e)} checked={infoIsOn}  />
           </div>
-          <div className="fmg-infos-creator-title">
-            <span  style={{
-              display: 'inline-flex',
-            }}
-            >
-              商品封面:
-              {' '}
-            </span>
-           <UploadAntd 
-             propsFileItem={infoCover}
-             showType="normal"
-             setUrl={setInfoCover}
-             childFileType='picture'
-             fileCount={1}
-             listshowType='picture-card'
-           />
-          </div>
-          <div className="fmg-infos-creator-title">
-            <span  style={{
-              display: 'inline-flex',
-            }}
-            >
-              商品图片:
-              {' '}
-            </span>
-           <UploadAntd 
-             propsFileArr={infoPictures}
-             showType="normal"
-             setUrl={setInfoPictures}
-             childFileType='picture'
-             fileCount={3}
-             listshowType='picture-card'
-           />
+          <div className="goods-changer-title">
+            <span>商品图片：</span>
+            <div className="goods-changer-input goods-changer-pictures-input">
+              <UploadAntd 
+                propsFileArr={infoPictures}
+                showType="normal"
+                setUrl={setInfoPictures}
+                childFileType='picture'
+                fileCount={3}
+                listshowType='picture-card'
+              />
+            </div>
           </div>
         </div>
       </Modal>

@@ -51,6 +51,7 @@ export interface AccountModelType {
     fetchPartyGoods: Effect;
     deletePartyGoods: Effect;
     changePartyGoods: Effect;
+    PutOnPartyGoods: Effect;
   };
   reducers: {
     savePagesInfos: Reducer<AccountModalState>;
@@ -82,10 +83,17 @@ const PartyCourseModal: AccountModelType = {
         yield history.push('/success');
       }
     },
-    *addPartyGoods({ payload }, { call }) {
+    *addPartyGoods({ payload }, { call, put }) {
       const response = yield call(createPartyGoods, payload);
       if (response.id > 0) {
-        message.info('已成功添加');
+        message.info('成功添加商品');
+        yield put({
+          type: 'fetchPartyGoods',
+          payload: {
+            limit: 20,
+            page: 1
+          }
+        })
       }
     },
     *fetchPartyGoods({ payload }, { call, put }) {
@@ -98,6 +106,7 @@ const PartyCourseModal: AccountModelType = {
         payload: enity,
       });
     },
+    // 下架商品
     *deletePartyGoods({ payload }, { call, put }) {
       console.log(payload)
       const res = yield call(delPartyGoods, payload);
@@ -112,7 +121,23 @@ const PartyCourseModal: AccountModelType = {
         }
       });
     },
+    // 上架商品
+    *PutOnPartyGoods({ payload }, { call, put }) {
+      const { params, updateId } = payload;
+      const res = yield call(changePartyGoods, params, updateId);
+      if(res.id) {
+        message.info('上架商品成功')
+      }
+      yield put({
+        type: 'fetchPartyGoods',
+        payload: {
+          page: 1,
+          limit: 20,
+        }
+      })
+    },
     *changePartyGoods({payload}, {call, put}) {
+      console.log(`修改的数据${payload.params.price}`)
       const { params, updateId } = payload;
       const res = yield call(changePartyGoods, params, updateId);
       if(res.id) {

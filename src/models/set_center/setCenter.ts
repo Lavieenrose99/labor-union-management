@@ -69,7 +69,7 @@ const RollingPictureModal: AccountModelType = {
     },
     *addInfosList({ payload }, { call, put }) {
       const response = yield call(addNewsInfos, payload);
-      if (response.id) message.info('添加资讯');
+      if (response.id) message.info('添加资讯成功');
       yield put({
         type: 'fetchNewsList',
         payload: {
@@ -99,7 +99,7 @@ const RollingPictureModal: AccountModelType = {
          }
       })
     },
-    *addInfosTags({ payload }, { call }) {
+    *addInfosTags({ payload }, { call, put }) {
       const response = yield call(addInfosTags, payload);
       yield call(fetTagList, {
         limit: 99,

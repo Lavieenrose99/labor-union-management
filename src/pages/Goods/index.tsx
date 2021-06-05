@@ -51,12 +51,14 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
     {
       title: '商品编号',
       dataIndex: 'id',
+      key: 'key',
       align: 'center' as 'center',
       sorter: (a: any, b: any) => a.id - b.id,
     },
     {
       title: '商品名称',
       dataIndex: 'name',
+      key: 'name',
       render: (itemName: string, item: any) => (
         <div>
           <img width={60} height={30} src={item.cover} />
@@ -67,6 +69,7 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
     {
       title: '状态',
       dataIndex: 'is_on',
+      key: 'is_on',
       align: 'center' as 'center',
       render: (itemIsOn: boolean) => <span>{itemIsOn ? '上架中' : '未上架'}</span>,
       filters: [
@@ -84,20 +87,24 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
     {
       title: '单价',
       dataIndex: 'price',
+      key: 'price',
       render: (itemPrice: number) => <span>￥{itemPrice}</span>,
     },
     {
       title: '库存',
       dataIndex: 'inventory',
+      key: 'inventory',
       sorter: (a: any, b: any) => a.inventory - b.inventory,
     },
     {
       title: '购买人数',
       dataIndex: 'people',
+      key: 'people'
     },
     {
       title: '更新时间',
       dataIndex: 'update_time',
+      key: 'update_time',
       render: (updateTime: number) => (
         <span>{moment(updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
       ),
@@ -106,32 +113,51 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
     {
       title: '操作',
       dataIndex: 'id',
+      key: 'action',
       align: 'center' as 'center',
       render: (itemId: number, itemVal: any) => (
         <div>
           <Button
             style={{
-              marginRight: 20,
+              margin: '0 10px',
             }}
             onClick={() => {
               setChangeItem(itemVal);
               setShowChangeModal(true);
             }}
-          >
-            修改信息
-          </Button>
+          >修改信息</Button>
           <Button
+            style={{
+              margin: '0 10px',
+            }}
+            type="primary"
+            disabled={itemVal.is_on === true}
+            onClick={() => {
+              dispatch({
+                type:'partycourse/PutOnPartyGoods',
+                payload: {
+                  params: {
+                    is_on: true,
+                  },
+                  updateId: itemId
+                }
+              })
+            }}
+          >上架商品</Button>
+          <Button
+            style={{
+              margin: '0 10px',
+            }}
             type="primary"
             danger
+            disabled={itemVal.is_on === false}
             onClick={() => {
               dispatch({
                 type: 'partycourse/deletePartyGoods',
                 payload: itemVal.id,
               });
             }}
-          >
-            下架商品
-          </Button>
+          >下架商品</Button>
         </div>
       ),
     },

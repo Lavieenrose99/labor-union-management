@@ -36,7 +36,7 @@ const TagsCreate = (props) => {
     <>
       <Modal
         title="党建资讯"
-        width="80vw"
+        width="1200px"
         visible={show}
         destroyOnClose
         onCancel={() => closeInfosModel(false)}
@@ -48,7 +48,11 @@ const TagsCreate = (props) => {
           closeInfosModel(false);
         }}
       >
-        <section>{<TagsGroups tagsList={InfosTags} dispatch={dispatch} />}</section>
+        <section>
+          {<TagsGroups
+            tagsList={InfosTags}
+            dispatch={dispatch} />}
+          </section>
       </Modal>
     </>
   );
