@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-06-05 14:14:05
+ * @LastEditTime: 2021-06-06 17:52:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -22,7 +22,8 @@ import {
   fetchPartyGoods,
   getPartyGoods,
   delPartyGoods,
-  changePartyGoods
+  changePartyGoods,
+  PutPartyCouse
 } from '../../services/party/party_course';
 import { map } from 'lodash';
 
@@ -52,6 +53,8 @@ export interface AccountModelType {
     deletePartyGoods: Effect;
     changePartyGoods: Effect;
     getPartyListById: Effect;
+    PutOnPartyGoods: Effect;
+    putPartyCourse: Effect;
   };
   reducers: {
     savePagesInfos: Reducer<AccountModalState>;
@@ -84,10 +87,30 @@ const PartyCourseModal: AccountModelType = {
         yield history.push('/success');
       }
     },
-    *addPartyGoods({ payload }, { call }) {
+    *putPartyCourse({ payload }, { call, put }) {
+      const response = yield call(PutPartyCouse, payload);
+      if(response.id > 0){
+        message.info('修改成功')
+      }
+      yield put({
+        type: 'fetchPartyList',
+        payload: {
+          limit: 10,
+          page: 1
+        }
+      })
+    },
+    *addPartyGoods({ payload }, { call, put }) {
       const response = yield call(createPartyGoods, payload);
       if (response.id > 0) {
-        message.info('已成功添加');
+        message.info('成功添加商品');
+        yield put({
+          type: 'fetchPartyGoods',
+          payload: {
+            limit: 20,
+            page: 1
+          }
+        })
       }
     },
     *fetchPartyGoods({ payload }, { call, put }) {
@@ -100,6 +123,7 @@ const PartyCourseModal: AccountModelType = {
         payload: enity,
       });
     },
+    // 下架商品
     *deletePartyGoods({ payload }, { call, put }) {
       const res = yield call(delPartyGoods, payload);
       if (res.id) {
@@ -113,7 +137,23 @@ const PartyCourseModal: AccountModelType = {
         }
       });
     },
+    // 上架商品
+    *PutOnPartyGoods({ payload }, { call, put }) {
+      const { params, updateId } = payload;
+      const res = yield call(changePartyGoods, params, updateId);
+      if(res.id) {
+        message.info('上架商品成功')
+      }
+      yield put({
+        type: 'fetchPartyGoods',
+        payload: {
+          page: 1,
+          limit: 20,
+        }
+      })
+    },
     *changePartyGoods({payload}, {call, put}) {
+      console.log(`修改的数据${payload.params.price}`)
       const { params, updateId } = payload;
       const res = yield call(changePartyGoods, params, updateId);
       if(res.id) {

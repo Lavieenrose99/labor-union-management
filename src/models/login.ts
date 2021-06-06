@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-06-04 10:53:34
+ * @LastEditTime: 2021-06-06 00:50:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/login.ts
@@ -56,7 +56,9 @@ const Model: LoginModelType = {
       if (response.id > 0) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        message.success('🎉 🎉 🎉  登录成功！');
+       
+        const UserInfos = JSON.parse(sessionStorage.getItem('useInfos')||'{}')
+        message.success(`🎉 🎉 🎉  ${UserInfos.nickname}`)
         let { redirect } = params as { redirect: string };
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
@@ -67,7 +69,6 @@ const Model: LoginModelType = {
             }
             if (redirect.match(/^\/.*#/)) {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
-              console.log(redirect)
             }
           } else {
             window.location.href = '/content';

@@ -2,13 +2,13 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 16:57:12
- * @LastEditTime: 2021-06-05 02:14:33
+ * @LastEditTime: 2021-06-06 17:34:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/upload/qiniu.tsx
  */
 import React, { useState } from 'react'
-import { Upload, Button, message } from 'antd'
+import { Upload, Button, message, Space } from 'antd'
 import {
   InboxOutlined,
 } from '@ant-design/icons';
@@ -16,8 +16,9 @@ import PreviewModal from './previewModal'
 import request from '@/utils/request'
 import ImgCrop from 'antd-img-crop'; 
 import { uploadButton } from './uploadButton'
-import { judgeNullForUpload } from '@/utils/public/tools.tsx'
+import { judgeNullForUpload, IconFont } from '@/utils/public/tools.tsx'
 import { map } from 'lodash'
+import './qiniu.less'
 
 const QINIU_SERVER = 'https://upload-z2.qiniup.com';
 const BASE_QINIU_URL = 'http://qiniu.fmg.net.cn/';
@@ -29,7 +30,7 @@ interface UploadAntdProps extends UploadTextProps{
     dragSize?: large | middle
     childFileType: 'ppt' | 'picture' | 'video'
     fileCount: 1 | 2 | 3
-    setUrl?: any
+    setUrl?: any // 回调函数而已不一定是hook
     showType?: 'drag' | 'normal'
     fileStorage?: string
     propsFileArr?: []
@@ -101,7 +102,6 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [preViewShow, setPreViewShow] = useState<boolean>(false);
     const [suffixPoint, setSuffixPoint] = useState('')
-
     const getQiNiuToken: any = () => {
         request('/api.farm/goods/resources/qiniu/upload_token', {
           method: 'GET',
@@ -211,7 +211,7 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
       const pos = fileList.indexOf(target)
       const newFileList = fileList
       const filteredFile = newFileList.splice(pos,1)
-      message.info(`${filteredFile[0].name}已移除`)
+      message.info(`${filteredFile[0].name ?? '文件'}已移除`)
       setFileList([...newFileList]) // 改动对象的时候需要用到展开符改变对象地址
     }
     const JudgeUploadType: any = (type: string)=>{
@@ -231,22 +231,29 @@ const UploadAntd: React.FC<UploadAntdProps> = (props)=>{
          }
         }
         itemRender={
-           (originNode, file ) => {
+           (originNode, file) => {
+             
              return (
-               <div onClick={()=>setPreviewUrl(file.url??'')} >
+               <>
+               {
+                 (childFileType === 'ppt' && file.url ) ? null : originNode
+               }
+               <div onClick={()=>setPreviewUrl(file.url??'')} className="render_upload_list" >
+
                  {
-               originNode
-                 }
-                 {
-                   (childFileType === 'ppt' && file.url ) ? <a  download={file.url} href={file.url} >点击下载</a>: null
+                   (childFileType === 'ppt' && file.url ) ?  <Space>  
+                   <span>{file.url}</span>
+                   <a  download={file.url} href={file.url} >点击下载</a>
+                   <IconFont  type="icon-icon--shanchu" onClick={()=>onRemoveItem(file)}  className="render_upload_delete_icon" /> </Space>: null
                  }
                  {
                    (childFileType === 'video' && file.url) ? <strong  >👆点击预览</strong>: null
                  }
                   {
                    (childFileType === "picture" && file.url) ? <strong  >👆点击预览</strong>: null
-                 }
+                  }
                  </div>
+                 </>
              
              )
            }

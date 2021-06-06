@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-04-19 16:46:29
+ * @LastEditTime: 2021-06-06 00:45:31
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /labor-union-management/src/components/GlobalHeader/AvatarDropdown.tsx
+ */
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
@@ -45,6 +53,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       },
       menu,
     } = this.props;
+    const UserInfos = JSON.parse(sessionStorage.getItem('useInfos')||'{}')
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         {menu && (
@@ -67,11 +76,12 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
         </Menu.Item>
       </Menu>
     );
+    console.log(currentUser)
     return currentUser && currentUser.name ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+          <span className={`${styles.name} anticon`}>{UserInfos.nickname}</span>
         </span>
       </HeaderDropdown>
     ) : (

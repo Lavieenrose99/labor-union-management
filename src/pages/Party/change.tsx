@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 17:23:24
- * @LastEditTime: 2021-06-05 17:29:54
+ * @LastEditTime: 2021-06-06 18:01:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/change.tsx
@@ -30,14 +30,13 @@ import { Input,
   Descriptions, 
   Avatar, 
   Space , 
-  Tag, 
   Image} from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
-import { get  } from 'lodash';
+import { get, cloneDeep, omit  } from 'lodash';
 import { ifOn } from '@/utils/public/tools'
-import CreatorPartyCourse from '@/utils/upload/richTextUpload'
 import './index.less'
+import RichTextEditor from '@/utils/upload/richTextUpload';
 
 interface PartyCourseProps {
     dispatch: Dispatch
@@ -51,8 +50,12 @@ interface PartyCourseProps {
 
 const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
 
-  const { dispatch, show, onCloseDrawer , showInfos } = props
-  const { goods_infos, account_infos, data } = showInfos
+  const { dispatch, show, onCloseDrawer , showInfos , GoodsList } = props
+  const [ changeInfos, setChangeInfos ] = useState<boolean>(false)
+  const [ changeInfosContent, setChangeInfosContent ] = useState(showInfos)
+  const {  account_infos } = showInfos
+  const { goods_infos, data } = changeInfosContent
+  
   
     useEffect(()=>{
         dispatch({
@@ -63,6 +66,28 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
             }
         })
     },[])
+    const OnListenPpt: any = (arr: [])=>{
+      const CopyInfos = cloneDeep(changeInfosContent)
+      CopyInfos.data.ppt = arr
+      setChangeInfosContent(CopyInfos)
+    }
+    const OnListenVideo: any = (arr: [])=>{
+      const CopyInfos = cloneDeep(changeInfosContent)
+      CopyInfos.data.video = arr
+      setChangeInfosContent(CopyInfos)
+    }
+    const OnListenCover: any = (arr: [])=>{
+      const CopyInfos = cloneDeep(changeInfosContent)
+      CopyInfos.course_cover = arr[0]
+      setChangeInfosContent(CopyInfos)
+    }
+
+    const subscribeInfos = (text: any) => {
+      const CopyInfos = cloneDeep(changeInfosContent)
+      CopyInfos.course_work = text
+      setChangeInfosContent(CopyInfos)
+    };
+
     return (
       <>
         <Drawer
@@ -74,20 +99,21 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
           footer={
             <>
               <Button
-                // disabled={changeContent.role === 0 || changeInfos}
+                disabled={changeInfos}
                 type="primary"
                 onClick={() => {
                   Modal.confirm({
-                    title: 'wzlz',
+                    title: 'DJ',
                     icon: <ExclamationCircleOutlined />,
-                    content: '确认保存吗',
+                    content: '确认修改吗',
                     okText: '确认',
                     onOk: () => {
+                      const Content = omit(changeInfosContent,['goods_infos','account_infos'])
                       dispatch({
-                        type: 'account/adjustAccountInfos',
+                        type: 'partycourse/putPartyCourse',
                         payload: {
-                          // aid: content.id,
-                          // content: changeContent,
+                          aid: Content.id,
+                          data: Content,
                         },
                       });
                     },
@@ -97,18 +123,19 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
               >
                 提交
               </Button>
-              {true? (
+              {!changeInfos? (
                 <Button
                   icon={<SettingFilled />}
                   style={{ float: 'right' }}
-                  // onClick={() => {
-                  //   setChangeInfos(!changeInfos);
-                  //   setChangeContent({
-                  //     motto: changeContent?.motto || (content?.motto ?? ''),
-                  //     nickname: changeContent?.nickname || (content?.nickname ?? ''),
-                  //     role: changeContent?.role || (content?.role ?? 0),
-                  //   } as ChangeInfosType);
-                  // }}
+                  onClick={() => {
+                    setChangeInfos(!changeInfos);
+                    // setChangeContent({
+                    //   motto: changeContent?.motto || (content?.motto ?? ''),
+                    //   nickname: changeContent?.nickname || (content?.nickname ?? ''),
+                    //   role: changeContent?.role || (content?.role ?? 0),
+                    // } as ChangeInfosType);
+                  }
+                }
                 >
                   设置
                 </Button>
@@ -116,9 +143,9 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
                 <Button
                   icon={<SettingFilled />}
                   style={{ float: 'right' }}
-                  // onClick={() => {
-                  //   setChangeInfos(!changeInfos);
-                  // }}
+                  onClick={() => {
+                    setChangeInfos(!changeInfos);
+                  }}
                 >
                   保存
                 </Button>
@@ -131,7 +158,13 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
         <Descriptions column={2} bordered size="middle">
             <Descriptions.Item label="课程名称">
               {
-                showInfos.name
+                !changeInfos? changeInfosContent.name : <Input 
+                  defaultValue={changeInfosContent.name} 
+                  onChange={(e)=>{
+                    const CopyInfos = cloneDeep(changeInfosContent)
+                    CopyInfos.name = e.target.value
+                    setChangeInfosContent(CopyInfos)
+                  }} />
               }
             </Descriptions.Item>
           <Descriptions.Item label="创建人">
@@ -145,7 +178,13 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
             <Descriptions.Item label="课程简介" span={2} style={{ minWidth: '7vw' }}>
                 <section>
                   {
-                    showInfos.course_brief
+                    !changeInfos ? changeInfosContent.course_brief : <Input.TextArea  
+                    defaultValue={changeInfosContent.course_brief} 
+                    onChange={(e)=>{
+                      const CopyInfos = cloneDeep(changeInfosContent)
+                      CopyInfos.course_brief = e.target.value
+                      setChangeInfosContent(CopyInfos)
+                    }}/>
                   }
                 </section>
             </Descriptions.Item>
@@ -157,11 +196,49 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
                 {
                   ifOn(goods_infos.is_on)
                 }
-              </Space>
+                {
+                changeInfos? 
+                <Select style={{ width: '20vw'}}  
+                  placeholder="请选择更改的商品"
+                  onChange={(e: string)=>{
+                  const CopyInfos = cloneDeep(changeInfosContent)
+                  CopyInfos.goods_infos = JSON.parse(e)
+                  setChangeInfosContent(CopyInfos)
+                }}  >
+                  {
+                    GoodsList.map((item)=>{
+                      return(
+                        <Select.Option value={JSON.stringify(item)}   >
+                          {
+                            <Space>
+                            <Image src={item.cover} width={40} height={30}/>
+                            <span>{item.name}</span>
+                          {
+                            ifOn(item.is_on)
+                          }</Space>
+                          }
+                        </Select.Option>
+                      )
+                    })
+                  }
+              </Select> : null
+}
+              </Space> 
             }
             </Descriptions.Item>
-            <Descriptions.Item span={1} label="课程ppt">
+            <Descriptions.Item span={2} label="课程ppt">
               {
+                 changeInfos ? 
+                 <section style={{ marginTop: 20}}>
+                    <UploadAntd 
+                       showType="drag"
+                       propsFileArr={data.ppt}
+                       setUrl={OnListenPpt}
+                       fileCount={3}
+                       listshowType="text"
+                       childFileType="ppt"
+                    />
+                 </section> :
                 data.ppt.map((item: string,index: number)=>{
                   return(
                   <section><FilePptTwoTone twoToneColor="red"/>{`  党课ppt文件${index+1}   `}<a href={item}>点击下载</a></section>
@@ -169,8 +246,19 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
                 })
               }
             </Descriptions.Item>
-            <Descriptions.Item span={1} label="课程视频">
+            <Descriptions.Item span={2} label="课程视频">
               {
+                changeInfos ? 
+                <section style={{ marginTop: 20}}>
+                   <UploadAntd 
+                      showType="drag"
+                      propsFileArr={data.video}
+                      setUrl={OnListenVideo}
+                      fileCount={3}
+                      listshowType="picture"
+                      childFileType="video"
+                   />
+                </section> :
                 data.video.map((item: string,index: number)=>{
                   return(
                   <section><VideoCameraTwoTone />{`  党课视频文件${index+1}   `}<a href={item}>点击下载</a></section>
@@ -178,11 +266,27 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
                 })
               }
             </Descriptions.Item>
-            <Descriptions.Item  label="课程作业" span={2}>
-              <div dangerouslySetInnerHTML={{ __html: showInfos.course_work }}></div>
+            <Descriptions.Item  label="课程作业" span={2}>{
+              !changeInfos ? 
+              <div dangerouslySetInnerHTML={{ __html: changeInfosContent.course_work }}></div> : 
+              <RichTextEditor 
+              subscribeRichText={subscribeInfos} 
+              defaultText={changeInfosContent.course_work}
+              />
+            }
             </Descriptions.Item>
             <Descriptions.Item label="封面图片" span={2}>
-                <Image  src={showInfos.course_cover} />
+              {  !changeInfos?
+                <Image  src={changeInfosContent.course_cover} width={400} height={400} /> : 
+                <UploadAntd 
+                showType="normal"
+                propsFileItem={changeInfosContent.course_cover}
+                setUrl={OnListenCover}
+                fileCount={1}
+                listshowType="picture-card"
+                childFileType="picture"
+             />
+              }
             </Descriptions.Item>
         </Descriptions>
         </Drawer>

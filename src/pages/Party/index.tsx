@@ -95,6 +95,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
               icon={<DeleteTwoTone twoToneColor="red"/>}
                 text={
                   <span
+                    className="action-click"
                     onClick={() => {
                       Modal.info({
                         title: '惠福管理后台',
@@ -128,7 +129,11 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
                 <span>{ifAccountExist(item.account_infos.nickname)}</span>
               </div>}
             />
-            {<section style={{marginLeft: 60, maxHeight: '2.5vw', overflow: 'hidden'}}>
+            {<section
+              className="action-click party_course_acticle"
+              style={{marginLeft: 60, maxHeight: '2.5vw', overflow: 'hidden'}}
+              onClick={()=>{setShowDetails(true); setShowDetailsInfos(item)}}
+              >
               <strong >{item.course_brief}</strong></section>}
           </List.Item>
         )}

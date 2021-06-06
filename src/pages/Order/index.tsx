@@ -28,6 +28,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
   const [orderStatus, setOrderStatus] = useState(0);
   const [orderNumber, setOrderNumber] = useState('');
   const [orderAuthorId, setOrderAnthorId] = useState(0);
+  const [ pageCurrent, setpageCurrent ] = useState(1);
   useEffect(() => {
     dispatch({
       type: 'ordermodel/fetchOrderList',
@@ -147,6 +148,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             onChange={(val: string) => {
               const res = statusStr.find((item) => val === item.str)?.num;
               setOrderStatus(res as number);
+              setpageCurrent(1)
               dispatch({
                 type: 'ordermodel/fetchOrderList',
                 payload: {
@@ -173,6 +175,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             enterButton="搜索"
             onSearch={(item) => {
               setOrderNumber(item);
+              setpageCurrent(1)
               console.log(item);
               dispatch({
                 type: 'ordermodel/fetchOrderList',
@@ -196,6 +199,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             enterButton="搜索"
             onSearch={(item: string) => {
               setOrderAnthorId(parseInt(item, 10));
+              setpageCurrent(1)
               console.log(item);
               dispatch({
                 type: 'ordermodel/fetchOrderList',
@@ -217,6 +221,10 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             onChange={() => {}}
             pagination={{
               style: { marginRight: 30 },
+              current: pageCurrent,
+              onChange: (page) => {
+                setpageCurrent(page);
+              }
             }}
           />
         </div>

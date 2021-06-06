@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-05-30 18:06:54
+ * @LastEditTime: 2021-06-06 17:56:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts
@@ -30,6 +30,13 @@ export type PartyCourseType = {
   is_on: boolean;
   inventory: number;
 };
+
+export async function PutPartyCouse(params: any) {
+  return request(`/api.request/v1/party_course/info/${params.aid}`, {
+    method: 'PUT',
+    data: params.data,
+  });
+}
 
 export async function createPartyCouse(params: PartyCoruseParamsType) {
   return request('/api.request/v1/party_course/info', {

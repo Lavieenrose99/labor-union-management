@@ -87,6 +87,7 @@ const ClassList: React.FC<IClassType> = (props) => {
                       icon={<DeleteTwoTone twoToneColor="red" />}
                       text={
                         <span
+                          className="action-click"
                           onClick={() => {
                             Modal.info({
                               title: '惠福管理后台',
