@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-05-15 20:22:37
+ * @LastEditTime: 2021-06-01 20:54:20
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /labor-union-management/config/defaultSettings.ts
+ */
 import { Settings as ProSettings } from '@ant-design/pro-layout';
 
 type DefaultSettings = Partial<ProSettings> & {
@@ -5,7 +13,7 @@ type DefaultSettings = Partial<ProSettings> & {
 };
 
 const proSettings: DefaultSettings = {
-  navTheme: 'dark',
+  navTheme: 'light',
   // 拂晓蓝
   primaryColor: '#1890ff',
   layout: 'side',

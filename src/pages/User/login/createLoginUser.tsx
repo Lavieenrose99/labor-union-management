@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-22 15:47:18
- * @LastEditTime: 2021-04-22 15:48:21
- * @LastEditors: your name
+ * @LastEditTime: 2021-06-01 16:15:53
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/User/createLoginUser.tsx
  */
@@ -21,7 +21,7 @@ const EmailCreater = (props)=>{
     const [managerInfos, setManagerInfos] = useState({});
     const [ifCommit, setIfCommit] = useState(false)
     const handleOk = () => {
-        request('/api.request/account/login/email_valid',{
+        request('/api.request/v1/account/login/email_valid',{
             method: 'POST',
             data: {
               ...managerInfos,
@@ -38,7 +38,7 @@ const EmailCreater = (props)=>{
 }
     const sendVaildCode = ()=>{
           console.log(emailVaild)
-          request('/api.request/account/login/register_by_email',{
+          request('/api.request/v1/account/login/register_by_email',{
               method: 'POST',
               data: {
                 email: emailVaild

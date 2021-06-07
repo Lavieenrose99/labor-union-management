@@ -11,7 +11,8 @@ import { history } from 'umi'
 import { message } from 'antd';
 import { 
     getInfosList,
-    MgetInfosEnity
+    MgetInfosEnity,
+    addInfosEnity
    } from '../../services/test/test'
 
 export interface AccountModalState {
@@ -30,6 +31,7 @@ export interface AccountModelType {
     }
     effects: {
         fetchTestList: Effect;
+        addTestList: Effect;
     }
     reducers: {
         saveCoureseEnity: Reducer<AccountModalState>;
@@ -54,8 +56,13 @@ const TestCourseModal: AccountModelType = {
                 type: 'saveCoureseEnity',
                 payload: enity
             })
-
       },
+      *addTestList({ payload }, { call , put}){
+       const response =  yield call(addInfosEnity,payload)
+       console.log(response)
+       
+  },
+     
     },
     
       reducers: {

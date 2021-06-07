@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-04-19 16:46:29
+ * @LastEditTime: 2021-05-31 18:08:59
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /labor-union-management/src/models/connect.d.ts
+ */
 import type { MenuDataItem, Settings as ProSettings } from '@ant-design/pro-layout';
 import { GlobalModelState } from './global';
 import { UserModelState } from './user';
@@ -23,6 +31,7 @@ export type ConnectState = {
   settings: ProSettings;
   user: UserModelState;
   login: StateType;
+  partyaccount: any
 };
 
 export type Route = {

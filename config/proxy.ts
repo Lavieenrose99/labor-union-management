@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-05-12 10:18:04
+ * @LastEditTime: 2021-06-03 20:16:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/proxy.ts
@@ -28,12 +28,12 @@ export default {
       },
     },
     '/api.request': {
-      target: 'http://120.24.151.34:80',
+      target: 'http://120.24.151.34:80/',
       pathRewrite: { '^/api.request': '' },
       changeOrigin: true,
     },
   '/api.monitor': {
-    target: 'http://114.215.176.39:7001',
+    target: 'http://114.215.176.39:7001/',
     pathRewrite: { '^/api.monitor': ''},
     changeOrigin: true,
   }
@@ -60,9 +60,14 @@ export default {
       },
     },
     '/api.request': {
-      target: 'http://120.24.151.34:80',
+      target: 'http://120.24.151.34:80/',
       pathRewrite: { '^/api.request': '' },
       changeOrigin: true,
     },
+    '/api.monitor': {
+      target: 'http://114.215.176.39:7001/',
+      pathRewrite: { '^/api.monitor': ''},
+      changeOrigin: true,
+    }
   },
 };

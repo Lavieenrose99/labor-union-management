@@ -1,156 +1,179 @@
-/*
- * @Author: your name
- * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-05-13 16:24:44
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/pages/Party/index.tsx
- */
-import React,{ useState, useEffect} from 'react'
-import request from '@/utils/request'
-import { PageContainer } from '@ant-design/pro-layout'
-import { List, Avatar, Space, Modal, Button} from 'antd';
-import {  FilePptTwoTone, DeleteTwoTone} from '@ant-design/icons';
-import CreatePartyCourse from './create'
+import React, { useState, useEffect } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import { List, Avatar, Modal, Button, Image } from 'antd';
+import { FilePptTwoTone, DeleteTwoTone, VideoCameraTwoTone } from '@ant-design/icons';
+import { getLength, ConBindObjArr, ifAccountExist, IconText, IconFont} from '@/utils/public/tools.tsx'
+import ShowPartyDetails from './change'
+import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
-import  { connect } from 'umi';
+import { connect } from 'umi';
 import { get } from 'lodash';
 
-
-
-const IconText = ({ icon, text }) => (
-  <Space>
-    {React.createElement(icon)}
-    {text}
-  </Space>
-);
-
 interface PartyCourseProps {
-    dispatch: Dispatch
-    CoureseEnity: any
+  dispatch: Dispatch;
+  CoureseEnity: any;
+  CourseGoods: any;
+  UserInfos: any;
+  AccountList: any;
+  pageTotal: any;
 }
 
-
-const PartyCourseList: React.FC<PartyCourseProps> = (props)=>{
-
-    const { dispatch, CoureseEnity} = props
-    const [ showCreate, setShowCreate ] = useState<boolean>(false)
-    const listData = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < CoureseEnity.length; i++) {
-      listData.push({
-        id: CoureseEnity[i].id,
-        href: 'https://ant.design',
-        video: CoureseEnity[i].course_video,
-        title: `党建系列课 ${CoureseEnity[i].name}`,
-        avatar: 'https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg',
-        description: <div><strong>创建人: </strong><span>{CoureseEnity[i].person}</span></div>,
-        ppt: CoureseEnity[i].course_ppt,
-        content:
-          '一心向党好好学习又红又专',
-      });
-    }
-    useEffect(()=>{
-        dispatch({
-            type: 'partycourse/fetchPartyList',
-            payload: {
-                limit: 20,
-                page:1
-            }
-        })
-        request('/api.monitor/data/pv',{
-            method: 'GET'
-        }).then((data)=>{
-            console.log(data)
-        })
-        request('/api.monitor/data/uv',{
-            method: 'GET'
-        }).then((data)=>{
-            console.log(data)
-        })
-    },[])
-
-    
-    
-    return (
-        <PageContainer 
-        ghost={false}
-        onBack={() => window.history.back()}
-        title="党课列表"
-        extra={[
-          <Button key="3" onClick={()=>setShowCreate(true)}>创建课程</Button>,
-        ]}
-        >
-         <List
-         bordered
-    itemLayout="vertical"
-    size="large"
-    pagination={{
-      onChange: page => {
-        console.log(page);
+const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
+  const { dispatch, CoureseEnity, CourseGoods,  pageTotal } = props;
+  const [ showCreate, setShowCreate] = useState<boolean>(false);
+  const [ showDetails, setShowDetails ] = useState<boolean>(false);
+  const [ showDetailsInfos, setShowDetailsInfos ] = useState<any>({});
+  const  [pageSize, setPageSize] = useState(5);
+  const  [pageCurrent, setpageCurrent] = useState(1);
+  const partyCourseList = ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id','goods_infos')
+  const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
+  const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
+  
+  useEffect(() => {
+    dispatch({
+      type: 'partycourse/fetchPartyList',
+      payload: {
+        limit: 5,
+        page: 1,
       },
-      pageSize: 10,
-    }}
-    dataSource={listData}
-    footer={
-      <div>
-        <b>全国总工会</b> 惠福党建中心
-      </div>
-    }
-    renderItem={item => (
-      <List.Item
-        key={item.title}
-        actions={[
-          <IconText icon={FilePptTwoTone} text={<a  href={item.ppt} >点击下载课程ppt</a>} key="list-vertical-message" />,
-          <IconText icon={DeleteTwoTone} text={
-              <span onClick={
-                  ()=>{
-                      Modal.info({
-                          title: '惠福管理后台',
-                          content: '确认要删除该课程吗',
-                          okText: '确认',
-                          onOk: ()=>{
-                              dispatch({
-                                type: 'partycourse/delPartyCourse',
-                                payload: item.id
-                                
-                              })
-                          },
-                          closable: true
-                          
-                      })
-                  }
-              }>删除课程</span>
-          } key="list-vertical-like-o" />,
-        ]}
-        extra={
-          <video
-            width={272}
-            src={item.video}
-            controls={true}
-          />
+    });
+    dispatch({
+      type: 'partycourse/fetchPartyGoods',
+      payload: {
+        limit: 20,
+        page: 1
+      }
+    })
+
+
+ }, []);
+  return (
+    <PageContainer
+      ghost={false}
+      onBack={() => window.history.back()}
+      title="党课列表"
+      extra={[
+        <Button key="3" onClick={() => setShowCreate(true)}>
+          创建课程
+        </Button>,
+      ]}
+    >
+      <section className="party_course_container">
+        <div className="party_course_list">
+      <List
+        bordered
+        itemLayout="vertical"
+        size="large"
+        pagination={{
+          total: pageTotal,
+          pageSize,
+          onShowSizeChange: (current, size) => {
+             setPageSize(size);
+            },
+           onChange: (page, size) => {
+          setpageCurrent(page);
+          dispatch({
+           type: 'partycourse/fetchPartyList',
+           payload: {
+             page,
+             limit: size, 
+           },
+         });
+       },
+       showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
+        }}
+        dataSource={partyCourseListWAcc}
+        footer={
+          <div>
+            <b>全国总工会</b> 惠福党建中心
+          </div>
         }
-      >
-        <List.Item.Meta
-          avatar={<Avatar src={item.avatar} />}
-          title={<a href={item.href}>{item.title}</a>}
-          description={item.description}
-        />
-        {item.content}
-      </List.Item>
-    )}
-  />,
-      <Modal visible={showCreate} onCancel={()=>setShowCreate(false)} width={1000}>
-          <CreatePartyCourse />
+        renderItem={(item) => (
+          <List.Item
+            key={item.title}
+            actions={[
+              <section onClick={()=>{setShowDetails(true); setShowDetailsInfos(item)}}>
+              <IconText
+              icon={<IconFont type="icon-chakan" />}
+               text={<span>查看详情</span>}
+            /></section>,
+              <IconText
+                icon={<FilePptTwoTone twoToneColor="red" />}
+                text={<span>{`${getLength(item.data.ppt)} 份`}</span>}
+                key="list-vertical-message"
+              />,
+              <IconText 
+              icon =  {<VideoCameraTwoTone twoToneColor="red"  />} 
+              text={`${getLength(item.data.video)} 个`}
+              />,
+              <IconText
+              icon={<DeleteTwoTone twoToneColor="red"/>}
+                text={
+                  <span
+                    className="action-click"
+                    onClick={() => {
+                      Modal.info({
+                        title: '惠福管理后台',
+                        content: '确认要删除该课程吗',
+                        okText: '确认',
+                        onOk: () => {
+                          dispatch({
+                            type: 'partycourse/delPartyCourse',
+                            payload: item.id,
+                          });
+                        },
+                        closable: true,
+                      });
+                    }}
+                  >
+                    删除课程
+                  </span>
+                }
+                key="list-vertical-like-o"
+              />,
+           
+            ]}
+            extra={<Image width={272} height={120} src={item.course_cover}
+             fallback="https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.png" />}
+          >
+            <List.Item.Meta
+              avatar={<Avatar src='https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg' />}
+              title={<a >{ `党建系列课 ${item.name}`}</a>}
+              description={ <div>
+                <strong>创建人: </strong>
+                <span>{ifAccountExist(item.account_infos.nickname)}</span>
+              </div>}
+            />
+            {<section
+              className="action-click party_course_acticle"
+              style={{marginLeft: 60, maxHeight: '2.5vw', overflow: 'hidden'}}
+              onClick={()=>{setShowDetails(true); setShowDetailsInfos(item)}}
+              >
+              <strong >{item.course_brief}</strong></section>}
+          </List.Item>
+        )}
+      />
+      </div>
+      </section> 
 
+      <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width='88vw' >
+        <CreatePartyCourse />
       </Modal>
-         </PageContainer>
-    )
-}
+      <section>{
+        showDetails ? 
+      <ShowPartyDetails show={showDetails} onCloseDrawer={setShowDetails} showInfos={showDetailsInfos} /> :null
+        }
+      </section>
 
-
+    </PageContainer>
+  );
+};
 
 export default connect(({ partycourse }: any) => ({
-    CoureseEnity: get(partycourse, 'CoureseEnity', []),
-    UploadStatus: get(partycourse, 'status',false)
-  }))(PartyCourseList);
+  CoureseEnity: get(partycourse, 'CoureseEnity', []),
+  UploadStatus: get(partycourse, 'status', false),
+  CourseGoods: get(partycourse,'CourseGoods',[]),
+  pageTotal: get(partycourse,'pagination',0)
+  // AccountList: get(partyaccount,'AccountInfos',[]),
+  // UserInfos: get(partyaccount,'UserInfos',{})
+}))(PartyCourseList);
