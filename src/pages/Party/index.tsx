@@ -15,13 +15,16 @@ interface PartyCourseProps {
   CourseGoods: any;
   UserInfos: any;
   AccountList: any;
+  pageTotal: any;
 }
 
 const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
-  const { dispatch, CoureseEnity, CourseGoods } = props;
+  const { dispatch, CoureseEnity, CourseGoods,  pageTotal } = props;
   const [ showCreate, setShowCreate] = useState<boolean>(false);
   const [ showDetails, setShowDetails ] = useState<boolean>(false);
   const [ showDetailsInfos, setShowDetailsInfos ] = useState<any>({});
+  const  [pageSize, setPageSize] = useState(5);
+  const  [pageCurrent, setpageCurrent] = useState(1);
   const partyCourseList = ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id','goods_infos')
   const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
   const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
@@ -30,7 +33,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
     dispatch({
       type: 'partycourse/fetchPartyList',
       payload: {
-        limit: 20,
+        limit: 5,
         page: 1,
       },
     });
@@ -62,10 +65,22 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         itemLayout="vertical"
         size="large"
         pagination={{
-          onChange: (page) => {
-            console.log(page);
-          },
-          pageSize: 10,
+          total: pageTotal,
+          pageSize,
+          onShowSizeChange: (current, size) => {
+             setPageSize(size);
+            },
+           onChange: (page, size) => {
+          setpageCurrent(page);
+          dispatch({
+           type: 'partycourse/fetchPartyList',
+           payload: {
+             page,
+             limit: size, 
+           },
+         });
+       },
+       showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
         }}
         dataSource={partyCourseListWAcc}
         footer={
@@ -154,10 +169,11 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   );
 };
 
-export default connect(({ partycourse, partyaccount }: any) => ({
+export default connect(({ partycourse }: any) => ({
   CoureseEnity: get(partycourse, 'CoureseEnity', []),
   UploadStatus: get(partycourse, 'status', false),
   CourseGoods: get(partycourse,'CourseGoods',[]),
+  pageTotal: get(partycourse,'pagination',0)
   // AccountList: get(partyaccount,'AccountInfos',[]),
   // UserInfos: get(partyaccount,'UserInfos',{})
 }))(PartyCourseList);

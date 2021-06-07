@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:22:53
- * @LastEditTime: 2021-06-07 17:06:58
+ * @LastEditTime: 2021-06-07 18:16:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/SetCenter/rolling_picture.tsx
@@ -35,6 +35,7 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
       const [ showCreate, setShowCreate ] = useState<boolean>(false)
       const [ settingType, setSettingType ] = useState<string>('')
       const [changeRollings, setChangeRollings ] = useState([])
+      
        
     useEffect(()=>{
         dispatch({

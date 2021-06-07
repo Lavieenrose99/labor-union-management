@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-07 17:54:41
+ * @LastEditTime: 2021-06-07 18:17:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -29,12 +29,14 @@ interface IClassType {
 const ClassList: React.FC<IClassType> = (props) => {
   const { ClassEnity, dispatch, CourseEnity, pageTotal } = props;
   const [showAddModal, setShowAddModal] = useState(false);
+  const  [pageCurrent, setpageCurrent] = useState(1);
+  const  [pageSize, setPageSize] = useState(5);
   const dataSet = ConBindObjArr(ClassEnity,CourseEnity,'party_course_id','id','class_course')
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchClassList',
       payload: {
-        limit: 20,
+        limit: 5,
         page: 1,
       },
     });
@@ -57,11 +59,22 @@ const ClassList: React.FC<IClassType> = (props) => {
               itemLayout="vertical"
               size="default"
               pagination={{
-                onChange: (page) => {
-                  console.log(page);
-                },
-                pageSize: 10,
-                total: pageTotal
+                total: pageTotal,
+                pageSize,
+                onShowSizeChange: (current, size) => {
+                   setPageSize(size);
+                  },
+                 onChange: (page, size) => {
+                setpageCurrent(page);
+                dispatch({
+                 type: 'partycourse/fetchClassList',
+                 payload: {
+                   page,
+                   limit: size, 
+                 },
+               });
+             },
+             showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
               }}
               dataSource={dataSet}
               footer={
@@ -139,5 +152,5 @@ const ClassList: React.FC<IClassType> = (props) => {
 export default connect(({ partycourse }: any) => ({
   ClassEnity: get(partycourse, 'ClassEnity', []),
   CourseEnity: get(partycourse,'CoureseEnity',[]),
-  pageTotal: get(partycourse,'pageTotal',0)
+  pageTotal: get(partycourse,'PageTotal',0)
 }))(ClassList);
