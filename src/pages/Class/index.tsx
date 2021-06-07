@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-07 18:17:07
+ * @LastEditTime: 2021-06-07 20:24:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -9,15 +9,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Avatar, Modal, Button, Image } from 'antd';
+import { List, Avatar, Modal, Button, Image, Space } from 'antd';
 import ClassCreator from './create';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import { IconText, IconFont } from '@/utils/public/tools';
 import './index.less';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { ConBindObjArr, JumpToOtherRouteById } from '@/utils/public/tools'
+import request from '@/utils/request'
+import StudentDetails from './person'
 
 interface IClassType {
   dispatch: Dispatch;
@@ -28,9 +30,12 @@ interface IClassType {
 
 const ClassList: React.FC<IClassType> = (props) => {
   const { ClassEnity, dispatch, CourseEnity, pageTotal } = props;
+  const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
+  const [ classPerson, setClassPerson ] = useState([])
   const [showAddModal, setShowAddModal] = useState(false);
   const  [pageCurrent, setpageCurrent] = useState(1);
   const  [pageSize, setPageSize] = useState(5);
+  const [ showStudents, setShowStudents ] = useState<boolean>(false)
   const dataSet = ConBindObjArr(ClassEnity,CourseEnity,'party_course_id','id','class_course')
   useEffect(() => {
     dispatch({
@@ -86,15 +91,23 @@ const ClassList: React.FC<IClassType> = (props) => {
                 <List.Item
                   key={item.code}
                   actions={[
-                    <IconText
-                      icon={<IconFont type="icon-mima" />}
-                       text={<span>课程码: <strong>{item.code}</strong></span>}
-                    />,
+                   
                     <IconText
                       icon={<IconFont type="icon-chakan" />}
                        text={<span onClick={()=>{JumpToOtherRouteById('/party/index',dispatch,item.class_course.id )}} >
                          查看课程信息: <strong>{item.class_course.name || <em>课程删除</em>}</strong></span>}
                     />,
+                    <IconText
+                    icon={<IconFont type="icon-renyuanguanli" />}
+                     text={<span onClick={()=>{ request(`/api.request/v1/party_course/class/sign_up/list_by_cid/${item.id}`)
+                     .then((data)=>{
+                       const Lists = data['Lists:']
+                       const CombineData = ConBindObjArr(Lists,AccountList,'user_id','id','account')
+                       setClassPerson(CombineData) 
+                       setShowStudents(true)
+                     })}} >
+                       查看班级报名</span>}
+                  />,
                     <IconText
                       icon={<DeleteTwoTone twoToneColor="red" />}
                       text={
@@ -133,7 +146,10 @@ const ClassList: React.FC<IClassType> = (props) => {
                 >
                   <List.Item.Meta
                     avatar={<Avatar src="https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.jpeg" />}
-                    title={<a href={item.href}>{item.name}</a>}
+                    title={<Space size="large"><span>{item.name}</span> <IconText
+                    icon={<IconFont type="icon-mima" />}
+                     text={<span>课程码: <strong>{item.code}</strong></span>}
+                  /></Space>}
                     description={`教师名称: ${item.teacher_name}`}
                   />
                    {<section style={{marginLeft: 60, maxHeight: '2.5vw', overflow: 'hidden'}}>
@@ -145,6 +161,7 @@ const ClassList: React.FC<IClassType> = (props) => {
         </div>
       </PageContainer>
       <ClassCreator show={showAddModal} closeInfosModel={setShowAddModal} />
+      <StudentDetails  onCloseDrawer={setShowStudents} show={showStudents} person={classPerson} />
     </>
   );
 };

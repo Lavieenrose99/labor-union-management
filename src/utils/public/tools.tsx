@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-06 16:45:29
+ * @LastEditTime: 2021-06-07 19:40:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -15,7 +15,7 @@ import { stringify } from 'querystring';
 import type { Dispatch } from 'umi';
 
 export const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2580518_sij54mldr3g.js',
+  scriptUrl: '//at.alicdn.com/t/font_2580518_5h62bubx95s.js',
 });
 
 export const getLength = (arr:any) => {
@@ -23,7 +23,7 @@ export const getLength = (arr:any) => {
      return len
  } 
 
-export const IconText = ({ icon, text }) => (
+export const IconText = ({ icon, text }:any) => (
   <Space>
     {icon??null}
     {text}
