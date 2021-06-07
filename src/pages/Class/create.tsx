@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 13:50:27
- * @LastEditTime: 2021-05-30 17:48:44
+ * @LastEditTime: 2021-06-07 17:58:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/create.tsx
@@ -57,6 +57,7 @@ const ClassCreator: React.FC<IClassType> = (props) => {
       onCancel={() => closeInfosModel(false)}
       destroyOnClose
       title="班级创建"
+      footer={null}
     >
       <section>
         <Form
@@ -96,13 +97,13 @@ const ClassCreator: React.FC<IClassType> = (props) => {
             </Select>
           </Form.Item>
           <Form.Item
-            label="课程简介"
+            label="班级简介"
             name="introduce"
             rules={[{ required: true, message: '请输入上课地点' }]}
           >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item label="课程备注" name="comment" rules={[{ required: true, message: '' }]}>
+          <Form.Item label="班级备注" name="comment" rules={[{ required: true, message: '' }]}>
             <Input.TextArea />
           </Form.Item>
           <Form.Item

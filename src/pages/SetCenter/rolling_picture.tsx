@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-19 10:22:53
- * @LastEditTime: 2021-06-04 16:01:06
+ * @LastEditTime: 2021-06-07 17:06:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/SetCenter/rolling_picture.tsx
@@ -33,6 +33,7 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
       const  [pageSize, setPageSize] = useState(12);
       const  [pageCurrent, setpageCurrent] = useState(1);
       const [ showCreate, setShowCreate ] = useState<boolean>(false)
+      const [ settingType, setSettingType ] = useState<string>('')
       const [changeRollings, setChangeRollings ] = useState([])
        
     useEffect(()=>{
@@ -50,10 +51,17 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
     },[])
 
     const handleRollings: any = ()=>{
+      if(settingType === 'change'){
         props.dispatch({
-            type: 'setcentermodel/addRollingPictures',
+            type: 'setcentermodel/changeRollingPictures',
             payload: changeRollings
         })
+      }else{
+        props.dispatch({
+          type: 'setcentermodel/addRollingPictures',
+          payload: changeRollings
+      })
+      }
     }
     const handleChange: any = (e)=>{
       setChangeRollings(e)
@@ -64,12 +72,14 @@ const RollingPictures: React.FC<IRollingsType> = (props) =>{
         ghost={false}
         onBack={() => window.history.back()}
         extra={[
-          <Button key="3" onClick={()=>setShowCreate(true)}>修改轮播图</Button>,
+          <Button key="2" onClick={()=> { setShowCreate(true); setSettingType('add')   }} 
+          disabled={RollingsEnity.length > 0} >创建轮播图</Button>,
+          <Button key="3" onClick={()=>{ setShowCreate(true); setSettingType('change') } } >修改轮播图</Button>
         ]}
         ></PageContainer>
         <section className="carousel_picture_container">
         <Carousel autoplay  className="carousel_picture" dotPosition="left">{
-            (RollingsEnity||[]).map((item: any)=>{
+            (RollingsEnity).map((item: any)=>{
                 return(
                     <div>
                     <Image src={item.course_cover} width={400} height={200}/>

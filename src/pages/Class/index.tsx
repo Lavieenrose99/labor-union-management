@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-07 16:18:37
+ * @LastEditTime: 2021-06-07 17:54:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -23,6 +23,7 @@ interface IClassType {
   dispatch: Dispatch;
   ClassEnity: any;
   CourseEnity: any;
+  pageTotal: number;
 }
 
 const ClassList: React.FC<IClassType> = (props) => {

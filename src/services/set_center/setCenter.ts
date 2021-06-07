@@ -29,14 +29,21 @@ export type NewsLimitType = {
 };
 
 export async function addRollingsPic(params: PartyCoruseParamsType) {
-  return request('/api.request/party_course/picture', {
+  return request('/api.request/v1/party_course/picture', {
+    method: 'POST',
+    data: { course_list: params },
+  });
+}
+export async function changeRollingsPic(params: PartyCoruseParamsType) {
+  return request('/api.request/v1/party_course/picture', {
     method: 'PUT',
     data: { course_list: params },
   });
 }
 
+
 export async function fetchRollingPicture(params: RollingPictureLimitType) {
-  return request('/api.request/party_course/picture', {
+  return request('/api.request/v1/party_course/picture', {
     method: 'GET',
     params,
   });

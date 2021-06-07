@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-06-06 19:47:22
+ * @LastEditTime: 2021-06-07 18:02:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -161,7 +161,6 @@ const PartyCourseModal: AccountModelType = {
       })
     },
     *changePartyGoods({payload}, {call, put}) {
-      console.log(`修改的数据${payload.params.price}`)
       const { params, updateId } = payload;
       const res = yield call(changePartyGoods, params, updateId);
       if(res.id) {
@@ -175,11 +174,18 @@ const PartyCourseModal: AccountModelType = {
         }
       })
     },
-    *addPartyClass({ payload }, { call }) {
+    *addPartyClass({ payload }, { call, put }) {
       const response = yield call(createPartyClass, payload);
       if (response.id > 0) {
         message.info('已成功添加');
       }
+      yield put({
+        type: 'fetchClassList',
+        payload: {
+          limit: 10,
+          page: 1
+        }
+      })
     },
     *fetchPartyList({ payload }, { call, put }) {
       const list = yield call(fetchPartyCourse, payload);
@@ -204,15 +210,18 @@ const PartyCourseModal: AccountModelType = {
         payload: enity,
       });
     },
-    *delPartyCourse({ payload }, { call }) {
+    *delPartyCourse({ payload }, { call, put }) {
       const response = yield call(delPartyCourse, payload);
       if (response.id) {
         message.info('课程删除成功');
       }
-      yield call(fetchPartyCourse, {
-        page: 1,
-        limit: 10,
-      });
+       yield put({
+         type: 'fetchPartyList',
+         payload: {
+           limit: 10,
+           page: 1
+         }
+       })
     },
     *fetchClassList({ payload }, { call, put }) {
       const list = yield call(fetchPartyClass, payload);
@@ -240,12 +249,12 @@ const PartyCourseModal: AccountModelType = {
         message.info('班级删除成功');
       }
       yield put({
-        type: 'fetchPartyClass',
+        type: 'fetchClassList',
         payload: {
-          page: 1,
           limit: 10,
-        },
-      });
+          page: 1
+        }
+      })
     },
   },
 

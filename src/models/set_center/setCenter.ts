@@ -13,8 +13,9 @@ import {
   putInfosTags,
   addInfosTags,
   deleteNews,
+  changeRollingsPic,
 } from '@/services/set_center/setCenter';
-import { query } from 'express';
+
 
 export interface AccountModalState {
   pagination: {
@@ -41,6 +42,7 @@ export interface AccountModelType {
     fetchNewsList: Effect;
     changeNewsEnity: Effect;
     deleteNewsEnity: Effect;
+    changeRollingPictures: Effect;
   };
   reducers: {
     saveRollingsPic: Reducer<AccountModalState>;
@@ -58,14 +60,20 @@ const RollingPictureModal: AccountModelType = {
   effects: {
     *fetchRollingsList({ payload }, { call, put }) {
       const list = yield call(fetchRollingPicture, payload);
+      if(list.status !== 404){
       yield put({
         type: 'saveRollingsPic',
         payload: list,
       });
+    }
     },
     *addRollingPictures({ payload }, { call }) {
       const response = yield call(addRollingsPic, payload);
       if (response.id) message.info('添加轮播图成功');
+    },
+    *changeRollingPictures({ payload }, { call }) {
+      const response = yield call(changeRollingsPic, payload);
+      if (response.id) message.info('修改轮播图成功');
     },
     *addInfosList({ payload }, { call, put }) {
       const response = yield call(addNewsInfos, payload);
