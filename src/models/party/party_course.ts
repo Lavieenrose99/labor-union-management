@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-06-06 17:52:23
+ * @LastEditTime: 2021-06-06 19:47:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -55,6 +55,7 @@ export interface AccountModelType {
     getPartyListById: Effect;
     PutOnPartyGoods: Effect;
     putPartyCourse: Effect;
+    getPartyGoodsById: Effect;
   };
   reducers: {
     savePagesInfos: Reducer<AccountModalState>;
@@ -117,6 +118,13 @@ const PartyCourseModal: AccountModelType = {
       const response = yield call(fetchPartyGoods, payload);
       const { goods } = response;
       const ids = map(goods, 'id');
+      const enity = yield call(getPartyGoods, ids);
+      yield put({
+        type: 'savePartyGoods',
+        payload: enity,
+      });
+    },
+    *getPartyGoodsById({ ids }, { call, put }) {
       const enity = yield call(getPartyGoods, ids);
       yield put({
         type: 'savePartyGoods',

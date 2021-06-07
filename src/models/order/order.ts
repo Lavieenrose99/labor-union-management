@@ -12,6 +12,7 @@ import {
   getOrderEnity,
   cancelOrderEnity,
 } from '@/services/order/order';
+import { map } from 'lodash'
 
 export interface AccountModalState {
   pagination: {
@@ -58,6 +59,10 @@ const OrderModal: AccountModelType = {
         type: 'saveOrderEnity',
         payload: enity,
       });
+      yield put({
+        type: 'partycourse/getPartyGoodsById',
+        ids: Array.from(new Set(map(enity,'goods_id')))
+      })
     },
     *cancelOrderEnity({ payload }, {call, put}) {
       const { params, id } = payload

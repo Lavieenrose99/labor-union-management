@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-05 14:17:51
+ * @LastEditTime: 2021-06-07 16:18:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -29,8 +29,6 @@ const ClassList: React.FC<IClassType> = (props) => {
   const { ClassEnity, dispatch, CourseEnity, pageTotal } = props;
   const [showAddModal, setShowAddModal] = useState(false);
   const dataSet = ConBindObjArr(ClassEnity,CourseEnity,'party_course_id','id','class_course')
-  console.log(dataSet)
-
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchClassList',

@@ -1,24 +1,7 @@
-/*
- * @Author: your name
- * @Date: 2021-05-27 16:16:09
- * @LastEditTime: 2021-06-05 16:55:01
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/pages/Goods/index.tsx
- */
-/*
- * @Author: your name
- * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-05-26 13:46:54
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /labor-union-management/src/pages/Class/index.tsx
- */
 
 import React, { useState, useEffect } from 'react';
-import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Table } from 'antd';
+import { Button, Table, Image, Space } from 'antd';
 import type { Dispatch } from 'umi';
 import GoodsCreator from './create';
 import GoodsChanger from './change';
@@ -59,10 +42,10 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
       dataIndex: 'name',
       key: 'name',
       render: (itemName: string, item: any) => (
-        <div>
-          <img width={60} height={30} src={item.cover} />
+        <Space>
+          <Image width={60} height={30} src={item.cover} />
           <span>{itemName}</span>
-        </div>
+        </Space>
       ),
     },
     {

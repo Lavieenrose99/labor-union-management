@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 17:23:24
- * @LastEditTime: 2021-06-06 18:01:06
+ * @LastEditTime: 2021-06-07 16:05:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/change.tsx
@@ -23,8 +23,6 @@ import { FilePptTwoTone,
 import { Input, 
   Modal,
   Button, 
-  message, 
-  Spin, 
   Select, 
   Drawer, 
   Descriptions, 
@@ -33,7 +31,7 @@ import { Input,
   Image} from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
-import { get, cloneDeep, omit  } from 'lodash';
+import { get, cloneDeep } from 'lodash';
 import { ifOn } from '@/utils/public/tools'
 import './index.less'
 import RichTextEditor from '@/utils/upload/richTextUpload';
@@ -108,12 +106,21 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
                     content: '确认修改吗',
                     okText: '确认',
                     onOk: () => {
-                      const Content = omit(changeInfosContent,['goods_infos','account_infos'])
+                      const { course_work, course_cover , course_brief, goods_infos, name, id }  = changeInfosContent
+                      const { ppt, video }  = goods_infos
                       dispatch({
                         type: 'partycourse/putPartyCourse',
                         payload: {
-                          aid: Content.id,
-                          data: Content,
+                          aid: id,
+                          data: {
+                            party_course_name: name,
+                            party_course_ppt: ppt,
+                            party_course_video: video,
+                            party_course_brief: course_brief,
+                            party_course_cover: course_cover,
+                            party_course_work: course_work,
+                            good_id: goods_infos.id
+                          }
                         },
                       });
                     },

@@ -6,22 +6,24 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import request from '@/utils/request';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Select, Input, Table, Button } from 'antd';
+import { Select, Input, Table, Button, Image, Space, Avatar } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
+import { ConBindObjArr } from '@/utils/public/tools'
+import { statusStr  } from '@/utils/Table/bills.tsx'
 import moment from 'moment';
 import './index.less';
 
 interface IOrdersType {
   dispatch: Dispatch;
   OrderEnity: any;
+  GoodsEnity: [];
 }
 
 const OrdersList: React.FC<IOrdersType> = (props) => {
-  const { dispatch, OrderEnity } = props;
+  const { dispatch, OrderEnity, GoodsEnity } = props;
   const { Option } = Select;
   const { Search } = Input;
   const listSelect = ['全部', '待支付', '已支付', '已取消'];
@@ -29,6 +31,9 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
   const [orderNumber, setOrderNumber] = useState('');
   const [orderAuthorId, setOrderAnthorId] = useState(0);
   const [ pageCurrent, setpageCurrent ] = useState(1);
+  const ComBindData = ConBindObjArr(OrderEnity,GoodsEnity,'goods_id','id','goods')
+  const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
+  const ComBindDataWithAcc = ConBindObjArr(ComBindData,AccountList,'account_id','id','account_infos') 
   useEffect(() => {
     dispatch({
       type: 'ordermodel/fetchOrderList',
@@ -39,13 +44,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
       },
     });
   }, []);
-  const statusStr = [
-    { num: 0, str: '全部' },
-    { num: 1, str: '待支付' },
-    { num: 2, str: '已支付' },
-    { num: 4, str: '已取消' },
-    { num: undefined, str: '未知' },
-  ];
+ 
   const columns = [];
   columns.push(
     {
@@ -54,45 +53,68 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
       key: 'number',
       className: 'order-list-number',
       align: 'center' as 'center',
-      width: 260,
+   
     },
     {
-      title: '用户id',
-      dataIndex: 'account_id',
+      title: '用户',
+      dataIndex: 'account_infos',
       key: 'account_id',
       align: 'center' as 'center',
-      width: 140,
+      render: (account: any) =>{
+        return(
+          <Space>
+        <Avatar src={account.avatar} />
+        <span>{account.nickname}</span>
+        </Space>
+        )
+      }
+      
     },
     {
       title: '订单状态',
       dataIndex: 'status',
       key: 'status',
       align: 'center' as 'center',
-      width: 110,
+     
       render: (statusNum: number) => (
         <span>{statusStr.find((item) => statusNum === item.num)?.str}</span>
       ),
+    },
+    {
+      title: '商品',
+      dataIndex: 'goods',
+      key: 'total',
+      align: 'center' as 'center',
+    
+      render: (item: any) => {
+        return(
+        <>
+        <Space>
+        <Image src={item.cover} width={40} height={40} />
+        <span>{item.name}</span>
+        </Space>
+        </>
+      )
+      }
     },
     {
       title: '购买数量',
       dataIndex: 'total',
       key: 'total',
       align: 'center' as 'center',
-      width: 100,
+   
     },
     {
       title: '总价',
       dataIndex: 'total_price',
       key: 'total_price',
       align: 'center' as 'center',
-      width: 140,
     },
     {
       title: '创建时间',
       dataIndex: 'create_time',
       key: 'create_time',
       align: 'center' as 'center',
-      width: 240,
       render: (createTime: number) => (
         <span>{moment(createTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
       ),
@@ -102,7 +124,6 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
       dataIndex: 'update_time',
       key: 'update_time',
       align: 'center' as 'center',
-      width: 240,
       render: (updateTime: number) => (
         <span>{moment(updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
       ),
@@ -176,7 +197,6 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             onSearch={(item) => {
               setOrderNumber(item);
               setpageCurrent(1)
-              console.log(item);
               dispatch({
                 type: 'ordermodel/fetchOrderList',
                 payload: {
@@ -200,7 +220,6 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             onSearch={(item: string) => {
               setOrderAnthorId(parseInt(item, 10));
               setpageCurrent(1)
-              console.log(item);
               dispatch({
                 type: 'ordermodel/fetchOrderList',
                 payload: {
@@ -217,7 +236,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
         <div className="order-list">
           <Table
             columns={columns}
-            dataSource={OrderEnity}
+            dataSource={ComBindDataWithAcc}
             onChange={() => {}}
             pagination={{
               style: { marginRight: 30 },
@@ -233,6 +252,7 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
   );
 };
 
-export default connect(({ ordermodel }: any) => ({
+export default connect(({ ordermodel, partycourse }: any) => ({
   OrderEnity: get(ordermodel, 'OrderEnity', []),
+  GoodsEnity: get(partycourse, 'CourseGoods',[])
 }))(OrdersList);
