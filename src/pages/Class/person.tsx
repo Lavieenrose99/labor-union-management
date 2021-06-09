@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-06-07 20:02:23
- * @LastEditTime: 2021-06-07 20:31:37
+ * @LastEditTime: 2021-06-09 13:36:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/person.tsx
@@ -42,6 +42,7 @@ import './index.less'
 const ClassStudent: React.FC= (props)=>{
 
   const { show, onCloseDrawer, person  } = props
+  
     return (
       <>
         <Drawer
