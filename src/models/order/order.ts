@@ -34,7 +34,7 @@ export interface AccountModelType {
   };
   reducers: {
     saveOrderEnity: Reducer;
-    savePagesInfos: Reducer;
+    saveOrderInfos: Reducer;
   };
 }
 
@@ -51,8 +51,8 @@ const OrderModal: AccountModelType = {
         return item.id;
       });
       yield put({
-        type: 'savePagesInfos',
-        payload: total,
+        type: 'saveOrderInfos',
+        payload: total
       });
       const enity = yield call(getOrderEnity, ids);
       yield put({
@@ -84,10 +84,10 @@ const OrderModal: AccountModelType = {
         OrderEnity: payload,
       };
     },
-    savePagesInfos(state: any, { payload }: any) {
+    saveOrderInfos(state: any, { payload }: any) {
       return {
         ...state,
-        pagination: payload,
+        OrderTotal: payload
       };
     },
   },

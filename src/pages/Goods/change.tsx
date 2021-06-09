@@ -10,15 +10,12 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Input, Switch, InputNumber } from 'antd';
 import { connect } from 'umi';
 import { UploadAntd } from '@/utils/upload/qiniu'
-import { map } from 'lodash'
 import './change.less'
 
 
 const  GoodsChanger = (props) => {
   const { TextArea } = Input;
   const { dispatch, show, closeInfosModel , StroageCover, StroagePictures, info } = props;
-  const StroageCoverS = localStorage.getItem(StroageCover) ? map([...JSON.parse(String(localStorage.getItem(StroageCover)))],'url') : []
-  const StroagePictureS = localStorage.getItem(StroagePictures) ? map([...JSON.parse(String(localStorage.getItem(StroagePictures)))],'url') : []
   const [infoName, setInfoName] = useState('');
   const [ infoInventory, setInfoInventory ] = useState(0);
   const [ infoPrice, setInfoPrice ] = useState(0)
@@ -107,11 +104,11 @@ const  GoodsChanger = (props) => {
               onChange={(e)=>setInfoInventory(e)}
               value={infoInventory}
               min={0}
-              step={0.01}
+              step={1}
               />
             </div>
           <div className="goods-changer-title">
-            <span>是否发布：</span>
+            <span>是否上架：</span>
             <Switch
               className="goods-changer-input"
               onChange={(e)=>setInfoIsOn(e)}

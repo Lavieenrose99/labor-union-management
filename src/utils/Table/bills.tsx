@@ -10,9 +10,9 @@ import React from 'react'
 import { Tag } from 'antd'
 
 export  const statusStr = [
-    { num: 0, str: <Tag>全部</Tag> },
-    { num: 1, str: <Tag color="orange">待支付</Tag> },
-    { num: 2, str: <Tag color="green">已支付</Tag> },
-    { num: 4, str: <Tag color="red">已取消</Tag> },
-    { num: undefined, str: '未知' },
-  ];
+  { num: 0, str: '全部' },
+  { num: 1, str: '待支付', color: 'orange' },
+  { num: 2, str: '已支付', color: 'green' },
+  { num: 4, str: '已取消', color: 'red' },
+  { num: undefined, str: '未知' },
+];
