@@ -44,12 +44,7 @@ const Login: React.FC<LoginProps> = (props) => {
   const handleSubmit = async(values: LoginParamsType) => {
     const { dispatch } = props;
 
-  
-    
-    await dispatch({
-      type: 'login/login',
-      payload: { ...values },
-    });
+ 
     await request('/api.request/v1/account/login/login_by_email', {
       method: 'POST',
       data: {
@@ -66,6 +61,11 @@ const Login: React.FC<LoginProps> = (props) => {
     await dispatch({
       type: 'partyaccount/getLoginUserInfos'
     })
+    
+    await dispatch({
+      type: 'login/login',
+      payload: { ...values },
+    });
     await dispatch({
       type: 'partyaccount/getAccountList',
       payload: {
