@@ -64,6 +64,7 @@ export interface AccountModelType {
     saveClassEnity: Reducer<AccountModalState>;
     savePartyGoods: Reducer;
     savePageTotal: Reducer;
+    saveGoodsTotal: Reducer;
   };
 }
 
@@ -116,8 +117,12 @@ const PartyCourseModal: AccountModelType = {
     },
     *fetchPartyGoods({ payload }, { call, put }) {
       const response = yield call(fetchPartyGoods, payload);
-      const { goods } = response;
+      const { goods, total } = response;
       const ids = map(goods, 'id');
+      yield put ({
+        type: 'saveGoodsTotal',
+        payload: total
+      })
       const enity = yield call(getPartyGoods, ids);
       yield put({
         type: 'savePartyGoods',
@@ -293,6 +298,12 @@ const PartyCourseModal: AccountModelType = {
       return {
         ...state,
         PageTotal: payload,
+      };
+    },
+    saveGoodsTotal(state: any, { payload }: any) {
+      return {
+        ...state,
+        GoodsTotal: payload,
       };
     },
   },

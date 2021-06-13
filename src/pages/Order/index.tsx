@@ -7,12 +7,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Select, Input, Table, Button, Image, Space, Avatar } from 'antd';
+import { Select, Input, Table, Button, Image, Space, Avatar, Tag } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
 import { ConBindObjArr } from '@/utils/public/tools'
-import { statusStr  } from '@/utils/Table/bills.tsx'
+import { statusStr  } from '@/utils/Table/bills'
 import moment from 'moment';
 import './index.less';
 
@@ -20,17 +20,19 @@ interface IOrdersType {
   dispatch: Dispatch;
   OrderEnity: any;
   GoodsEnity: [];
+  OrderTotal: number;
 }
 
 const OrdersList: React.FC<IOrdersType> = (props) => {
-  const { dispatch, OrderEnity, GoodsEnity } = props;
+  const { dispatch, OrderEnity, GoodsEnity, OrderTotal } = props;
   const { Option } = Select;
   const { Search } = Input;
   const listSelect = ['全部', '待支付', '已支付', '已取消'];
-  const [orderStatus, setOrderStatus] = useState(0);
-  const [orderNumber, setOrderNumber] = useState('');
-  const [orderAuthorId, setOrderAnthorId] = useState(0);
-  const [ pageCurrent, setpageCurrent ] = useState(1);
+  const [orderStatus, setOrderStatus] = useState(0); // 订单状态，用于筛选
+  const [orderNumber, setOrderNumber] = useState(''); // 订单编号，用于筛选
+  const [orderAuthorId, setOrderAnthorId] = useState(0); // 买家id，用于筛选
+  const [ pageSize, setPageSize ] = useState(10); // 每页条数
+  const [ pageCurrent, setPageCurrent ] = useState(1); // 当前页数
   const ComBindData = ConBindObjArr(OrderEnity,GoodsEnity,'goods_id','id','goods')
   const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
   const ComBindDataWithAcc = ConBindObjArr(ComBindData,AccountList,'account_id','id','account_infos') 
@@ -38,13 +40,13 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
     dispatch({
       type: 'ordermodel/fetchOrderList',
       payload: {
-        limit: 99,
-        page: 1,
+        limit: pageSize,
+        page: pageCurrent,
         status: orderStatus,
       },
     });
   }, []);
- 
+  console.log(AccountList);
   const columns = [];
   columns.push(
     {
@@ -76,9 +78,10 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
       key: 'status',
       align: 'center' as 'center',
      
-      render: (statusNum: number) => (
-        <span>{statusStr.find((item) => statusNum === item.num)?.str}</span>
-      ),
+      render: (statusNum: number) => {
+        const statusItem = statusStr.find((item) => statusNum === item.num)
+        return <Tag color={statusItem?.color}>{statusItem?.str}</Tag>
+      }
     },
     {
       title: '商品',
@@ -140,8 +143,8 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
               type: 'ordermodel/cancelOrderEnity',
               payload: {
                 params: {
-                  limit: 99,
-                  page: 1,
+                  limit: pageSize,
+                  page: pageCurrent,
                   author_id: item,
                   status: orderStatus,
                   number: orderNumber,
@@ -169,11 +172,11 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             onChange={(val: string) => {
               const res = statusStr.find((item) => val === item.str)?.num;
               setOrderStatus(res as number);
-              setpageCurrent(1)
+              setPageCurrent(1)
               dispatch({
                 type: 'ordermodel/fetchOrderList',
                 payload: {
-                  limit: 99,
+                  limit: pageSize,
                   page: 1,
                   author_id: orderAuthorId,
                   status: res,
@@ -191,16 +194,16 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
               maxWidth: 360,
               marginLeft: 60,
             }}
-            placeholder="输入订单号"
+            placeholder="不知道会不会有订单号查询接口，先写着"
             allowClear
             enterButton="搜索"
             onSearch={(item) => {
               setOrderNumber(item);
-              setpageCurrent(1)
+              setPageCurrent(1)
               dispatch({
                 type: 'ordermodel/fetchOrderList',
                 payload: {
-                  limit: 99,
+                  limit: pageSize,
                   page: 1,
                   author_id: orderAuthorId,
                   status: orderStatus,
@@ -214,18 +217,19 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
               maxWidth: 240,
               marginLeft: 60,
             }}
-            placeholder="输入买家id"
+            placeholder="输入买家名称"
             allowClear
             enterButton="搜索"
-            onSearch={(item: string) => {
-              setOrderAnthorId(parseInt(item, 10));
-              setpageCurrent(1)
+            onSearch={(val: string) => {
+              const author = AccountList.find((item) => val === item.nickname)
+              setOrderAnthorId(parseInt(author || val === '' ? author?.id : -1, 10));
+              setPageCurrent(1)
               dispatch({
                 type: 'ordermodel/fetchOrderList',
                 payload: {
-                  limit: 99,
+                  limit: pageSize,
                   page: 1,
-                  author_id: item,
+                  author_id: author || val === '' ? author?.id : -1,
                   status: orderStatus,
                   number: orderNumber,
                 },
@@ -241,9 +245,25 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
             pagination={{
               style: { marginRight: 30 },
               current: pageCurrent,
-              onChange: (page) => {
-                setpageCurrent(page);
-              }
+              pageSize,
+              total: OrderTotal,
+              onChange: (page, size) => {
+                setPageCurrent(page);
+                dispatch({
+                  type: 'ordermodel/fetchOrderList',
+                  payload: {
+                    page,
+                    limit: size,
+                    author_id: orderAuthorId,
+                    status: orderStatus,
+                    number: orderNumber,
+                  },
+                })
+              },
+              onShowSizeChange: (current, size) => {
+                setPageSize(size);
+              },
+              showTotal: total => <span>共{total}份订单</span>
             }}
           />
         </div>
@@ -254,5 +274,6 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
 
 export default connect(({ ordermodel, partycourse }: any) => ({
   OrderEnity: get(ordermodel, 'OrderEnity', []),
-  GoodsEnity: get(partycourse, 'CourseGoods',[])
+  GoodsEnity: get(partycourse, 'CourseGoods',[]),
+  OrderTotal: get(ordermodel, 'OrderTotal', 0)
 }))(OrdersList);

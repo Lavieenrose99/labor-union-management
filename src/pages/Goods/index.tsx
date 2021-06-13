@@ -16,19 +16,22 @@ interface IGoodsType {
 }
 
 const GoodsList: React.FC<IGoodsType> = (props) => {
-  const { dispatch, CourseGoods } = props;
+  const { dispatch, CourseGoods, GoodsTotal } = props;
   const [showAddModal, setShowAddModal] = useState(false);
   const [showChangeModal, setShowChangeModal] = useState(false);
   const [changeItem, setChangeItem] = useState({});
+  const [ pageSize, setPageSize ] = useState(10);
+  const [ pageCurrent, setPageCurrent ] = useState(1);
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchPartyGoods',
       payload: {
-        limit: 20,
-        page: 1,
+        limit: pageSize,
+        page: pageCurrent,
       },
     });
   }, []);
+  console.log(GoodsTotal)
   const columns = [
     {
       title: '商品编号',
@@ -162,6 +165,23 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
             onChange={() => {}}
             pagination={{
               style: { marginRight: 30 },
+              current: pageCurrent,
+              pageSize,
+              total: GoodsTotal,
+              onChange: (page, size) => {
+                setPageCurrent(page);
+                dispatch({
+                  type: 'partycourse/fetchPartyGoods',
+                  payload: {
+                    page,
+                    limit: size
+                  },
+                })
+              },
+              onShowSizeChange: (current, size) => {
+                setPageSize(size);
+              },
+              showTotal: total => <span>共{total}个商品</span>
             }}
           />
         </div>
@@ -185,4 +205,5 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
 
 export default connect(({ partycourse }: any) => ({
   CourseGoods: get(partycourse, 'CourseGoods', []),
+  GoodsTotal: get(partycourse, 'GoodsTotal', 0)
 }))(GoodsList);
