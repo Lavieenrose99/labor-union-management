@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-06-04 15:10:24
+ * @LastEditTime: 2021-06-13 14:53:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -14,7 +14,7 @@ import { Input, Button, message, Spin, Select } from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
 import { get, map } from 'lodash';
-import { IconFont } from '@/utils/public/tools'
+import { IconFont, openNotificationWithIcon } from '@/utils/public/tools'
 import CreatorPartyCourse from '@/utils/upload/richTextUpload'
 import './index.less'
 
@@ -86,7 +86,11 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         <>
         <PageContainer 
         extra={[
-            <Button key="3" onClick={()=>localStorage.clear()}>清除缓存</Button>
+            <Button key="3" onClick={()=> { 
+                localStorage.clear(); 
+                openNotificationWithIcon('info',
+                { message: '提醒', description: '该页面的缓存已删除，刷新后将不保存原信息'}) } } danger >
+                    清除缓存</Button>
           ]}
         >
             <Spin spinning={UploadStatus}>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-10 14:53:47
+ * @LastEditTime: 2021-06-13 15:27:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -42,6 +42,13 @@ const ClassList: React.FC<IClassType> = (props) => {
       type: 'partycourse/fetchClassList',
       payload: {
         limit: 5,
+        page: 1,
+      },
+    });
+    dispatch({
+      type: 'partycourse/fetchPartyList',
+      payload: {
+        limit: 10,
         page: 1,
       },
     });

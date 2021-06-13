@@ -1,12 +1,12 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 13:50:27
- * @LastEditTime: 2021-06-07 17:58:02
+ * @LastEditTime: 2021-06-13 15:10:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/create.tsx
  */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Modal, Input, Select, Form, Button, DatePicker } from 'antd';
 import { layout, tailLayout } from '@/utils/public/layout';
 import { connect } from 'umi';
@@ -40,16 +40,6 @@ const ClassCreator: React.FC<IClassType> = (props) => {
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
-  console.log(CoureseEnity);
-  useEffect(() => {
-    dispatch({
-      type: 'partycourse/fetchPartyList',
-      payload: {
-        limit: 99,
-        page: 1,
-      },
-    });
-  }, []);
   return (
     <Modal
       visible={show}

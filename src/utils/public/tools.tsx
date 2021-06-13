@@ -1,14 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-07 19:40:03
+ * @LastEditTime: 2021-06-13 16:51:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
  */
 import React from 'react'
 import { createFromIconfontCN } from '@ant-design/icons';
-import { Space, Tag } from 'antd'
+import { Space, Tag, notification } from 'antd'
 import { sum, map, groupBy, flatten } from 'lodash'
 import { history } from 'umi'
 import { stringify } from 'querystring';
@@ -148,9 +148,27 @@ export const JumpToOtherRouteById = async(route: string, dispatch: Dispatch, id:
       redirect: window.location.href,
     }),
   })
-  await dispatch({
+ setTimeout(
+   ()=>{
+     console.log(23234)
+   dispatch({
     type: 'partycourse/getPartyListById',
     payload: [id]
   })
+},800)
 
+}
+
+// 全局提醒
+export const openNotificationWithIcon = (type: string, text: { message: string, description: string}) => {
+  notification[type]({
+      message: text.message,
+      description: text.description
+  });
+};
+
+// 提醒哪个是空
+
+export const findWhichISNone = (...args: string[])=>{
+  console.log(args)
 }

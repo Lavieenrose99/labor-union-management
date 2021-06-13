@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-06-07 18:18:27
+ * @LastEditTime: 2021-06-13 16:44:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -233,8 +233,6 @@ const PartyCourseModal: AccountModelType = {
       const { classes, total } = list;
       const ids = map(classes,'id')
       const enity = yield call(getPartyClassEnity, ids);
-      const partyIds = map(enity,'party_course_id')
-      const enityCourse = yield call(getPartyCourseEnity, partyIds);
       yield put({
         type: 'saveClassEnity',
         payload: enity,
@@ -243,10 +241,6 @@ const PartyCourseModal: AccountModelType = {
         type: 'savePageTotal',
         payload: total
       })
-      yield put({
-        type: 'saveCoureseEnity',
-        payload: enityCourse ,
-      });
     },
     *delPartyClass({ payload }, { call, put }) {
       const res = yield call(delPartyClass, payload);

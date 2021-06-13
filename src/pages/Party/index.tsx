@@ -8,7 +8,6 @@ import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
-import request from '@/utils/request'
 
 interface PartyCourseProps {
   dispatch: Dispatch;
@@ -31,15 +30,6 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
   
   useEffect(() => {
-
-    
-    dispatch({
-      type: 'partycourse/fetchPartyList',
-      payload: {
-        limit: 5,
-        page: 1,
-      },
-    });
     dispatch({
       type: 'partycourse/fetchPartyGoods',
       payload: {
@@ -50,6 +40,15 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
 
 
  }, []);
+ useEffect(() => {
+  dispatch({
+    type: 'partycourse/fetchPartyList',
+    payload: {
+      limit: 20,
+      page: 1,
+    },
+  });
+}, []);
   return (
     <PageContainer
       ghost={false}
@@ -101,15 +100,6 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
                text={<span>查看详情</span>}
             /></section>,
               <IconText
-                icon={<FilePptTwoTone twoToneColor="red" />}
-                text={<span>{`${getLength(item.data.ppt)} 份`}</span>}
-                key="list-vertical-message"
-              />,
-              <IconText 
-              icon =  {<VideoCameraTwoTone twoToneColor="red"  />} 
-              text={`${getLength(item.data.video)} 个`}
-              />,
-              <IconText
               icon={<DeleteTwoTone twoToneColor="red"/>}
                 text={
                   <span
@@ -159,7 +149,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
       </div>
       </section> 
 
-      <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width='88vw' >
+      <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width='88vw' footer={null} >
         <CreatePartyCourse />
       </Modal>
       <section>{
