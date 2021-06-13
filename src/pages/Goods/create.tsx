@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-27 16:27:08
- * @LastEditTime: 2021-05-31 15:41:44
+ * @LastEditTime: 2021-06-14 02:01:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Goods/create.tsx
@@ -45,7 +45,7 @@ const  GoodsCreator = (props) => {
               type: 'partycourse/addPartyGoods',
               payload: {
                 name: infosTitle,
-                price: goodsPrice,
+                price: goodsPrice * 100,
                 brief: filterHTMLTag(infosPreSeem),
                 is_on: ifPublish,
                 cover: cover[0],

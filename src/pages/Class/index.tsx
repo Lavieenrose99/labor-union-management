@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-13 15:27:03
+ * @LastEditTime: 2021-06-14 02:00:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -9,12 +9,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Avatar, Modal, Button, Image, Space } from 'antd';
+import { 
+   List, 
+  Avatar,
+   Modal, 
+   Button, 
+   Image,
+   Space, 
+   Radio, 
+   Table  } 
+   from 'antd';
+import { Classcolumns } from '@/utils/Table/class' 
 import ClassCreator from './create';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
-import { get, map } from 'lodash';
-import { IconText, IconFont } from '@/utils/public/tools';
+import { get } from 'lodash';
+import { IconText, IconFont, judegePush } from '@/utils/public/tools';
 import './index.less';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { ConBindObjArr, JumpToOtherRouteById } from '@/utils/public/tools'
@@ -36,7 +46,48 @@ const ClassList: React.FC<IClassType> = (props) => {
   const  [pageCurrent, setpageCurrent] = useState(1);
   const  [pageSize, setPageSize] = useState(5);
   const [ showStudents, setShowStudents ] = useState<boolean>(false)
+  const [ showWays, setShowWays ] = useState<number>(2)
   const dataSet = ConBindObjArr(ClassEnity,CourseEnity,'party_course_id','id','class_course')
+  const tableSet = { 
+    title: '操作',
+    render: (_,record: any)=>{
+      return(
+        <Space size="large">
+        <Button 
+        type="primary"
+        onClick={()=>{JumpToOtherRouteById('/party/index',dispatch,record.class_course.id )}}>查看课程</Button>
+        <Button 
+        type="primary"
+        onClick={()=>{ request(`/api.request/v1/party_course/class/sign_up/list_by_cid/${record.id}`)
+                     .then((data)=>{
+                       const {Lists} = data
+                       const CombineData = ConBindObjArr(Lists,AccountList,'user_id','id','account')
+                       setClassPerson(CombineData) 
+                       setShowStudents(true)
+                     })}}>查看学员</Button>
+        <Button 
+         danger
+         onClick={() => {
+                            Modal.info({
+                              title: '惠福管理后台',
+                              content: '确认要删除该班级吗',
+                              okText: '确认',
+                              onOk: () => {
+                                dispatch({
+                                  type: 'partycourse/delPartyClass',
+                                  payload: record.id,
+                                });
+                              },
+                              closable: true,
+                            });
+                          }}>删除班级</Button>
+        </Space>
+      )
+    }
+  }
+  
+  const columns = judegePush(Classcolumns,tableSet)
+  console.log(dataSet)
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchClassList',
@@ -65,7 +116,28 @@ const ClassList: React.FC<IClassType> = (props) => {
         ]}
       >
         <div className="party_class_list_container">
+          <section className="party_class_switch">
+          <Radio.Group
+            defaultValue={showWays}
+            onChange={
+               
+                (e) => {
+                  setShowWays(e.target.value); 
+                }
+} 
+          >
+            <Radio.Button value={1}>
+              <IconFont type="icon-liebiao" style={{ marginRight: 4 }} />
+              列表
+            </Radio.Button>
+            <Radio.Button value={2}>
+              <IconFont type="icon-biaoge" style={{ marginRight: 4 }} />
+              表格
+            </Radio.Button>
+          </Radio.Group>
+        </section>
           <section className="party_class_list">
+            { showWays === 1 ?
             <List
               bordered
               itemLayout="vertical"
@@ -143,9 +215,7 @@ const ClassList: React.FC<IClassType> = (props) => {
                   ]}
                   extra={
                     <Image
-                      src={
-                        item.class_course.course_cover || 'https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-pic下载.png'
-                      }
+                      src="https://cdn.jsdelivr.net/gh/Lavieenrose99/IvanPictureHouse/ivan-picunnamed.jpeg"
                       width={200}
                       height={100}
                     />
@@ -164,6 +234,9 @@ const ClassList: React.FC<IClassType> = (props) => {
                 </List.Item>
               )}
             />
+            :
+            <Table dataSource={dataSet} columns={columns} />
+            }
           </section>
         </div>
       </PageContainer>

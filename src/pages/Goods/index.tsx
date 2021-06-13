@@ -74,7 +74,7 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
       dataIndex: 'price',
       key: 'price',
       align: 'center' as 'center',
-      render: (itemPrice: number) => <span>￥{itemPrice}</span>,
+      render: (itemPrice: number) => <span>￥{itemPrice / 100}</span>,
     },
     {
       title: '库存',

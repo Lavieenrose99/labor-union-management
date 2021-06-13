@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-13 16:53:36
+ * @LastEditTime: 2021-06-14 00:05:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -9,13 +9,13 @@
 import React from 'react'
 import { createFromIconfontCN } from '@ant-design/icons';
 import { Space, Tag, notification } from 'antd'
-import { sum, map, groupBy, flatten } from 'lodash'
+import { sum, map, groupBy, flatten, uniqBy } from 'lodash'
 import { history } from 'umi'
 import { stringify } from 'querystring';
 import type { Dispatch } from 'umi';
 
 export const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2580518_5h62bubx95s.js',
+  scriptUrl: '//at.alicdn.com/t/font_2580518_zuzon4pl91s.js',
 });
 
 export const getLength = (arr:any) => {
@@ -170,4 +170,14 @@ export const openNotificationWithIcon = (type: string, text: { message: string, 
 
 export const findWhichISNone = (...args: string[])=>{
   console.log(args)
+}
+
+// 非空的是时候push
+
+export const judegePush = (col : any,addCol: any)=>{
+        col.push(addCol)
+        const data = uniqBy(col,'title')
+      return(
+        data
+      )
 }

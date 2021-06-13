@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-27 16:27:08
- * @LastEditTime: 2021-06-13 17:14:29
+ * @LastEditTime: 2021-06-14 02:02:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Goods/create.tsx
@@ -50,7 +50,7 @@ const  GoodsChanger = (props) => {
                 params: {
                   name: infoName,
                   brief: filterHTMLTag(infoBrief),
-                  price: infoPrice,
+                  price: infoPrice * 100,
                   inventory: infoInventory,
                   is_on: infoIsOn,
                   cover: infoCover[0],
