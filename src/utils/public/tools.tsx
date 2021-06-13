@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-13 16:51:06
+ * @LastEditTime: 2021-06-13 16:53:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -150,7 +150,6 @@ export const JumpToOtherRouteById = async(route: string, dispatch: Dispatch, id:
   })
  setTimeout(
    ()=>{
-     console.log(23234)
    dispatch({
     type: 'partycourse/getPartyListById',
     payload: [id]
