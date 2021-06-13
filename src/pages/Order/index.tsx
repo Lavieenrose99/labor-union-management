@@ -2,7 +2,7 @@
  * @Author: SolitaryOrz
  * @Date: 2021-05-30 17:09:02
  * @Last Modified by: SolitaryOrz
- * @Last Modified time: 2021-05-31 15:18:19
+ * @Last Modified time: 2021-06-13 16:53:47
  */
 
 import React, { useState, useEffect } from 'react';
@@ -66,11 +66,26 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
         return(
           <Space>
         <Avatar src={account.avatar} />
-        <span>{account.nickname}</span>
+        <span>{account.nickname} ({account.email})</span>
         </Space>
         )
       }
-      
+    },
+    {
+      title: '商品名称',
+      dataIndex: 'goods',
+      key: 'total',
+      align: 'center' as 'center',
+    
+      render: (item: any) => {
+        return(
+          <>
+            <Space>
+              <span>{item.name}</span>
+            </Space>
+          </>
+      )
+      }
     },
     {
       title: '订单状态',
@@ -81,23 +96,6 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
       render: (statusNum: number) => {
         const statusItem = statusStr.find((item) => statusNum === item.num)
         return <Tag color={statusItem?.color}>{statusItem?.str}</Tag>
-      }
-    },
-    {
-      title: '商品',
-      dataIndex: 'goods',
-      key: 'total',
-      align: 'center' as 'center',
-    
-      render: (item: any) => {
-        return(
-        <>
-        <Space>
-        <Image src={item.cover} width={40} height={40} />
-        <span>{item.name}</span>
-        </Space>
-        </>
-      )
       }
     },
     {
@@ -122,43 +120,34 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
         <span>{moment(createTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
       ),
     },
-    {
-      title: '更新时间',
-      dataIndex: 'update_time',
-      key: 'update_time',
-      align: 'center' as 'center',
-      render: (updateTime: number) => (
-        <span>{moment(updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
-      ),
-    },
-    {
-      title: '操作',
-      dataIndex: 'status',
-      key: 'action',
-      align: 'center' as 'center',
-      render: (itemStatus: string, item: any) => (
-        <Button
-          onClick={() => {
-            dispatch({
-              type: 'ordermodel/cancelOrderEnity',
-              payload: {
-                params: {
-                  limit: pageSize,
-                  page: pageCurrent,
-                  author_id: item,
-                  status: orderStatus,
-                  number: orderNumber,
-                },
-                id: item.id,
-              },
-            });
-          }}
-          disabled={item.status === 3}
-        >
-          取消订单
-        </Button>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   dataIndex: 'status',
+    //   key: 'action',
+    //   align: 'center' as 'center',
+    //   render: (itemStatus: string, item: any) => (
+    //     <Button
+    //       onClick={() => {
+    //         dispatch({
+    //           type: 'ordermodel/cancelOrderEnity',
+    //           payload: {
+    //             params: {
+    //               limit: pageSize,
+    //               page: pageCurrent,
+    //               author_id: item,
+    //               status: orderStatus,
+    //               number: orderNumber,
+    //             },
+    //             id: item.id,
+    //           },
+    //         });
+    //       }}
+    //       disabled={item.status === 3}
+    //     >
+    //       取消订单
+    //     </Button>
+    //   ),
+    // },
   );
   return (
     <>
@@ -214,14 +203,14 @@ const OrdersList: React.FC<IOrdersType> = (props) => {
           />
           <Search
             style={{
-              maxWidth: 240,
+              maxWidth: 320,
               marginLeft: 60,
             }}
-            placeholder="输入买家名称"
+            placeholder="输入买家邮箱（有奇怪的数据）"
             allowClear
             enterButton="搜索"
             onSearch={(val: string) => {
-              const author = AccountList.find((item) => val === item.nickname)
+              const author = AccountList.find((item) => val === item.email)
               setOrderAnthorId(parseInt(author || val === '' ? author?.id : -1, 10));
               setPageCurrent(1)
               dispatch({

@@ -7,10 +7,13 @@
  * @FilePath: /labor-union-management/src/pages/Goods/create.tsx
  */
 import React, { useState } from 'react';
-import { Modal, Input, Switch, InputNumber } from 'antd';
+import { Modal, Input, Switch, InputNumber, message } from 'antd';
 import { connect } from 'umi';
 import { UploadAntd } from '@/utils/upload/qiniu'
 import { map } from 'lodash'
+import RichTextEditor from '@/utils/upload/richTextUpload';
+import { filterHTMLTag } from '../../utils/upload/filterHtml';
+import { goodsCheck } from '@/utils/verify/goods'
 import './create.less'
 
 const  GoodsCreator = (props) => {
@@ -37,22 +40,23 @@ const  GoodsCreator = (props) => {
         destroyOnClose 
         onCancel={() => closeInfosModel(false)}
         onOk={async() => {
-          console.log(ifPublish)
-          await props.dispatch({
-            type: 'partycourse/addPartyGoods',
-            payload: {
-              name: infosTitle,
-              price: goodsPrice,
-              brief: infosPreSeem,
-              is_on: ifPublish,
-              cover: cover[0],
-              pictures,
-              inventory
-            },
-          });
-          localStorage.removeItem(StroageCover)
-          localStorage.removeItem(StroagePictures)
-          closeInfosModel(false);
+          if(goodsCheck(infosTitle, cover)) {
+            await props.dispatch({
+              type: 'partycourse/addPartyGoods',
+              payload: {
+                name: infosTitle,
+                price: goodsPrice,
+                brief: filterHTMLTag(infosPreSeem),
+                is_on: ifPublish,
+                cover: cover[0],
+                pictures,
+                inventory
+              },
+            });
+            localStorage.removeItem(StroageCover)
+            localStorage.removeItem(StroagePictures)
+            closeInfosModel(false);
+          }
         }}
         
       >
@@ -67,18 +71,10 @@ const  GoodsCreator = (props) => {
             />
           </div>
           <div className="goods-creator-title">
-            <span>商品简介：</span>
-            <TextArea
-              className="goods-creator-input goods-creator-brief-input"
-              onChange={(e) => {
-                setInfosPreSeem(e.target.value);
-              }}
-            />
-          </div>
-          <div className="goods-creator-title">
             <span>商品价格：</span>
           <InputNumber
             className="goods-creator-input goods-creator-price-input"
+            defaultValue={goodsPrice}
               onChange={(e)=>setGoodsPrice(e)}
               formatter={(Goodvalues) => `¥ ${Goodvalues}`}
               parser={(Goodvalues) => Goodvalues.replace(/¥ \s?|(,*)/g, '')}
@@ -90,7 +86,10 @@ const  GoodsCreator = (props) => {
             <span>商品库存：</span>
           <InputNumber
             className="goods-creator-input goods-creator-inventory-input"
+            defaultValue={inventory}
               onChange={(e)=>setInventory(e)}
+              formatter={(val) => val}
+              parser={(val) => val ? val.replace(/^(0+)|[^\d]/g, '') : ''}
               min={0}
               step={1}
             />
@@ -120,6 +119,16 @@ const  GoodsCreator = (props) => {
               listshowType='picture-card'
             />
            </div>
+          </div>
+          <div className="goods-creator-title">
+            <span>商品简介：</span>
+            <div
+              className="goods-creator-input goods-creator-brief-input"
+              >
+              <RichTextEditor
+                subscribeRichText={(val: string) => setInfosPreSeem(val)}
+                defaultText={infosPreSeem} width={800} height={200 } />
+            </div>
           </div>
         </div>
       </Modal>
