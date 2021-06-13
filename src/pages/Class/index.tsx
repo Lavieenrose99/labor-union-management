@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-07 20:24:13
+ * @LastEditTime: 2021-06-10 14:53:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -101,7 +101,7 @@ const ClassList: React.FC<IClassType> = (props) => {
                     icon={<IconFont type="icon-renyuanguanli" />}
                      text={<span onClick={()=>{ request(`/api.request/v1/party_course/class/sign_up/list_by_cid/${item.id}`)
                      .then((data)=>{
-                       const Lists = data['Lists:']
+                       const {Lists} = data
                        const CombineData = ConBindObjArr(Lists,AccountList,'user_id','id','account')
                        setClassPerson(CombineData) 
                        setShowStudents(true)

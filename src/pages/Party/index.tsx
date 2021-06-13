@@ -8,6 +8,7 @@ import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
+import request from '@/utils/request'
 
 interface PartyCourseProps {
   dispatch: Dispatch;
@@ -30,6 +31,8 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
   
   useEffect(() => {
+
+    
     dispatch({
       type: 'partycourse/fetchPartyList',
       payload: {

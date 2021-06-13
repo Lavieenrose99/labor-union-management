@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 17:23:24
- * @LastEditTime: 2021-06-07 16:05:38
+ * @LastEditTime: 2021-06-09 16:24:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/change.tsx
@@ -49,7 +49,7 @@ interface PartyCourseProps {
 const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
 
   const { dispatch, show, onCloseDrawer , showInfos , GoodsList } = props
-  const [ changeInfos, setChangeInfos ] = useState<boolean>(false)
+  const [ changeInfos, setChangeInfos ] = useState<boolean>(true)
   const [ changeInfosContent, setChangeInfosContent ] = useState(showInfos)
   const {  account_infos } = showInfos
   const { goods_infos, data } = changeInfosContent
@@ -97,6 +97,7 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
           footer={
             <>
               <Button
+                size="large"
                 disabled={changeInfos}
                 type="primary"
                 onClick={() => {
@@ -106,8 +107,15 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
                     content: '确认修改吗',
                     okText: '确认',
                     onOk: () => {
-                      const { course_work, course_cover , course_brief, goods_infos, name, id }  = changeInfosContent
-                      const { ppt, video }  = goods_infos
+                      const { 
+                        course_work, 
+                        course_cover , 
+                        course_brief, 
+                        goods_infos, 
+                        name, 
+                        id, 
+                        data }  = changeInfosContent
+                      const { ppt, video }  = data
                       dispatch({
                         type: 'partycourse/putPartyCourse',
                         payload: {
@@ -132,24 +140,21 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
               </Button>
               {!changeInfos? (
                 <Button
+                  size="large"
                   icon={<SettingFilled />}
-                  style={{ float: 'right' }}
+                  style={{  marginLeft: 10 }}
                   onClick={() => {
                     setChangeInfos(!changeInfos);
-                    // setChangeContent({
-                    //   motto: changeContent?.motto || (content?.motto ?? ''),
-                    //   nickname: changeContent?.nickname || (content?.nickname ?? ''),
-                    //   role: changeContent?.role || (content?.role ?? 0),
-                    // } as ChangeInfosType);
                   }
                 }
                 >
-                  设置
+                  修改
                 </Button>
               ) : (
                 <Button
-                  icon={<SettingFilled />}
-                  style={{ float: 'right' }}
+                  size="large"
+                  icon={<div style={{ display: "inline-block" , marginRight: 10}}><SettingFilled spin={changeInfos} /></div>}
+                  style={{ marginLeft: 10 }}
                   onClick={() => {
                     setChangeInfos(!changeInfos);
                   }}
