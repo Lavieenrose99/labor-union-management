@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-06-13 23:07:28
- * @LastEditTime: 2021-06-14 01:50:38
+ * @LastEditTime: 2021-06-16 10:50:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/Table/class.tsx

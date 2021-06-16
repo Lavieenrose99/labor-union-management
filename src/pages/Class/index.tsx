@@ -87,7 +87,6 @@ const ClassList: React.FC<IClassType> = (props) => {
   }
   
   const columns = judegePush(Classcolumns,tableSet)
-  console.log(dataSet)
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchClassList',

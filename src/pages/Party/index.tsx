@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { List, Avatar, Modal, Button, Image } from 'antd';
-import { FilePptTwoTone, DeleteTwoTone, VideoCameraTwoTone } from '@ant-design/icons';
-import { getLength, ConBindObjArr, ifAccountExist, IconText, IconFont} from '@/utils/public/tools.tsx'
+import { 
+  List, 
+  Avatar, 
+  Modal, 
+  Button, 
+  Image,
+  Radio, 
+  Table,
+  Space
+} from 'antd';
+import {  DeleteTwoTone } from '@ant-design/icons';
+import { 
+  ConBindObjArr, 
+  ifAccountExist, 
+  IconText, 
+  IconFont,
+  judegePush
+} from '@/utils/public/tools.tsx'
+import { CourseColumns } from '@/utils/Table/course'
 import ShowPartyDetails from './change'
 import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
@@ -28,6 +44,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
   const partyCourseList = ConBindObjArr(CoureseEnity,CourseGoods,'goods_id','id','goods_infos')
   const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]')
   const partyCourseListWAcc = ConBindObjArr(partyCourseList,AccountList,'account_id','id','account_infos') 
+  const [ showWays, setShowWays ] = useState<number>(2)
   
   useEffect(() => {
     dispatch({
@@ -49,6 +66,40 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
     },
   });
 }, []);
+  console.log(partyCourseListWAcc)
+
+  const tableSet = { 
+    title: '操作',
+    render: (_: any,record: any)=>{
+      return(
+        <Space size="large">
+        <Button 
+        type="primary"
+        onClick={()=>{setShowDetails(true); setShowDetailsInfos(record)}}
+        >查看详情</Button>
+        <Button 
+         danger
+         onClick={() => {
+          Modal.info({
+            title: '惠福管理后台',
+            content: '确认要删除该课程吗',
+            okText: '确认',
+            onOk: () => {
+              dispatch({
+                type: 'partycourse/delPartyCourse',
+                payload: record.id,
+              });
+            },
+            closable: true,
+          });
+        }}
+       >删除班级</Button>
+        </Space>
+      )
+    }
+  }
+  
+  const columns = judegePush(CourseColumns,tableSet)
   return (
     <PageContainer
       ghost={false}
@@ -60,7 +111,28 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         </Button>,
       ]}
     >
+         <section className="party_class_switch" style={{ marginBottom: 20}} >
+          <Radio.Group
+            defaultValue={showWays}
+            onChange={
+               
+                (e) => {
+                  setShowWays(e.target.value); 
+                }
+} 
+          >
+            <Radio.Button value={1}>
+              <IconFont type="icon-liebiao" style={{ marginRight: 4 }} />
+              列表
+            </Radio.Button>
+            <Radio.Button value={2}>
+              <IconFont type="icon-biaoge" style={{ marginRight: 4 }} />
+              表格
+            </Radio.Button>
+          </Radio.Group>
+        </section>
       <section className="party_course_container">
+      { showWays ===1 ?
         <div className="party_course_list">
       <List
         bordered
@@ -147,6 +219,10 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         )}
       />
       </div>
+      : <section className="party_course_table">
+         <Table dataSource={partyCourseListWAcc} columns={columns} />
+      </section>
+}       
       </section> 
 
       <Modal visible={showCreate} onCancel={() => setShowCreate(false)} width='88vw' footer={null} >
