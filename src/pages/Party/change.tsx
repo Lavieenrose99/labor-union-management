@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 17:23:24
- * @LastEditTime: 2021-06-09 16:24:42
+ * @LastEditTime: 2021-06-16 15:40:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/change.tsx
@@ -91,7 +91,8 @@ const PartyShowChange: React.FC<PartyCourseProps> = (props)=>{
         <Drawer
           title="课程详情"
           placement="right"
-          onClose={()=>onCloseDrawer(false)}
+          destroyOnClose
+          onClose={()=>{ onCloseDrawer(false);}}
           visible={show}
           width="60vw"
           footer={

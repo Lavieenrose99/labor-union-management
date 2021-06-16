@@ -66,7 +66,6 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
     },
   });
 }, []);
-  console.log(partyCourseListWAcc)
 
   const tableSet = { 
     title: '操作',
@@ -75,7 +74,9 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
         <Space size="large">
         <Button 
         type="primary"
-        onClick={()=>{setShowDetails(true); setShowDetailsInfos(record)}}
+        onClick={()=>{
+          setShowDetails(!showDetails); 
+          setShowDetailsInfos(record)}}
         >查看详情</Button>
         <Button 
          danger

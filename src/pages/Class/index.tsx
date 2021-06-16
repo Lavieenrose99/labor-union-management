@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-14 02:00:06
+ * @LastEditTime: 2021-06-16 15:39:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -55,16 +55,19 @@ const ClassList: React.FC<IClassType> = (props) => {
         <Space size="large">
         <Button 
         type="primary"
-        onClick={()=>{JumpToOtherRouteById('/party/index',dispatch,record.class_course.id )}}>查看课程</Button>
+        onClick={()=>{JumpToOtherRouteById('/party/course/index',dispatch,record.class_course.id )}}>查看课程</Button>
         <Button 
         type="primary"
-        onClick={()=>{ request(`/api.request/v1/party_course/class/sign_up/list_by_cid/${record.id}`)
+        onClick={()=>{ 
+                     request(`/api.request/v1/party_course/class/sign_up/list_by_cid/${record.id}`,{})
                      .then((data)=>{
                        const {Lists} = data
                        const CombineData = ConBindObjArr(Lists,AccountList,'user_id','id','account')
                        setClassPerson(CombineData) 
-                       setShowStudents(true)
-                     })}}>查看学员</Button>
+                     })
+                     setShowStudents(!showStudents)
+                  }
+                    }>查看学员</Button>
         <Button 
          danger
          onClick={() => {

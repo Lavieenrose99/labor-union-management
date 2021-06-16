@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-06-04 20:51:29
+ * @LastEditTime: 2021-06-16 13:59:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -178,17 +178,6 @@ const NewsList: React.FC<INewsType> = (props) => {
               >
                 <List.Item.Meta
                   title={<a href={item.href}>{item.title}</a>}
-                  description={
-                    <span
-                      className="action-click"
-                      onClick={() => {
-                        setShowChange(true);
-                        setChangeItem(item);
-                      }}
-                    >
-                      {item.introduction}
-                    </span>
-                  }
                 />
                 <article    
                   onClick={() => {
