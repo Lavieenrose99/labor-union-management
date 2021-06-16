@@ -14,6 +14,7 @@ import { openNotificationWithIcon } from '@/utils/public/tools'
 import RichTextEditor from '../../utils/upload/richTextUpload';
 import { filterHTMLTag } from '../../utils/upload/filterHtml';
 import { get } from 'lodash';
+import { newsCheck } from '@/utils/verify/news'
 import './create.less';
 
 const { Option } = Select;
@@ -46,7 +47,7 @@ const InfosCreate = (props) => {
         destroyOnClose
         onCancel={() => closeInfosModel(false)}
         onOk={() => {
-          if(infosTitle&&partyInfosContent&&infosTags&&infosPreSeem&&cover[0]){
+        if(newsCheck(infosTitle, infosPreSeem, infosTags, cover[0], partyInfosContent)) {
           props.dispatch({
             type: 'setcentermodel/addInfosList',
             payload: {
@@ -63,11 +64,7 @@ const InfosCreate = (props) => {
           setPartyInfosContent('');
           setcover([]);
           closeInfosModel(false);
-        }else{
-
-             openNotificationWithIcon('error', { message: '上传信息不全', description:'请补全资讯信息再发布'})
         }
-          
         }}
       >
         <div className="fmg-infos-creator-container">

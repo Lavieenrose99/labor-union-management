@@ -15,9 +15,8 @@ import { filterHTMLTag } from '../../utils/upload/filterHtml';
 import { goodsCheck } from '@/utils/verify/goods'
 import './change.less'
 
-
 const  GoodsChanger = (props) => {
-  const { dispatch, show, closeInfosModel , StroageCover, StroagePictures, info } = props;
+  const { dispatch, show, closeInfosModel , info } = props;
   const [infoName, setInfoName] = useState('');
   const [ infoInventory, setInfoInventory ] = useState(0);
   const [ infoPrice, setInfoPrice ] = useState(0)
@@ -27,13 +26,18 @@ const  GoodsChanger = (props) => {
   const [ infoPictures, setInfoPictures ] = useState();
   useEffect(() => {
     setInfoName(info.name)
-    setInfoPrice(info.price)
+    setInfoPrice(info.price / 100)
     setInfoInventory(info.inventory)
     setInfoIsOn(info.is_on)
     setInfoCover(info.cover)
     setInfoPictures(info.pictures)
     setInfoBrief(info.brief)
   }, [info])
+  console.log(info)
+  console.log(infoCover)
+  console.log(infoBrief)
+  console.log(infoIsOn)
+  console.log(infoPrice)
   return (
     <>
       <Modal
@@ -43,7 +47,7 @@ const  GoodsChanger = (props) => {
         destroyOnClose
         onCancel={() => closeInfosModel(false)}
         onOk={()=>{
-          if(goodsCheck(infoName, infoCover)) {
+          if(goodsCheck(infoName, infoPrice, infoInventory, infoCover, infoBrief)) {
             dispatch({
               type:'partycourse/changePartyGoods',
               payload: {
@@ -53,14 +57,12 @@ const  GoodsChanger = (props) => {
                   price: infoPrice * 100,
                   inventory: infoInventory,
                   is_on: infoIsOn,
-                  cover: infoCover[0],
+                  cover: infoCover,
                   pictures: infoPictures,
                 },
                 updateId: info.id
               }
             })
-            localStorage.removeItem(StroageCover)
-            localStorage.removeItem(StroagePictures)
             closeInfosModel(false);
           }
         }}
@@ -110,14 +112,14 @@ const  GoodsChanger = (props) => {
           <div className="goods-changer-title">
             <span>商品封面：</span>
             <div className="goods-changer-input goods-changer-cover-input">
-              <UploadAntd 
-              propsFileItem={infoCover}
-              showType="normal"
-              setUrl={setInfoCover}
-              childFileType='picture'
-              fileCount={1}
-              listshowType='picture-card'
-            />
+              <UploadAntd
+                propsFileItem={infoCover}
+                showType="normal"
+                setUrl={setInfoCover}
+                childFileType='picture'
+                fileCount={1}
+                listshowType='picture-card'
+                />
             </div>
           </div>
           <div className="goods-changer-title">
