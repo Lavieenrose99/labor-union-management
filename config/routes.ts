@@ -67,30 +67,22 @@
                 ],
               },
               
+
               {
-                name: '课程中心',
+                name: '党建中心',
                 icon: 'table',
                 path: '/party',
                 // component: './Party/index.tsx',
                 routes: [
                   {
-                    path: '/party/course/index',
+                    path: '/party/index',
                     name: '课程列表',
                     component: './Party/index.tsx',
-                  }
-                ],
-              },
-
-              {
-                name: '班级管理',
-                icon: 'table',
-                path: '/class',
-                // component: './Party/index.tsx',
-                routes: [
+                  },
                   {
-                    path: '/class/class/index',
+                    path: '/party/course/index',
                     name: '班级中心',
-                    component: './Class/index.tsx',
+                    component: './Class/index',
                   },
                 ],
               },

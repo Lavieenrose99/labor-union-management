@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-16 15:39:01
+ * @LastEditTime: 2021-06-16 16:05:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -19,16 +19,16 @@ import {
    Radio, 
    Table  } 
    from 'antd';
-import { Classcolumns } from '@/utils/Table/class' 
 import ClassCreator from './create';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
-import { IconText, IconFont, judegePush } from '@/utils/public/tools';
+import { IconText, IconFont } from '@/utils/public/tools';
 import './index.less';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { ConBindObjArr, JumpToOtherRouteById } from '@/utils/public/tools'
 import request from '@/utils/request'
+import moment from 'moment'
 import StudentDetails from './person'
 
 interface IClassType {
@@ -48,48 +48,94 @@ const ClassList: React.FC<IClassType> = (props) => {
   const [ showStudents, setShowStudents ] = useState<boolean>(false)
   const [ showWays, setShowWays ] = useState<number>(2)
   const dataSet = ConBindObjArr(ClassEnity,CourseEnity,'party_course_id','id','class_course')
-  const tableSet = { 
-    title: '操作',
-    render: (_,record: any)=>{
-      return(
-        <Space size="large">
-        <Button 
-        type="primary"
-        onClick={()=>{JumpToOtherRouteById('/party/course/index',dispatch,record.class_course.id )}}>查看课程</Button>
-        <Button 
-        type="primary"
-        onClick={()=>{ 
-                     request(`/api.request/v1/party_course/class/sign_up/list_by_cid/${record.id}`,{})
-                     .then((data)=>{
-                       const {Lists} = data
-                       const CombineData = ConBindObjArr(Lists,AccountList,'user_id','id','account')
-                       setClassPerson(CombineData) 
-                     })
-                     setShowStudents(!showStudents)
-                  }
-                    }>查看学员</Button>
-        <Button 
-         danger
-         onClick={() => {
-                            Modal.info({
-                              title: '惠福管理后台',
-                              content: '确认要删除该班级吗',
-                              okText: '确认',
-                              onOk: () => {
-                                dispatch({
-                                  type: 'partycourse/delPartyClass',
-                                  payload: record.id,
+  const Classcolumns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id'
+    },
+    {
+      title: '班级名称',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+        title: '课程名称',
+        dataIndex: 'class_course',
+        render: (data: any)=>{
+            return(
+            <span>{data.name}</span>
+            )
+        }
+      },
+      {
+          title: '教师名',
+          dataIndex: 'teacher_name',
+      },
+    {
+      title: '课程码',
+      dataIndex: 'code',
+      key: 'code',
+    },
+    {
+        title: '开始时间',
+        dataIndex: 'start_time',
+        key: 'create_time',
+        align: 'center' as 'center',
+        render: (createTime: number) => (
+          <span>{moment(createTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+        ),
+      },
+      {
+        title: '结束时间',
+        dataIndex: 'end_time',
+        key: 'create_time',
+        align: 'center' as 'center',
+        render: (createTime: number) => (
+          <span>{moment(createTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+        ),
+      },
+      { 
+        title: '操作',
+        render: (_: any,record: any)=>{
+          return(
+            <Space size="large">
+            <Button 
+            type="primary"
+            onClick={()=>{JumpToOtherRouteById('/party/index',dispatch,record.class_course.id )}}>查看课程</Button>
+            <Button 
+            type="primary"
+            onClick={()=>{ 
+                         request(`/api.request/v1/party_course/class/sign_up/list_by_cid/${record.id}`,{})
+                         .then((data)=>{
+                           const {Lists} = data
+                           const CombineData = ConBindObjArr(Lists,AccountList,'user_id','id','account')
+                           setClassPerson(CombineData) 
+                         })
+                         setShowStudents(!showStudents)
+                      }
+                        }>查看学员</Button>
+            <Button 
+             danger
+             onClick={() => {
+                                Modal.info({
+                                  title: '惠福管理后台',
+                                  content: '确认要删除该班级吗',
+                                  okText: '确认',
+                                  onOk: () => {
+                                    dispatch({
+                                      type: 'partycourse/delPartyClass',
+                                      payload: record.id,
+                                    });
+                                  },
+                                  closable: true,
                                 });
-                              },
-                              closable: true,
-                            });
-                          }}>删除班级</Button>
-        </Space>
-      )
-    }
-  }
-  
-  const columns = judegePush(Classcolumns,tableSet)
+                              }}>删除班级</Button>
+            </Space>
+          )
+        }
+      }
+  ];
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchClassList',
@@ -237,7 +283,7 @@ const ClassList: React.FC<IClassType> = (props) => {
               )}
             />
             :
-            <Table dataSource={dataSet} columns={columns} />
+            <Table dataSource={dataSet} columns={Classcolumns} />
             }
           </section>
         </div>

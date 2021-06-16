@@ -16,9 +16,8 @@ import {
   ifAccountExist, 
   IconText, 
   IconFont,
-  judegePush
 } from '@/utils/public/tools.tsx'
-import { CourseColumns } from '@/utils/Table/course'
+import moment from 'moment'
 import ShowPartyDetails from './change'
 import CreatePartyCourse from './create';
 import type { Dispatch } from 'umi';
@@ -66,41 +65,88 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
     },
   });
 }, []);
-
-  const tableSet = { 
-    title: '操作',
-    render: (_: any,record: any)=>{
-      return(
-        <Space size="large">
-        <Button 
-        type="primary"
-        onClick={()=>{
-          setShowDetails(!showDetails); 
-          setShowDetailsInfos(record)}}
-        >查看详情</Button>
-        <Button 
-         danger
-         onClick={() => {
-          Modal.info({
-            title: '惠福管理后台',
-            content: '确认要删除该课程吗',
-            okText: '确认',
-            onOk: () => {
-              dispatch({
-                type: 'partycourse/delPartyCourse',
-                payload: record.id,
-              });
-            },
-            closable: true,
-          });
-        }}
-       >删除班级</Button>
-        </Space>
-      )
+const CourseColumns = [
+  {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id'
+  },
+  {
+    title: '课程名称',
+    dataIndex: 'name',
+    key: 'name',
+    width: '20%'
+  },
+  {
+      title: '创建人',
+      dataIndex: 'account_infos',
+      render: (data: any)=>{
+          return(
+          <span>{data.nickname}</span>
+          )
+      }
+    },
+    {
+        title: '关联商品',
+        dataIndex: 'goods_infos',
+        render: (data: any)=>{
+            return (
+            <span>{data.name || '暂无商品信息'}</span>
+            )
+        }
+    },
+  {
+      title: '创建时间',
+      dataIndex: 'create_time',
+      key: 'create_time',
+      align: 'center' as 'center',
+      render: (createTime: number) => (
+        <span>{moment(createTime*1000).format('YYYY-MM-DD HH:mm:ss')}</span>
+      ),
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'update_time',
+      key: 'create_time',
+      align: 'center' as 'center',
+      render: (createTime: number) => (
+        <span>{moment(createTime*1000).format('YYYY-MM-DD HH:mm:ss')}</span>
+      ),
+    },
+    { 
+      title: '操作',
+      render: (_: any,record: any)=>{
+        return(
+          <Space size="large">
+          <Button
+          type="primary"
+          onClick={()=>{
+            setShowDetails(!showDetails); 
+            setShowDetailsInfos(record)}}
+          >查看详情</Button>
+          <Button 
+           danger
+           onClick={() => {
+            Modal.info({
+              title: '惠福管理后台',
+              content: '确认要删除该课程吗',
+              okText: '确认',
+              onOk: () => {
+                dispatch({
+                  type: 'partycourse/delPartyCourse',
+                  payload: record.id,
+                });
+              },
+              closable: true,
+            });
+          }}
+         >删除班级</Button>
+          </Space>
+        )
+      }
     }
-  }
-  
-  const columns = judegePush(CourseColumns,tableSet)
+];
+
   return (
     <PageContainer
       ghost={false}
@@ -221,7 +267,7 @@ const PartyCourseList: React.FC<PartyCourseProps> = (props) => {
       />
       </div>
       : <section className="party_course_table">
-         <Table dataSource={partyCourseListWAcc} columns={columns} />
+         <Table dataSource={partyCourseListWAcc} columns={CourseColumns} />
       </section>
 }       
       </section> 
