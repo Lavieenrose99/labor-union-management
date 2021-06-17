@@ -1,16 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-17 19:14:14
+ * @LastEditTime: 2021-06-17 19:16:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
  */
-import React from 'react'
+import React from 'react';
 import { createFromIconfontCN } from '@ant-design/icons';
-import { Space, Tag, notification } from 'antd'
-import { sum, map, groupBy, flatten, uniqBy, compact} from 'lodash'
-import { history } from 'umi'
+import { Space, Tag, notification } from 'antd';
+import { sum, map, groupBy, flatten, uniqBy, compact } from 'lodash';
+import { history } from 'umi';
 import { stringify } from 'querystring';
 import type { Dispatch } from 'umi';
 
@@ -18,182 +18,181 @@ export const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_2580518_zuzon4pl91s.js',
 });
 
-export const getLength = (arr:any) => {
-     let len = arr ? arr.length : 0
-     return len
- } 
+export const getLength = (arr: any) => {
+  let len = arr ? arr.length : 0;
+  return len;
+};
 
-export const IconText = ({ icon, text }:any) => (
+export const IconText = ({ icon, text }: any) => (
   <Space>
-    {icon??null}
+    {icon ?? null}
     {text}
   </Space>
 );
 //计算数据中总共的pvuv
-export const FinalPvUvAmount = (arr:[]) =>{
-  const PvSum  =sum(map(arr,'pv'))
-  return{
+export const FinalPvUvAmount = (arr: []) => {
+  const PvSum = sum(map(arr, 'pv'));
+  return {
     // 'uvSum': UvSum,
-    'pvSum': PvSum
-  }
-}
+    pvSum: PvSum,
+  };
+};
 //分组计算pvuv
-export const PvUvGroupByDate = (arr: [])=>{
-  let dataSet:any = []
-  arr.forEach((item:{})=>{
-      let dateInfos: any = Object.values(item)[0]
-      let GrouByDay = sum(map(dateInfos,'pv'))
-      dataSet.push({
-        date: Object.keys(item)[0],
-        value: GrouByDay,
-        name: 'pv(访问量)'
-      })
-  })
-  return dataSet
-}
+export const PvUvGroupByDate = (arr: []) => {
+  let dataSet: any = [];
+  arr.forEach((item: {}) => {
+    let dateInfos: any = Object.values(item)[0];
+    let GrouByDay = sum(map(dateInfos, 'pv'));
+    dataSet.push({
+      date: Object.keys(item)[0],
+      value: GrouByDay,
+      name: 'pv(访问量)',
+    });
+  });
+  return dataSet;
+};
 //按顺序排列
-export const PvUvGroupByUrls = (arr: [])=>{
-  const DateGroupByUrls: { name: string; value: number; uv: number }[] = []
-  const DateGroupByUrlsRaw = groupBy(arr,'name')
-  const DateGroupByUrlsData = Object.values(DateGroupByUrlsRaw)
-  const DataGroupByUrlsName = Object.keys(DateGroupByUrlsRaw)
-  DateGroupByUrlsData.forEach((item,index)=>{
-        DateGroupByUrls.push({
-          name: DataGroupByUrlsName[index],
-          value: sum(map(item,'pv')),
-          uv: 2,
-        })
-  })
-  return DateGroupByUrls
-  
-}
+export const PvUvGroupByUrls = (arr: []) => {
+  const DateGroupByUrls: { name: string; value: number; uv: number }[] = [];
+  const DateGroupByUrlsRaw = groupBy(arr, 'name');
+  const DateGroupByUrlsData = Object.values(DateGroupByUrlsRaw);
+  const DataGroupByUrlsName = Object.keys(DateGroupByUrlsRaw);
+  DateGroupByUrlsData.forEach((item, index) => {
+    DateGroupByUrls.push({
+      name: DataGroupByUrlsName[index],
+      value: sum(map(item, 'pv')),
+      uv: 2,
+    });
+  });
+  return DateGroupByUrls;
+};
 //时段urls对比
-export const PvUvCompareByUrls = (arr: [])=>{
-  const DateGroupByUrlsRaw = groupBy(arr,'name')
-  const DateGroupByUrlsData = Object.values(DateGroupByUrlsRaw)
-  const DataGroupByUrlsName = Object.keys(DateGroupByUrlsRaw)
-  const data: any = []
-  DateGroupByUrlsData .forEach((item:any,index:number)=>{
-      const dataItem = []
-      const groupByHour = groupBy(item,'hour')
-      for(let i = 0; i < 24; i++){
-        dataItem.push({
-          url: DataGroupByUrlsName[index],
-          '访问量':sum(map(groupByHour[i],'pv')),
-          '时段': `${i} 点`,
-        })
-      }
-      data.push(dataItem)
-  })
-  return flatten(data)
-  
-}
+export const PvUvCompareByUrls = (arr: []) => {
+  const DateGroupByUrlsRaw = groupBy(arr, 'name');
+  const DateGroupByUrlsData = Object.values(DateGroupByUrlsRaw);
+  const DataGroupByUrlsName = Object.keys(DateGroupByUrlsRaw);
+  const data: any = [];
+  DateGroupByUrlsData.forEach((item: any, index: number) => {
+    const dataItem = [];
+    const groupByHour = groupBy(item, 'hour');
+    for (let i = 0; i < 24; i++) {
+      dataItem.push({
+        url: DataGroupByUrlsName[index],
+        访问量: sum(map(groupByHour[i], 'pv')),
+        时段: `${i} 点`,
+      });
+    }
+    data.push(dataItem);
+  });
+  return flatten(data);
+};
 
 //时段排序
-export const PvUvGroupBytime = (arr: [])=>{
-
-  const dataGroupTime = groupBy(arr,'hour')
-  const data = []
-  for(let i = 0; i < 24; i++){
-        data.push({
-          hour: `${i} 点`,
-          '访问量': sum(map(dataGroupTime[i],'pv'))
-        })
+export const PvUvGroupBytime = (arr: []) => {
+  const dataGroupTime = groupBy(arr, 'hour');
+  const data = [];
+  for (let i = 0; i < 24; i++) {
+    data.push({
+      hour: `${i} 点`,
+      访问量: sum(map(dataGroupTime[i], 'pv')),
+    });
   }
-  return data
-  
-}
+  return data;
+};
 
 /*
 集合对象 传入两个对象数组以及两个数组中各个对象需要匹配的字段,最后一个参数是新的集合属性名
 返回的是匹配之后的的对象数组
 */
-export const ConBindObjArr = (MainObj:any,SlaveObj:any,MainAttr:string,SlaveAttr:string,AttrName: string)=>{
-  const CombindArr = MainObj.map((item:any, index: number)=>{
-    const matchSlave  = SlaveObj.find((itemS:any)=>itemS[SlaveAttr]===item[MainAttr])
-    return { [AttrName] :{...matchSlave}, ...item}
-  })
-  return CombindArr                        
-}
+export const ConBindObjArr = (
+  MainObj: any,
+  SlaveObj: any,
+  MainAttr: string,
+  SlaveAttr: string,
+  AttrName: string,
+) => {
+  const CombindArr = MainObj.map((item: any, index: number) => {
+    const matchSlave = SlaveObj.find((itemS: any) => itemS[SlaveAttr] === item[MainAttr]);
+    return { [AttrName]: { ...matchSlave }, ...item };
+  });
+  return CombindArr;
+};
 
-export const ifOn = (ifValue:boolean) =>{
-return ifValue ? <Tag color="green">已上架</Tag>:<Tag color="red">未上架</Tag>
-}
+export const ifOn = (ifValue: boolean) => {
+  return ifValue ? <Tag color="green">已上架</Tag> : <Tag color="red">未上架</Tag>;
+};
 
-export const ifAccountExist = (value: string)=>{
-  return value ? value : <Tag color="red" >用户已注销</Tag>
-}
+export const ifAccountExist = (value: string) => {
+  return value ? value : <Tag color="red">用户已注销</Tag>;
+};
 
 //为七牛上传判断类型的函数（待优化）
-export const judgeNullForUpload = (item1: any, item2: any, item3: any)=>{
-      if(item1.length){
-        return item1
-      }else if(item2.length){
-        return item2
-      }else if(item3){
-        return [{'url': item3}]
-      }else{
-        return []
-      }
-}
+export const judgeNullForUpload = (item1: any, item2: any, item3: any) => {
+  if (item1.length) {
+    return item1;
+  } else if (item2.length) {
+    return item2;
+  } else if (item3) {
+    return [{ url: item3 }];
+  } else {
+    return [];
+  }
+};
 
 // 跳转到其他路由
 
-export const JumpToOtherRouteById = async(route: string, dispatch: Dispatch, id: number) =>
-{
-
+export const JumpToOtherRouteById = async (route: string, dispatch: Dispatch, id: number) => {
   await history.replace({
     pathname: route,
     search: stringify({
       redirect: window.location.href,
     }),
-  })
- setTimeout(
-   ()=>{
-   dispatch({
-    type: 'partycourse/getPartyListById',
-    payload: [id]
-  })
-},800)
-
-}
+  });
+  setTimeout(() => {
+    dispatch({
+      type: 'partycourse/getPartyListById',
+      payload: [id],
+    });
+  }, 800);
+};
 
 // 全局提醒
-export const openNotificationWithIcon = (type: string, text: { message: string, description: string}) => {
+export const openNotificationWithIcon = (
+  type: string,
+  text: { message: string; description: string },
+) => {
   notification[type]({
-      message: text.message,
-      description: text.description
+    message: text.message,
+    description: text.description,
   });
 };
 
 // 提醒哪个是空
 
-export const findWhichISNone = (...args: string[])=>{
-  console.log(args)
-}
+export const findWhichISNone = (...args: string[]) => {
+  console.log(args);
+};
 
 // 非空的是时候push
 
-export const judegePush = (col : any,addCol: any)=>{
-        col.push(addCol)
-        const data = uniqBy(col,'title')
-      return(
-        data
-      )
-}
+export const judegePush = (col: any, addCol: any) => {
+  col.push(addCol);
+  const data = uniqBy(col, 'title');
+  return data;
+};
 
 // 返回空属性名
 
-export const isEmptyName = (arr: any)=>{
-    const nameArr = arr.map((item:any,index: number)=>{
-        if(!item[Object.keys(item)[0]].length){
-          return(
-            Object.keys(item)[0]
-          )
-        }
-      }
-      )
-     const filterValue = compact(nameArr)
-     const warningDes = filterValue.join(',')
-     openNotificationWithIcon('warning',{ message: '完整上传信息', description: `请完成${warningDes}信息的上传`})
-}
+export const isEmptyName = (arr: any) => {
+  const nameArr = arr.map((item: any, index: number) => {
+    if (!item[Object.keys(item)[0]].length) {
+      return Object.keys(item)[0];
+    }
+  });
+  const filterValue = compact(nameArr);
+  const warningDes = filterValue.join(',');
+  openNotificationWithIcon('warning', {
+    message: '完整上传信息',
+    description: `请完成${warningDes}信息的上传`,
+  });
+};
