@@ -162,6 +162,9 @@ class RichTextEditor extends Component {
         const { qiniutoken } = this.state;
         this.uploadForImage(file, qiniutoken);
       }
+      this.setState({
+        uploadBoxVisible: false // 上传结束关闭弹窗
+      })
     }
     
     handleChange(value) {

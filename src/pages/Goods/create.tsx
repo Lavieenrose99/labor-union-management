@@ -40,7 +40,7 @@ const  GoodsCreator = (props) => {
         destroyOnClose 
         onCancel={() => closeInfosModel(false)}
         onOk={async() => {
-          if(goodsCheck(infosTitle, cover)) {
+          if(goodsCheck(infosTitle, goodsPrice, inventory, cover[0], filterHTMLTag(infosPreSeem))) {
             await props.dispatch({
               type: 'partycourse/addPartyGoods',
               payload: {
