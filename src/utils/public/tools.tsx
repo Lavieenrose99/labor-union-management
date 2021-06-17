@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-30 16:49:01
- * @LastEditTime: 2021-06-14 00:05:46
+ * @LastEditTime: 2021-06-17 19:14:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/utils/public/tools.ts
@@ -9,7 +9,7 @@
 import React from 'react'
 import { createFromIconfontCN } from '@ant-design/icons';
 import { Space, Tag, notification } from 'antd'
-import { sum, map, groupBy, flatten, uniqBy } from 'lodash'
+import { sum, map, groupBy, flatten, uniqBy, compact} from 'lodash'
 import { history } from 'umi'
 import { stringify } from 'querystring';
 import type { Dispatch } from 'umi';
@@ -121,7 +121,7 @@ return ifValue ? <Tag color="green">已上架</Tag>:<Tag color="red">未上架</
 }
 
 export const ifAccountExist = (value: string)=>{
-  return value ? value : '用户已注销'
+  return value ? value : <Tag color="red" >用户已注销</Tag>
 }
 
 //为七牛上传判断类型的函数（待优化）
@@ -180,4 +180,20 @@ export const judegePush = (col : any,addCol: any)=>{
       return(
         data
       )
+}
+
+// 返回空属性名
+
+export const isEmptyName = (arr: any)=>{
+    const nameArr = arr.map((item:any,index: number)=>{
+        if(!item[Object.keys(item)[0]].length){
+          return(
+            Object.keys(item)[0]
+          )
+        }
+      }
+      )
+     const filterValue = compact(nameArr)
+     const warningDes = filterValue.join(',')
+     openNotificationWithIcon('warning',{ message: '完整上传信息', description: `请完成${warningDes}信息的上传`})
 }

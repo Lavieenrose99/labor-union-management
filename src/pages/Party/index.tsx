@@ -8,7 +8,8 @@ import {
   Image,
   Radio, 
   Table,
-  Space
+  Space,
+  Tag
 } from 'antd';
 import {  DeleteTwoTone } from '@ant-design/icons';
 import { 
@@ -82,7 +83,7 @@ const CourseColumns = [
       dataIndex: 'account_infos',
       render: (data: any)=>{
           return(
-          <span>{data.nickname}</span>
+          <span>{data.nickname|| <Tag color="red">用户注销</Tag>}</span>
           )
       }
     },
@@ -267,7 +268,28 @@ const CourseColumns = [
       />
       </div>
       : <section className="party_course_table">
-         <Table dataSource={partyCourseListWAcc} columns={CourseColumns} />
+         <Table dataSource={partyCourseListWAcc} 
+         columns={CourseColumns}
+         pagination={{
+          total: pageTotal,
+          pageSize,
+          onShowSizeChange: (current, size) => {
+             setPageSize(size);
+            },
+           onChange: (page, size) => {
+          setpageCurrent(page);
+          dispatch({
+           type: 'partycourse/fetchPartyList',
+           payload: {
+             page,
+             limit: size, 
+           },
+         });
+       },
+       showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
+        }}
+
+          />
       </section>
 }       
       </section> 

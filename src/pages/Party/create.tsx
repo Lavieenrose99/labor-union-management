@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-06-13 14:53:13
+ * @LastEditTime: 2021-06-17 19:05:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -10,11 +10,14 @@ import React,{ useState, useEffect } from 'react'
 import { UploadAntd } from '@/utils/upload/qiniu'
 import { PageContainer } from '@ant-design/pro-layout'
 import { BookTwoTone } from '@ant-design/icons'
-import { Input, Button, message, Spin, Select } from 'antd'
+import { Input, Button, Spin, Select, Form } from 'antd'
 import type { Dispatch } from 'umi';
 import  { connect } from 'umi';
 import { get, map } from 'lodash';
-import { IconFont, openNotificationWithIcon } from '@/utils/public/tools'
+import { 
+    IconFont, 
+    isEmptyName,
+    openNotificationWithIcon } from '@/utils/public/tools'
 import CreatorPartyCourse from '@/utils/upload/richTextUpload'
 import './index.less'
 
@@ -43,23 +46,22 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
     const pptStorage = localStorage.getItem("pptStorage") ? map([...JSON.parse(String(localStorage.getItem("pptStorage")))],'url') : []
     const videoStorage = localStorage.getItem("videoStorage") ? map([...JSON.parse(String(localStorage.getItem("videoStorage")))],'url') : []
     const [ couseName, setCourseName ] = useState('')
-    const [ courePerson, setCoursePerson ] = useState('admin')
     const [ coursePPT, setcoursePPT ] = useState(pptStorage)
     const [ courseVideo, setCourseVideo ] = useState(videoStorage) 
     const [ coursebrief, setCourseBrief ] = useState('测试简介')
     const [ courseCover, setCourseCover ] = useState(courseCoverS)
     const [ linkGoods, setLinkGoods ] = useState(0)
     const [ courseWork, setCourseWork ] = useState(localStorage.getItem('partyCourseInfos'))
-    const handleSubmit: any = ()=>{
-        if(!courePerson &&!coursePPT&&!couseName&&!courseVideo){
-            message.info('信息未填写完整请确认')
+    const handleSubmit: any = (e: any)=>{
+       const dataVerify  =  [{'封面': courseCover},{'ppt': coursePPT},{'video': courseVideo}]
+        if( !coursePPT.length ||!courseVideo.length || !courseCover.length){
+            isEmptyName(dataVerify)
         }else{
         dispatch(
             {
                 type: 'partycourse/addPartyCourse',
                 payload: {
                     party_course_name: couseName,
-                    party_course_person: courePerson,
                     party_course_ppt: coursePPT,
                     party_course_video: courseVideo,
                     party_course_brief: coursebrief,
@@ -71,7 +73,6 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
             }
         )
         setCourseName('')
-        setCoursePerson('')
         setCourseVideo([])
         setcoursePPT([])
         localStorage.removeItem('partycourseinfos')
@@ -87,22 +88,36 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
         <PageContainer 
         extra={[
             <Button key="3" onClick={()=> { 
-                localStorage.clear(); 
                 openNotificationWithIcon('info',
-                { message: '提醒', description: '该页面的缓存已删除，刷新后将不保存原信息'}) } } danger >
+                { message: '提醒', description: '该页面的缓存已删除，刷新后将不保存原信息'})
+                localStorage.clear(); 
+                location.reload()
+               } } danger >
                     清除缓存</Button>
           ]}
         >
             <Spin spinning={UploadStatus}>
         <section className="party_course_upload_containter">
-        <Input placeholder="请输入课程名" style={{ width: '60vw' , marginBottom: '20px'}} onChange={
+            <Form
+                onFinish={handleSubmit}
+            >
+                <Form.Item 
+                 label="课程名"
+                 name="party_course_name"
+                 rules={[{ required: true, message: '请输入课程名' }]}>
+             <Input placeholder="请输入课程名" style={{ width: '60vw' , marginBottom: '20px'}} onChange={
             (e) =>{
                 setCourseName(e.target.value)
             }
         } 
         prefix={<BookTwoTone />}
         
-        />
+        /></Form.Item>
+        <Form.Item 
+            label="关联商品"
+            name="good_id"
+            rules={[{ required: true, message: '请选择关联商品' }]}
+            >
             <Select 
             suffixIcon={ <IconFont type="icon-shangpin" />}
             className="party_goods_select"
@@ -120,6 +135,11 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
                     })
                 }
         </Select>
+        </Form.Item>
+        <Form.Item
+            label="课程简介"
+            rules={[{ required: true, message: '请输入课程简介' }]}
+            >
          <Input.TextArea 
          maxLength={130}
          placeholder="请在此填写课程简介130字以内" 
@@ -128,7 +148,13 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
                 setCourseBrief(e.target.value)
             }
         } />
+        </Form.Item>
+     
+    <Form.Item
+        label="课程封面"
+        name="party_course_cover"
     
+    >
         <UploadAntd 
           fileStorage="courseCover"
           showType="drag"
@@ -141,6 +167,10 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
             setCourseCover
           }
           />
+          </Form.Item>
+        <Form.Item
+         label="课程PPT"
+         >
            <UploadAntd
            fileStorage="pptStorage" 
            showType="drag"
@@ -151,6 +181,10 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
           fileCount={1}
           setUrl={setcoursePPT}
           />
+          </Form.Item>
+        <Form.Item
+             label="课程视频"
+        >
            <UploadAntd 
            fileStorage="videoStorage"
            showType="drag"
@@ -163,6 +197,11 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
               setCourseVideo
           }
           />
+          </Form.Item>
+          
+          <Form.Item 
+            label="课程作业"
+          >
 
           <CreatorPartyCourse 
           height="40vh"
@@ -170,16 +209,25 @@ const PartyShow: React.FC<PartyCourseProps> = (props)=>{
           subscribeRichText={subscribeInfos} 
           defaultText={courseWork}
           />
+          </Form.Item>
+            <Form.Item >
+        <section 
+        className="submit_party_btn">
+        <Button 
+        
+        type="primary" 
+        htmlType="submit">
+          提交
+        </Button>
+        </section>
+      </Form.Item>
+          </Form>
           </section>
         
           </Spin>
         
          </PageContainer>
-          <Button 
-          className="submit_party_btn"
-          onClick={
-               handleSubmit
-           }>确认</Button>
+           
            </>
     )
 }
