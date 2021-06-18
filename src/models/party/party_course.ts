@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-06-13 16:44:53
+ * @LastEditTime: 2021-06-18 12:50:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -23,7 +23,8 @@ import {
   getPartyGoods,
   delPartyGoods,
   changePartyGoods,
-  PutPartyCouse
+  PutPartyCouse,
+  changePartyClass
 } from '../../services/party/party_course';
 import { map } from 'lodash';
 
@@ -56,6 +57,7 @@ export interface AccountModelType {
     PutOnPartyGoods: Effect;
     putPartyCourse: Effect;
     getPartyGoodsById: Effect;
+    changePartyClass: Effect;
   };
   reducers: {
     savePagesInfos: Reducer<AccountModalState>;
@@ -183,6 +185,19 @@ const PartyCourseModal: AccountModelType = {
       const response = yield call(createPartyClass, payload);
       if (response.id > 0) {
         message.info('已成功添加');
+      }
+      yield put({
+        type: 'fetchClassList',
+        payload: {
+          limit: 10,
+          page: 1
+        }
+      })
+    },
+    *changePartyClass({ payload }, { call, put }){
+      const response = yield call(changePartyClass,payload);
+      if(response.id > 0){
+        message.info('已成功修改');
       }
       yield put({
         type: 'fetchClassList',

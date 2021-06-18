@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:12:43
- * @LastEditTime: 2021-06-06 17:56:02
+ * @LastEditTime: 2021-06-18 12:58:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/services/party/party_course.ts
@@ -49,6 +49,12 @@ export async function createPartyClass(payload: any) {
     method: 'POST',
     data: payload.data,
   });
+}
+export async function changePartyClass(payload: any){
+  return request(`/api.request/v1/party_course/class/${payload.id}`,{
+    method: 'PUT',
+    data: payload.data
+  })
 }
 export async function createPartyGoods(payload: PartyCoruseParamsType) {
   return request(`/api.request/v1/goods`, {

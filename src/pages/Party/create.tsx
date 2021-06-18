@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-27 14:48:00
- * @LastEditTime: 2021-06-17 19:05:34
+ * @LastEditTime: 2021-06-18 08:25:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Party/index.tsx
@@ -49,14 +49,17 @@ const PartyShow: React.FC<PartyCourseProps> = (props) => {
   const [couseName, setCourseName] = useState('');
   const [coursePPT, setcoursePPT] = useState(pptStorage);
   const [courseVideo, setCourseVideo] = useState(videoStorage);
-  const [coursebrief, setCourseBrief] = useState('测试简介');
+  const [coursebrief, setCourseBrief] = useState('无');
   const [courseCover, setCourseCover] = useState(courseCoverS);
   const [linkGoods, setLinkGoods] = useState(0);
   const [courseWork, setCourseWork] = useState(localStorage.getItem('partyCourseInfos'));
   const handleSubmit: any = (e: any) => {
     const dataVerify = [{ 封面: courseCover }, { ppt: coursePPT }, { video: courseVideo }];
-    if (!coursePPT.length || !courseVideo.length || !courseCover.length) {
+    if (!coursePPT.length || !courseVideo.length || !courseCover.length|| !courseWork) {
       isEmptyName(dataVerify);
+      if(!courseWork){
+        openNotificationWithIcon('warning',{ message: '作业信息不完整', description: '请填写作业信息'})
+      }
     } else {
       dispatch({
         type: 'partycourse/addPartyCourse',

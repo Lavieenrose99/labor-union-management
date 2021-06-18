@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-17 19:45:59
+ * @LastEditTime: 2021-06-18 10:15:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -38,7 +38,10 @@ const ClassList: React.FC<IClassType> = (props) => {
   const [pageSize, setPageSize] = useState(5);
   const [showStudents, setShowStudents] = useState<boolean>(false);
   const [showWays, setShowWays] = useState<number>(2);
+  const [changeInfos, setchangeInfos] = useState({});
+  const [ dataType, setDataType ] = useState<string>('创建')
   const dataSet = ConBindObjArr(ClassEnity, CourseEnity, 'party_course_id', 'id', 'class_course');
+  console.log(changeInfos);
   const Classcolumns = [
     {
       title: 'ID',
@@ -51,10 +54,22 @@ const ClassList: React.FC<IClassType> = (props) => {
       key: 'name',
     },
     {
-      title: '课程名称',
+      title: '课程',
       dataIndex: 'class_course',
+      align: 'center as center',
       render: (data: any) => {
-        return <span>{data.name}</span>;
+        return (
+          <section
+            onClick={() => {
+              JumpToOtherRouteById('/party/index', dispatch, data.id);
+            }}
+          >
+            <Space>
+              <IconFont type="icon-chakan" />
+              <a>{data.name}</a>
+            </Space>
+          </section>
+        );
       },
     },
     {
@@ -92,10 +107,12 @@ const ClassList: React.FC<IClassType> = (props) => {
             <Button
               type="primary"
               onClick={() => {
-                JumpToOtherRouteById('/party/index', dispatch, record.class_course.id);
+                setchangeInfos(record);
+                setShowAddModal(true);
+                setDataType('修改')
               }}
             >
-              查看课程
+              修改班级
             </Button>
             <Button
               type="primary"
@@ -159,7 +176,7 @@ const ClassList: React.FC<IClassType> = (props) => {
         ghost={false}
         onBack={() => window.history.back()}
         extra={[
-          <Button key="3" onClick={() => setShowAddModal(true)}>
+          <Button key="3" onClick={() => { setShowAddModal(true); setDataType('创建') }}>
             创建班级
           </Button>,
         ]}
@@ -316,34 +333,40 @@ const ClassList: React.FC<IClassType> = (props) => {
                 )}
               />
             ) : (
-              <Table 
-              style={{ padding: 20}}
-              dataSource={dataSet} 
-              columns={Classcolumns} 
-              pagination={{
-                total: pageTotal,
-                pageSize,
-                onShowSizeChange: (current, size) => {
-                  setPageSize(size);
-                },
-                onChange: (page, size) => {
-                  setpageCurrent(page);
-                  dispatch({
-                    type: 'partycourse/fetchClassList',
-                    payload: {
-                      page,
-                      limit: size,
-                    },
-                  });
-                },
-                showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
-              }}
+              <Table
+                style={{ padding: 20 }}
+                dataSource={dataSet}
+                columns={Classcolumns}
+                pagination={{
+                  total: pageTotal,
+                  pageSize,
+                  onShowSizeChange: (current, size) => {
+                    setPageSize(size);
+                  },
+                  onChange: (page, size) => {
+                    setpageCurrent(page);
+                    dispatch({
+                      type: 'partycourse/fetchClassList',
+                      payload: {
+                        page,
+                        limit: size,
+                      },
+                    });
+                  },
+                  showTotal: (total) => `第 ${pageCurrent} 页 共 ${total} 条`,
+                }}
               />
             )}
           </section>
         </div>
       </PageContainer>
-      <ClassCreator show={showAddModal} closeInfosModel={setShowAddModal} />
+      <ClassCreator
+        show={showAddModal}
+        closeInfosModel={setShowAddModal}
+        changeInfosProps={changeInfos}
+        clearChangeInfosProps={setchangeInfos}
+        changeType={dataType}
+      />
       <StudentDetails onCloseDrawer={setShowStudents} show={showStudents} person={classPerson} />
     </>
   );
