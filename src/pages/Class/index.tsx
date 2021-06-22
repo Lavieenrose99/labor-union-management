@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 11:16:06
- * @LastEditTime: 2021-06-18 10:15:17
+ * @LastEditTime: 2021-06-22 17:13:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/index.tsx
@@ -15,6 +15,7 @@ import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { get } from 'lodash';
 import { IconText, IconFont } from '@/utils/public/tools';
+import QRCode from 'qrcode.react';
 import './index.less';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { ConBindObjArr, JumpToOtherRouteById } from '@/utils/public/tools';
@@ -39,9 +40,19 @@ const ClassList: React.FC<IClassType> = (props) => {
   const [showStudents, setShowStudents] = useState<boolean>(false);
   const [showWays, setShowWays] = useState<number>(2);
   const [changeInfos, setchangeInfos] = useState({});
-  const [ dataType, setDataType ] = useState<string>('创建')
+  const [courseQrCode, setCourseQrCode] = useState('');
+  const [dataType, setDataType] = useState<string>('创建');
+  const [ifShowQrCode, setIfShowQrCode] = useState<boolean>(false);
   const dataSet = ConBindObjArr(ClassEnity, CourseEnity, 'party_course_id', 'id', 'class_course');
-  console.log(changeInfos);
+
+  const getQRCodeByCid: any = (id: number) => {
+    request(`/api.request/v1/party_course/class/getQR/${id}`, {
+      method: 'POST',
+    }).then((data: string) => {
+      setCourseQrCode(data);
+      setIfShowQrCode(true);
+    });
+  };
   const Classcolumns = [
     {
       title: 'ID',
@@ -104,12 +115,13 @@ const ClassList: React.FC<IClassType> = (props) => {
       render: (_: any, record: any) => {
         return (
           <Space size="large">
+            <Button onClick={() => getQRCodeByCid(record.id)}>查看二维码</Button>
             <Button
               type="primary"
               onClick={() => {
                 setchangeInfos(record);
                 setShowAddModal(true);
-                setDataType('修改')
+                setDataType('修改');
               }}
             >
               修改班级
@@ -176,7 +188,13 @@ const ClassList: React.FC<IClassType> = (props) => {
         ghost={false}
         onBack={() => window.history.back()}
         extra={[
-          <Button key="3" onClick={() => { setShowAddModal(true); setDataType('创建') }}>
+          <Button
+            key="3"
+            onClick={() => {
+              setShowAddModal(true);
+              setDataType('创建');
+            }}
+          >
             创建班级
           </Button>,
         ]}
@@ -246,6 +264,14 @@ const ClassList: React.FC<IClassType> = (props) => {
                           </span>
                         }
                       />,
+                      <IconText
+                      icon={<IconFont type="icon-erweima" />}
+                      text={
+                        <span onClick={() => getQRCodeByCid(item.id)}>
+                         班级二维码
+                        </span>
+                      }
+                    />,
                       <IconText
                         icon={<IconFont type="icon-renyuanguanli" />}
                         text={
@@ -367,6 +393,15 @@ const ClassList: React.FC<IClassType> = (props) => {
         clearChangeInfosProps={setchangeInfos}
         changeType={dataType}
       />
+      <Modal
+        title="课程二维码"
+        visible={ifShowQrCode}
+        onCancel={() => setIfShowQrCode(false)}
+        width={350}
+        footer={null}
+      >
+        <QRCode value={courseQrCode} size={300} />
+      </Modal>
       <StudentDetails onCloseDrawer={setShowStudents} show={showStudents} person={classPerson} />
     </>
   );
