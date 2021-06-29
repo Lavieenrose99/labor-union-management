@@ -4,7 +4,7 @@ import { Input, Table, Button, Space, Avatar } from 'antd';
 import { PlusCircleTwoTone } from '@ant-design/icons';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
-import UserCreator from './creatUser';
+import SignUpPages from './creatUser';
 import { get } from 'lodash';
 import './index.less';
 import { ConBindObjArr } from '@/utils/public/tools';
@@ -19,11 +19,14 @@ interface UsersType {
 const UsersList: React.FC<UsersType> = (props) => {
   const { dispatch} = props;
   const { Search } = Input;
-  const [showAddModal,setShowAddModal] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [userId, setUserId] = useState(0);
   const [ pageCurrent, setpageCurrent ] = useState(1);
   const AccountList = JSON.parse(sessionStorage.getItem('accountList')??'[]') 
   const ComBindDataWithAcc = ConBindObjArr(AccountList,AccountList,'id','id','account_infos') 
+  const showModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
   useEffect(() => {
     dispatch({
@@ -77,18 +80,7 @@ const UsersList: React.FC<UsersType> = (props) => {
           type="primary"
           danger
           onClick={() => {
-            dispatch({
-              type: '',
-              payload:{
-                params: {
-                  limit: 99,
-                  page: 1,
-                  author_id: item,
-                },
-                id: item.id,
-              },
 
-            })
           }}
         >
           删除用户
@@ -107,10 +99,11 @@ const UsersList: React.FC<UsersType> = (props) => {
                 margin: 20,
               }}
               icon={<PlusCircleTwoTone />}
-              onClick={() => { setShowAddModal(true) }}
+              onClick={() => { showModal() }}
             >
               添加用户    
         </Button>
+        <SignUpPages ModalVisible={isModalVisible} isShow={showModal} />
           <Search
             style={{
               margin:20,
@@ -149,12 +142,6 @@ const UsersList: React.FC<UsersType> = (props) => {
           />
         </div>
       </PageContainer>
-      <UserCreator
-        show={showAddModal}
-        closeInfosModel={setShowAddModal}
-        StroageCover="userCover"
-        StroagePictures="userPictures"
-        />
       
     </>
   );
