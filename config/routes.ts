@@ -64,6 +64,13 @@
                     component: './News/index',
                     // authority: ['admin'],
                   },
+                  {
+                    path: '/set/userList',
+                    name: '用户设置',
+                    icon: 'smile',
+                    component: './UserList/index',
+                    // authority: ['admin'],
+                  },
                 ],
               },
               
