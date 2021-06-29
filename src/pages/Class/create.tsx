@@ -1,12 +1,12 @@
 /*
  * @Author: your name
  * @Date: 2021-05-25 13:50:27
- * @LastEditTime: 2021-06-07 17:58:02
+ * @LastEditTime: 2021-06-18 13:01:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/create.tsx
  */
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Modal, Input, Select, Form, Button, DatePicker } from 'antd';
 import { layout, tailLayout } from '@/utils/public/layout';
 import { connect } from 'umi';
@@ -19,11 +19,44 @@ interface IClassType {
   closeInfosModel: any;
   show: boolean;
   CoureseEnity: any;
+  changeInfosProps?: any;
+  clearChangeInfosProps?: any;
+  changeType: string;
 }
 
 const ClassCreator: React.FC<IClassType> = (props) => {
-  const { show, closeInfosModel, dispatch, CoureseEnity } = props;
-  const onFinish = (values: any) => {
+  const [form] = Form.useForm();
+  const formRef = useRef(null);
+  const {
+    show,
+    closeInfosModel,
+    dispatch,
+    CoureseEnity,
+    changeInfosProps,
+    clearChangeInfosProps,
+    changeType,
+  } = props;
+  useEffect(() => {
+    if (changeInfosProps.class_course) {
+      form.setFieldsValue({
+        name: changeInfosProps.name ?? '',
+        teacher_name: changeInfosProps.teacher_name ?? '',
+        place: changeInfosProps.place ?? '',
+        introduce: changeInfosProps.introduce ?? '',
+        pid: changeInfosProps.class_course.id,
+        comment: changeInfosProps.comment,
+        begin_time: moment(
+          moment(changeInfosProps.begin_time).format('YYYY-MM-DD HH:mm:ss'),
+          'YYYY-MM-DD HH:mm:ss',
+        ),
+        end_time: moment(
+          moment(changeInfosProps.end_time).format('YYYY-MM-DD HH:mm:ss'),
+          'YYYY-MM-DD HH:mm:ss',
+        ),
+      });
+    }
+  }, [changeInfosProps]);
+  const onFinish = async (values: any) => {
     const start_time = moment(values.start_time).valueOf();
     const end_time = moment(values.end_time).valueOf();
     const timestap = {
@@ -31,30 +64,32 @@ const ClassCreator: React.FC<IClassType> = (props) => {
       end_time,
     };
     const newClass = { ...values, ...timestap };
-    dispatch({
-      type: 'partycourse/addPartyClass',
-      payload: { data: newClass, id: values.pid },
-    });
+    if (changeType === '创建') {
+      await dispatch({
+        type: 'partycourse/addPartyClass',
+        payload: { data: newClass, id: values.pid },
+      });
+      closeInfosModel(false);
+    } else if (changeType === '修改') {
+      await dispatch({
+        type: 'partycourse/changePartyClass',
+        payload: { data: newClass, id: changeInfosProps.id },
+      });
+      closeInfosModel(false);
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
-  console.log(CoureseEnity);
-  useEffect(() => {
-    dispatch({
-      type: 'partycourse/fetchPartyList',
-      payload: {
-        limit: 99,
-        page: 1,
-      },
-    });
-  }, []);
   return (
     <Modal
       visible={show}
       width={1000}
-      onCancel={() => closeInfosModel(false)}
+      onCancel={() => {
+        closeInfosModel(false);
+        clearChangeInfosProps({});
+      }}
       destroyOnClose
       title="班级创建"
       footer={null}
@@ -63,6 +98,8 @@ const ClassCreator: React.FC<IClassType> = (props) => {
         <Form
           {...layout}
           name="basic"
+          ref={formRef}
+          form={form}
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -89,7 +126,11 @@ const ClassCreator: React.FC<IClassType> = (props) => {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="关联课程" name="pid">
+          <Form.Item
+            label="关联课程"
+            name="pid"
+            rules={[{ required: true, message: '请选择关联班级' }]}
+          >
             <Select>
               {CoureseEnity.map((item) => {
                 return <Select.Option value={item.id}>{item.name}</Select.Option>;
@@ -99,11 +140,11 @@ const ClassCreator: React.FC<IClassType> = (props) => {
           <Form.Item
             label="班级简介"
             name="introduce"
-            rules={[{ required: true, message: '请输入上课地点' }]}
+            // rules={[{ required: true, message: '请输入上课地点' }]}
           >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item label="班级备注" name="comment" rules={[{ required: true, message: '' }]}>
+          <Form.Item label="班级备注" name="comment">
             <Input.TextArea />
           </Form.Item>
           <Form.Item

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-27 16:27:08
- * @LastEditTime: 2021-05-29 21:02:04
+ * @LastEditTime: 2021-06-14 02:02:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Goods/create.tsx
@@ -10,15 +10,13 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Input, Switch, InputNumber } from 'antd';
 import { connect } from 'umi';
 import { UploadAntd } from '@/utils/upload/qiniu'
-import { map } from 'lodash'
+import RichTextEditor from '@/utils/upload/richTextUpload';
+import { filterHTMLTag } from '../../utils/upload/filterHtml';
+import { goodsCheck } from '@/utils/verify/goods'
 import './change.less'
 
-
 const  GoodsChanger = (props) => {
-  const { TextArea } = Input;
-  const { dispatch, show, closeInfosModel , StroageCover, StroagePictures, info } = props;
-  const StroageCoverS = localStorage.getItem(StroageCover) ? map([...JSON.parse(String(localStorage.getItem(StroageCover)))],'url') : []
-  const StroagePictureS = localStorage.getItem(StroagePictures) ? map([...JSON.parse(String(localStorage.getItem(StroagePictures)))],'url') : []
+  const { dispatch, show, closeInfosModel , info } = props;
   const [infoName, setInfoName] = useState('');
   const [ infoInventory, setInfoInventory ] = useState(0);
   const [ infoPrice, setInfoPrice ] = useState(0)
@@ -26,18 +24,20 @@ const  GoodsChanger = (props) => {
   const [infoIsOn, setInfoIsOn ] = useState(false);
   const [ infoCover, setInfoCover ] = useState('');
   const [ infoPictures, setInfoPictures ] = useState();
-  console.log(info)
   useEffect(() => {
     setInfoName(info.name)
-    setInfoPrice(info.price)
+    setInfoPrice(info.price / 100)
     setInfoInventory(info.inventory)
     setInfoIsOn(info.is_on)
     setInfoCover(info.cover)
     setInfoPictures(info.pictures)
     setInfoBrief(info.brief)
   }, [info])
+  console.log(info)
   console.log(infoCover)
-  console.log(infoPictures)
+  console.log(infoBrief)
+  console.log(infoIsOn)
+  console.log(infoPrice)
   return (
     <>
       <Modal
@@ -47,24 +47,24 @@ const  GoodsChanger = (props) => {
         destroyOnClose
         onCancel={() => closeInfosModel(false)}
         onOk={()=>{
-          dispatch({
-            type:'partycourse/changePartyGoods',
-            payload: {
-              params: {
-                name: infoName,
-                brief: infoBrief,
-                price: infoPrice,
-                inventory: infoInventory,
-                is_on: infoIsOn,
-                cover: infoCover,
-                pictures: infoPictures,
-              },
-              updateId: info.id
-            }
-          })
-          localStorage.removeItem(StroageCover)
-          localStorage.removeItem(StroagePictures)
-          closeInfosModel(false);
+          if(goodsCheck(infoName, infoPrice, infoInventory, infoCover, infoBrief)) {
+            dispatch({
+              type:'partycourse/changePartyGoods',
+              payload: {
+                params: {
+                  name: infoName,
+                  brief: filterHTMLTag(infoBrief),
+                  price: infoPrice * 100,
+                  inventory: infoInventory,
+                  is_on: infoIsOn,
+                  cover: infoCover,
+                  pictures: infoPictures,
+                },
+                updateId: info.id
+              }
+            })
+            closeInfosModel(false);
+          }
         }}
       >
         <div className="goods-changer-container">
@@ -75,16 +75,6 @@ const  GoodsChanger = (props) => {
               value={infoName}
               onChange={(e) => {
                 setInfoName(e.target.value);
-              }}
-            />
-          </div>
-          <div className="goods-changer-title">
-            <span>商品简介：</span>
-            <TextArea
-              className="goods-changer-input goods-changer-brief-input"
-              value={infoBrief}
-              onChange={(e) => {
-                setInfoBrief(e.target.value);
               }}
             />
           </div>
@@ -106,12 +96,14 @@ const  GoodsChanger = (props) => {
               className="goods-changer-input goods-changer-inventory-input"
               onChange={(e)=>setInfoInventory(e)}
               value={infoInventory}
+              formatter={(val) => val}
+              parser={(val) => val.replace(/^(0+)|[^\d]/g, '')}
               min={0}
-              step={0.01}
+              step={1}
               />
             </div>
           <div className="goods-changer-title">
-            <span>是否发布：</span>
+            <span>是否上架：</span>
             <Switch
               className="goods-changer-input"
               onChange={(e)=>setInfoIsOn(e)}
@@ -120,14 +112,14 @@ const  GoodsChanger = (props) => {
           <div className="goods-changer-title">
             <span>商品封面：</span>
             <div className="goods-changer-input goods-changer-cover-input">
-              <UploadAntd 
-              propsFileItem={infoCover}
-              showType="normal"
-              setUrl={setInfoCover}
-              childFileType='picture'
-              fileCount={1}
-              listshowType='picture-card'
-            />
+              <UploadAntd
+                propsFileItem={infoCover}
+                showType="normal"
+                setUrl={setInfoCover}
+                childFileType='picture'
+                fileCount={1}
+                listshowType='picture-card'
+                />
             </div>
           </div>
           <div className="goods-changer-title">
@@ -141,6 +133,16 @@ const  GoodsChanger = (props) => {
                 fileCount={3}
                 listshowType='picture-card'
               />
+            </div>
+          </div>
+          <div className="goods-changer-title">
+            <span>商品简介：</span>
+            <div
+              className="goods-changer-input goods-changer-brief-input"
+              >
+              <RichTextEditor
+                subscribeRichText={(val: string) => setInfoBrief(val)}
+                defaultText={infoBrief} width={800} height={200 } />
             </div>
           </div>
         </div>

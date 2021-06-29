@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-13 16:49:13
- * @LastEditTime: 2021-06-05 14:07:11
+ * @LastEditTime: 2021-06-14 02:18:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Monitor/index.tsx
@@ -30,6 +30,7 @@ import {
 import request from '@/utils/request';
 import { UrlsRank } from '@/utils/Table/monitor'
 import { Chart, LineAdvance,  Legend, Area } from 'bizcharts';
+import { Card } from 'antd'
 import './index.less'
 
 const { Option } = Select
@@ -76,7 +77,7 @@ const MonitorIndex: React.FC = ()=>{
               });
          }
         
-        TimeInterval(3)
+        TimeInterval(7)
      }, []);
 
     useEffect(()=>{
@@ -90,7 +91,7 @@ const MonitorIndex: React.FC = ()=>{
         <>
         <section  className="monitor_index_header_container">
           <Select style={{ width: 200, display: 'block'}} 
-            defaultValue={DateSelector[0].value} 
+            defaultValue={DateSelector[1].value} 
             onChange={TimeInterval}>
                 {
                     DateSelector.map(item=>{
@@ -110,6 +111,7 @@ const MonitorIndex: React.FC = ()=>{
             </section>
         <section className="monitor_index_header">
             <section className="long_period_line_chart_coantianer">
+                <Card title="PV分时曲线">
     <Chart padding={[70, 70, 70, 70]} autoFit height={400} data={dataUrlCompare} >
             <Legend />
 		<LineAdvance
@@ -120,7 +122,8 @@ const MonitorIndex: React.FC = ()=>{
 			position="时段*访问量"
 			color="url"
 		/>
-	</Chart>
+	</Chart></Card>
+       <Card title="总点击曲线" style={{ marginTop: 10}} >
             <Chart padding={[70, 70, 70, 70]} autoFit height={400} data={periodDataByDateSum} >
             <Legend />
 		<LineAdvance
@@ -131,11 +134,11 @@ const MonitorIndex: React.FC = ()=>{
 			position="date*value"
 			color="name"
 		/>
-	</Chart>
-    <Chart padding={[70, 70, 70, 70]} autoFit height={400} data={periodDataByTime} >
+	</Chart></Card>
+    {/* <Chart padding={[70, 70, 70, 70]} autoFit height={400} data={periodDataByTime} >
 
         <Area position="hour*访问量" shape='smooth' color="#fc0040" />
-	</Chart>
+	</Chart> */}
         </section>
         </section>
         </section>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-09 17:13:05
- * @LastEditTime: 2021-06-07 18:18:27
+ * @LastEditTime: 2021-06-18 12:50:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/models/party/party_course.ts
@@ -23,7 +23,8 @@ import {
   getPartyGoods,
   delPartyGoods,
   changePartyGoods,
-  PutPartyCouse
+  PutPartyCouse,
+  changePartyClass
 } from '../../services/party/party_course';
 import { map } from 'lodash';
 
@@ -56,6 +57,7 @@ export interface AccountModelType {
     PutOnPartyGoods: Effect;
     putPartyCourse: Effect;
     getPartyGoodsById: Effect;
+    changePartyClass: Effect;
   };
   reducers: {
     savePagesInfos: Reducer<AccountModalState>;
@@ -64,6 +66,7 @@ export interface AccountModelType {
     saveClassEnity: Reducer<AccountModalState>;
     savePartyGoods: Reducer;
     savePageTotal: Reducer;
+    saveGoodsTotal: Reducer;
   };
 }
 
@@ -116,8 +119,12 @@ const PartyCourseModal: AccountModelType = {
     },
     *fetchPartyGoods({ payload }, { call, put }) {
       const response = yield call(fetchPartyGoods, payload);
-      const { goods } = response;
+      const { goods, total } = response;
       const ids = map(goods, 'id');
+      yield put ({
+        type: 'saveGoodsTotal',
+        payload: total
+      })
       const enity = yield call(getPartyGoods, ids);
       yield put({
         type: 'savePartyGoods',
@@ -187,6 +194,19 @@ const PartyCourseModal: AccountModelType = {
         }
       })
     },
+    *changePartyClass({ payload }, { call, put }){
+      const response = yield call(changePartyClass,payload);
+      if(response.id > 0){
+        message.info('已成功修改');
+      }
+      yield put({
+        type: 'fetchClassList',
+        payload: {
+          limit: 10,
+          page: 1
+        }
+      })
+    },
     *fetchPartyList({ payload }, { call, put }) {
       const list = yield call(fetchPartyCourse, payload);
       const { party_course, total } = list;
@@ -228,8 +248,6 @@ const PartyCourseModal: AccountModelType = {
       const { classes, total } = list;
       const ids = map(classes,'id')
       const enity = yield call(getPartyClassEnity, ids);
-      const partyIds = map(enity,'party_course_id')
-      const enityCourse = yield call(getPartyCourseEnity, partyIds);
       yield put({
         type: 'saveClassEnity',
         payload: enity,
@@ -238,10 +256,6 @@ const PartyCourseModal: AccountModelType = {
         type: 'savePageTotal',
         payload: total
       })
-      yield put({
-        type: 'saveCoureseEnity',
-        payload: enityCourse ,
-      });
     },
     *delPartyClass({ payload }, { call, put }) {
       const res = yield call(delPartyClass, payload);
@@ -293,6 +307,12 @@ const PartyCourseModal: AccountModelType = {
       return {
         ...state,
         PageTotal: payload,
+      };
+    },
+    saveGoodsTotal(state: any, { payload }: any) {
+      return {
+        ...state,
+        GoodsTotal: payload,
       };
     },
   },

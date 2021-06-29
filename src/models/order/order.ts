@@ -2,7 +2,7 @@
  * @Author: SolitaryOrz 
  * @Date: 2021-05-30 17:46:52 
  * @Last Modified by: SolitaryOrz
- * @Last Modified time: 2021-05-30 21:51:48
+ * @Last Modified time: 2021-06-13 16:36:28
  */
 
 import type { Effect, Reducer } from 'umi';
@@ -31,10 +31,11 @@ export interface AccountModelType {
   effects: {
     fetchOrderList: Effect;
     cancelOrderEnity: Effect
+    searchOrderAuthor: Effect;
   };
   reducers: {
     saveOrderEnity: Reducer;
-    savePagesInfos: Reducer;
+    saveOrderInfos: Reducer;
   };
 }
 
@@ -44,6 +45,7 @@ const OrderModal: AccountModelType = {
     status: false,
   },
   effects: {
+    // 获取订单列表
     *fetchOrderList({ payload }, { call, put }) {
       const list = yield call(fetchOrderId, payload);
       const { orders, total } = list;
@@ -51,8 +53,8 @@ const OrderModal: AccountModelType = {
         return item.id;
       });
       yield put({
-        type: 'savePagesInfos',
-        payload: total,
+        type: 'saveOrderInfos',
+        payload: total
       });
       const enity = yield call(getOrderEnity, ids);
       yield put({
@@ -64,6 +66,10 @@ const OrderModal: AccountModelType = {
         ids: Array.from(new Set(map(enity,'goods_id')))
       })
     },
+    // 查询买家
+    *searchOrderAuthor({ payload }, {call, put}) {
+    },
+    // 取消订单
     *cancelOrderEnity({ payload }, {call, put}) {
       const { params, id } = payload
       const res = yield call(cancelOrderEnity, id);
@@ -84,10 +90,10 @@ const OrderModal: AccountModelType = {
         OrderEnity: payload,
       };
     },
-    savePagesInfos(state: any, { payload }: any) {
+    saveOrderInfos(state: any, { payload }: any) {
       return {
         ...state,
-        pagination: payload,
+        OrderTotal: payload
       };
     },
   },

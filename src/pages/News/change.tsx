@@ -15,6 +15,7 @@ import './change.less';
 import { UploadAntd }from '@/utils/upload/qiniu';
 import { filterHTMLTag } from '../../utils/upload/filterHtml';
 import { get } from 'lodash'
+import { newsCheck } from '@/utils/verify/news'
 // 需要登录才能修改
 interface INewsChangeType {
   showModal: boolean;
@@ -38,20 +39,24 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
     setInfoContent(text)
   };
   const handleSubmit = () => {
-    dispatch({
-      type: 'setcentermodel/changeNewsEnity',
-      payload: {
-        updateData: {
-          news_label: infoTag,
-          title: infoTitle,
-          content: filterHTMLTag(infoContent),
-          is_publish: infoIsPublish,
-          introduction: infoIntroduction,
-          picture: infoPicture[0],
+    const getInfoContent = filterHTMLTag(infoContent)
+    if(newsCheck(infoTitle, infoIntroduction, infoTag, infoPicture, getInfoContent)) {
+      dispatch({
+        type: 'setcentermodel/changeNewsEnity',
+        payload: {
+          updateData: {
+            news_label: infoTag,
+            title: infoTitle,
+            content: filterHTMLTag(infoContent),
+            is_publish: infoIsPublish,
+            introduction: infoIntroduction,
+            picture: infoPicture,
+          },
+          updateId: info.id,
         },
-        updateId: info.id,
-      },
-    });
+      });
+      closeChangeModal(false);
+    }
   };
   useEffect(() => {
     setInfoTitle(info.title);
@@ -61,7 +66,6 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
     setInfoIsPublish(info.is_publish);
     setInfoTag(info.news_label_id);
   }, [info]);
-  console.log(info)
   return (
     <>
       <Modal
@@ -73,7 +77,6 @@ const NewsChanger: React.FC<INewsChangeType> = (props) => {
         }}
         onOk={() => {
           handleSubmit();
-          closeChangeModal(false);
         }}
         width={1350}
       >

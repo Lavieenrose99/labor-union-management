@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 16:12:30
- * @LastEditTime: 2021-06-04 20:11:13
+ * @LastEditTime: 2021-06-13 16:11:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/create.tsx
@@ -10,9 +10,11 @@ import React, { useState } from 'react';
 import { Modal, Input, Switch, Select } from 'antd';
 import { connect } from 'umi';
 import { UploadAntd } from '@/utils/upload/qiniu';
+import { openNotificationWithIcon } from '@/utils/public/tools'
 import RichTextEditor from '../../utils/upload/richTextUpload';
 import { filterHTMLTag } from '../../utils/upload/filterHtml';
 import { get } from 'lodash';
+import { newsCheck } from '@/utils/verify/news'
 import './create.less';
 
 const { Option } = Select;
@@ -35,7 +37,6 @@ const InfosCreate = (props) => {
     setPartyInfosContent(text);
   };
 
-  console.log(CoverStroage);
 
   return (
     <>
@@ -46,6 +47,7 @@ const InfosCreate = (props) => {
         destroyOnClose
         onCancel={() => closeInfosModel(false)}
         onOk={() => {
+        if(newsCheck(infosTitle, infosPreSeem, infosTags, cover[0], partyInfosContent)) {
           props.dispatch({
             type: 'setcentermodel/addInfosList',
             payload: {
@@ -62,6 +64,7 @@ const InfosCreate = (props) => {
           setPartyInfosContent('');
           setcover([]);
           closeInfosModel(false);
+        }
         }}
       >
         <div className="fmg-infos-creator-container">

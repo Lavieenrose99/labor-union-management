@@ -1,47 +1,28 @@
 /*
  * @Author: your name
  * @Date: 2021-06-07 20:02:23
- * @LastEditTime: 2021-06-07 20:31:37
+ * @LastEditTime: 2021-06-16 15:35:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Class/person.tsx
  */
 
-import React,{ useState, useEffect } from 'react'
-import { UploadAntd } from '@/utils/upload/qiniu'
-import { FilePptTwoTone, 
-  VideoCameraTwoTone,
-  ExclamationCircleOutlined,
-  SettingFilled } from '@ant-design/icons'
-import { Input, 
-  Modal,
-  Button, 
-  Select, 
+import React from 'react'
+import {
   Drawer, 
   Descriptions, 
-  Avatar, 
-  Space , 
-  Image} from 'antd'
-import type { Dispatch } from 'umi';
+  Empty
+} from 'antd'
 import  { connect } from 'umi';
-import { get, cloneDeep } from 'lodash';
-import { ifOn } from '@/utils/public/tools'
+import { get } from 'lodash';
 import './index.less'
 
-
-// interface PartyCourseProps {
-//     dispatch: Dispatch
-//     show: boolean
-//     UploadStatus: boolean
-//     GoodsList: [] 
-//     showInfos: {}
-//     onCloseDrawer: any
-// }
 
 
 const ClassStudent: React.FC= (props)=>{
 
   const { show, onCloseDrawer, person  } = props
+  
     return (
       <>
         <Drawer
@@ -49,12 +30,15 @@ const ClassStudent: React.FC= (props)=>{
           placement="right"
           onClose={()=>onCloseDrawer(false)}
           visible={show}
-          width="60vw"
+          width="40vw"
+          destroyOnClose
           footerStyle={{ backgroundColor: '#f0f2f5' }}
           headerStyle={{ backgroundColor: '#f0f2f5' }}
         >
+          { person.length > 0 ?
         <Descriptions column={2} bordered size="middle">
-            { person.map((item)=>{
+            { 
+            person.map((item)=>{
                 return(
                     <>
                          <Descriptions.Item label="名字">
@@ -73,6 +57,10 @@ const ClassStudent: React.FC= (props)=>{
     
 }
         </Descriptions>
+        : <Empty description="暂时没有学生报名"
+        
+        />
+}
         </Drawer>
       </>
     );

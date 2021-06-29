@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-19 16:46:29
- * @LastEditTime: 2021-06-03 20:16:39
+ * @LastEditTime: 2021-06-10 16:12:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/config/proxy.ts
@@ -16,7 +16,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'https://preview.pro.ant.design',
+      target: 'http://localhost:3000/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

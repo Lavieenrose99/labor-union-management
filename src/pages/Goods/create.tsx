@@ -1,17 +1,20 @@
 /*
  * @Author: your name
  * @Date: 2021-05-27 16:27:08
- * @LastEditTime: 2021-05-31 15:41:44
+ * @LastEditTime: 2021-06-14 02:01:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/Goods/create.tsx
  */
 import React, { useState } from 'react';
-import { Modal, Input, Switch, InputNumber } from 'antd';
+import { Modal, Input, Switch, InputNumber, message } from 'antd';
 import { connect } from 'umi';
 import { UploadAntd } from '@/utils/upload/qiniu'
 import { map } from 'lodash'
-
+import RichTextEditor from '@/utils/upload/richTextUpload';
+import { filterHTMLTag } from '../../utils/upload/filterHtml';
+import { goodsCheck } from '@/utils/verify/goods'
+import './create.less'
 
 const  GoodsCreator = (props) => {
   const { TextArea } = Input;
@@ -32,132 +35,100 @@ const  GoodsCreator = (props) => {
     <>
       <Modal
         title="商品创建"
-        width="40vw"
+        width={1000}
         visible={show}
         destroyOnClose 
         onCancel={() => closeInfosModel(false)}
         onOk={async() => {
-          await props.dispatch({
-            type: 'partycourse/addPartyGoods',
-            payload: {
-              name: infosTitle,
-              price: goodsPrice,
-              brief: infosPreSeem,
-              is_on: ifPublish,
-              cover: cover[0],
-              pictures,
-              inventory
-            },
-          });
-          localStorage.removeItem(StroageCover)
-          localStorage.removeItem(StroagePictures)
-          closeInfosModel(false);
+          if(goodsCheck(infosTitle, goodsPrice, inventory, cover[0], filterHTMLTag(infosPreSeem))) {
+            await props.dispatch({
+              type: 'partycourse/addPartyGoods',
+              payload: {
+                name: infosTitle,
+                price: goodsPrice * 100,
+                brief: filterHTMLTag(infosPreSeem),
+                is_on: ifPublish,
+                cover: cover[0],
+                pictures,
+                inventory
+              },
+            });
+            localStorage.removeItem(StroageCover)
+            localStorage.removeItem(StroagePictures)
+            closeInfosModel(false);
+          }
         }}
         
       >
-        <div className="fmg-infos-creator-container">
-          <div className="fmg-infos-creator-title">
-            <div>商品名称: </div>
+        <div className="goods-creator-container">
+          <div className="goods-creator-title">
+            <span>商品名称：</span>
             <Input
-              style={{
-                width: '30vw',
-                marginBottom: 20, 
-              }}
+              className="goods-creator-input goods-creator-name-input"
               onChange={(e) => {
                 setInfosTitle(e.target.value);
               }}
             />
           </div>
-          <div className="fmg-infos-creator-title">
-            <div>
-              商品简介:
-              {' '}
-            </div>
-            <TextArea
-              style={{
-                width: '30vw',
-                marginBottom: 20, 
-              }}
-              onChange={(e) => {
-                setInfosPreSeem(e.target.value);
-              }}
-            />
-          </div>
-          <div className="fmg-infos-creator-title">
-            <span style={{
-             marginRight: 15
-            }}
-            >
-              商品价格:
-              {' '}
-            </span>
+          <div className="goods-creator-title">
+            <span>商品价格：</span>
           <InputNumber
+            className="goods-creator-input goods-creator-price-input"
+            defaultValue={goodsPrice}
               onChange={(e)=>setGoodsPrice(e)}
-              style={{ minWidth: '10vw', marginBottom: 10 }}
               formatter={(Goodvalues) => `¥ ${Goodvalues}`}
               parser={(Goodvalues) => Goodvalues.replace(/¥ \s?|(,*)/g, '')}
               min={0}
               step={0.01}
             />
             </div>
-            <div className="fmg-infos-creator-title">
-            <span style={{
-             marginRight: 15
-            }}
-            >
-              商品库存:
-              {' '}
-            </span>
+            <div className="goods-creator-title">
+            <span>商品库存：</span>
           <InputNumber
+            className="goods-creator-input goods-creator-inventory-input"
+            defaultValue={inventory}
               onChange={(e)=>setInventory(e)}
-              style={{ minWidth: '10vw', marginBottom: 10 }}
+              formatter={(val) => val}
+              parser={(val) => val ? val.replace(/^(0+)|[^\d]/g, '') : ''}
               min={0}
-              step={0.01}
+              step={1}
             />
             </div>
-          <div className="fmg-infos-creator-title">
-            <span style={{
-             marginRight: 15
-            }}
-            >
-              是否发布:
-              {' '}
-            </span>
-         <Switch onChange={(e)=>setIfPublish(e)} checked={ifPublish}  />
+          <div className="goods-creator-title">
+            <span>商品封面：</span>
+            <div className="goods-creator-input goods-creator-cover-input">
+              <UploadAntd 
+                fileStorage={StroageCover}
+                showType="normal"
+                setUrl={serCover}
+                childFileType='picture'
+                fileCount={1}
+                listshowType='picture-card'
+              />
+           </div>
           </div>
-          <div className="fmg-infos-creator-title">
-            <span  style={{
-              display: 'inline-flex',
-            }}
-            >
-              商品封面:
-              {' '}
-            </span>
-           <UploadAntd 
-             fileStorage={StroageCover}
-             showType="normal"
-             setUrl={serCover}
-             childFileType='picture'
-             fileCount={1}
-             listshowType='picture-card'
-           />
+          <div className="goods-creator-title">
+            <span>商品图片：</span>
+            <div className="goods-creator-input goods-creator-pictures-input">
+            <UploadAntd 
+              fileStorage={StroagePictures}
+              showType="normal"
+              setUrl={setPictures}
+              childFileType='picture'
+              fileCount={3}
+              listshowType='picture-card'
+            />
+           </div>
           </div>
-          <div className="fmg-infos-creator-title">
-            <span  style={{
-              display: 'inline-flex',
-            }}
-            >
-              商品图片:
-              {' '}
-            </span>
-           <UploadAntd 
-             fileStorage={StroagePictures}
-             showType="normal"
-             setUrl={setPictures}
-             childFileType='picture'
-             fileCount={3}
-             listshowType='picture-card'
-           />
+          <div className="goods-creator-title">
+            <span>商品简介：</span>
+            <div
+              className="goods-creator-input goods-creator-brief-input"
+              >
+              <RichTextEditor
+                subscribeRichText={(val: string) => setInfosPreSeem(val)}
+                defaultText={infosPreSeem} width={800} height={200 } />
+            </div>
           </div>
         </div>
       </Modal>

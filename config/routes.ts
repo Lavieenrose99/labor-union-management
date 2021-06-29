@@ -91,12 +91,6 @@
                     name: '班级中心',
                     component: './Class/index',
                   },
-                  // {
-                  //   path: '/party/create',
-                  //   name: '创建课程',
-                  //   icon: 'smile',
-                  //   component: './Party/create.tsx',
-                  // },
                 ],
               },
               {

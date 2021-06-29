@@ -16,19 +16,22 @@ interface IGoodsType {
 }
 
 const GoodsList: React.FC<IGoodsType> = (props) => {
-  const { dispatch, CourseGoods } = props;
+  const { dispatch, CourseGoods, GoodsTotal } = props;
   const [showAddModal, setShowAddModal] = useState(false);
   const [showChangeModal, setShowChangeModal] = useState(false);
   const [changeItem, setChangeItem] = useState({});
+  const [ pageSize, setPageSize ] = useState(10);
+  const [ pageCurrent, setPageCurrent ] = useState(1);
   useEffect(() => {
     dispatch({
       type: 'partycourse/fetchPartyGoods',
       payload: {
-        limit: 20,
-        page: 1,
+        limit: pageSize,
+        page: pageCurrent,
       },
     });
   }, []);
+  console.log(GoodsTotal)
   const columns = [
     {
       title: '商品编号',
@@ -41,9 +44,9 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
       title: '商品名称',
       dataIndex: 'name',
       key: 'name',
+      align: 'center' as 'center',
       render: (itemName: string, item: any) => (
         <Space>
-          <Image width={60} height={30} src={item.cover} />
           <span>{itemName}</span>
         </Space>
       ),
@@ -70,23 +73,27 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
       title: '单价',
       dataIndex: 'price',
       key: 'price',
-      render: (itemPrice: number) => <span>￥{itemPrice}</span>,
+      align: 'center' as 'center',
+      render: (itemPrice: number) => <span>￥{itemPrice / 100}</span>,
     },
     {
       title: '库存',
       dataIndex: 'inventory',
       key: 'inventory',
+      align: 'center' as 'center',
       sorter: (a: any, b: any) => a.inventory - b.inventory,
     },
     {
       title: '购买人数',
       dataIndex: 'people',
-      key: 'people'
+      key: 'people',
+      align: 'center' as 'center',
     },
     {
       title: '更新时间',
       dataIndex: 'update_time',
       key: 'update_time',
+      align: 'center' as 'center',
       render: (updateTime: number) => (
         <span>{moment(updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
       ),
@@ -98,10 +105,12 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
       key: 'action',
       align: 'center' as 'center',
       render: (itemId: number, itemVal: any) => (
-        <div>
+        <div
+          style={{minWidth: '294px'}}
+        >
           <Button
             style={{
-              margin: '0 10px',
+              margin: '0 5px',
             }}
             onClick={() => {
               setChangeItem(itemVal);
@@ -110,7 +119,7 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
           >修改信息</Button>
           <Button
             style={{
-              margin: '0 10px',
+              margin: '0 5px',
             }}
             type="primary"
             disabled={itemVal.is_on === true}
@@ -128,7 +137,7 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
           >上架商品</Button>
           <Button
             style={{
-              margin: '0 10px',
+              margin: '0 5px',
             }}
             type="primary"
             danger
@@ -162,6 +171,23 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
             onChange={() => {}}
             pagination={{
               style: { marginRight: 30 },
+              current: pageCurrent,
+              pageSize,
+              total: GoodsTotal,
+              onChange: (page, size) => {
+                setPageCurrent(page);
+                dispatch({
+                  type: 'partycourse/fetchPartyGoods',
+                  payload: {
+                    page,
+                    limit: size
+                  },
+                })
+              },
+              onShowSizeChange: (current, size) => {
+                setPageSize(size);
+              },
+              showTotal: total => <span>共{total}个商品</span>
             }}
           />
         </div>
@@ -185,4 +211,5 @@ const GoodsList: React.FC<IGoodsType> = (props) => {
 
 export default connect(({ partycourse }: any) => ({
   CourseGoods: get(partycourse, 'CourseGoods', []),
+  GoodsTotal: get(partycourse, 'GoodsTotal', 0)
 }))(GoodsList);

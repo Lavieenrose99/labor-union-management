@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-24 15:26:15
- * @LastEditTime: 2021-06-04 20:51:29
+ * @LastEditTime: 2021-06-16 13:59:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /labor-union-management/src/pages/News/index.tsx
@@ -37,7 +37,7 @@ const NewsList: React.FC<INewsType> = (props) => {
   const [tagSelect, setTagSelect] = useState<number>(0)
 
   const  [pageSize, setPageSize] = useState(5);
-  const  [pageCurrent, setpageCurrent] = useState(1);
+  const  [pageCurrent, setPageCurrent] = useState(1);
   const { CheckableTag } = Tag;
 
 
@@ -46,8 +46,8 @@ const NewsList: React.FC<INewsType> = (props) => {
     dispatch({
       type: 'setcentermodel/fetchNewsList',
       payload: {
-        limit: 20,
-        page: 1,
+        limit: pageSize,
+        page: pageCurrent,
       },
     });
     dispatch({
@@ -81,7 +81,7 @@ const NewsList: React.FC<INewsType> = (props) => {
           <CheckableTag checked={tagSelect === 0}
             onClick={()=> {
               setTagSelect(0);
-              setpageCurrent(1);
+              setPageCurrent(1);
               dispatch({
                 type: 'setcentermodel/fetchNewsList',
                 payload: {
@@ -97,7 +97,7 @@ const NewsList: React.FC<INewsType> = (props) => {
                 <CheckableTag checked={tagSelect === item.id} 
                 onClick={()=> {
                   setTagSelect(item.id);
-                  setpageCurrent(1);
+                  setPageCurrent(1);
                   dispatch({
                     type: 'setcentermodel/fetchNewsList',
                     payload: {
@@ -126,7 +126,7 @@ const NewsList: React.FC<INewsType> = (props) => {
                   setPageSize(size);
                  },
                 onChange: (page, size) => {
-               setpageCurrent(page);
+               setPageCurrent(page);
                dispatch({
                 type: 'setcentermodel/fetchNewsList',
                 payload: {
@@ -178,17 +178,6 @@ const NewsList: React.FC<INewsType> = (props) => {
               >
                 <List.Item.Meta
                   title={<a href={item.href}>{item.title}</a>}
-                  description={
-                    <span
-                      className="action-click"
-                      onClick={() => {
-                        setShowChange(true);
-                        setChangeItem(item);
-                      }}
-                    >
-                      {item.introduction}
-                    </span>
-                  }
                 />
                 <article    
                   onClick={() => {
